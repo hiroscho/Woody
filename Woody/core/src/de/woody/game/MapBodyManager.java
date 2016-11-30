@@ -143,7 +143,7 @@ public class MapBodyManager {
 			}
 			
 			fixtureDef.shape = shape;
-			fixtureDef.filter.categoryBits = WoodyGame.game.getCategoryBitsManager().getCategoryBits("level");
+			//fixtureDef.filter.categoryBits = WoodyGame.game.getCategoryBitsManager().getCategoryBits("");
 
 			Body body = world.createBody(bodyDef);
 			body.createFixture(fixtureDef);

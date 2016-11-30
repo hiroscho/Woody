@@ -2,6 +2,7 @@ package de.woody.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,6 +12,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class GameLevel implements Screen {
 	final WoodyGame game;
@@ -19,6 +22,7 @@ public class GameLevel implements Screen {
 	TiledMap tiledMap;
 	OrthographicCamera camera;
 	TiledMapRenderer tiledMapRenderer;
+	Texture woodytexture;
 	boolean leftMove;
 	boolean rightMove;
 	int level;
@@ -26,6 +30,8 @@ public class GameLevel implements Screen {
 	public GameLevel(final WoodyGame gam, int level) {
 		this.game = gam;
 		this.level = level;
+		
+		Texture woodyTexture = new Texture("/textures/woody.png");
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 30, 20);
@@ -33,6 +39,10 @@ public class GameLevel implements Screen {
 		tiledMap = new TmxMapLoader().load("maps/test.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / 64f);
 		
+		World world = new World(new Vector2(0, -1.0f), true);
+		
+		MapBodyManager mapBodyManager = new MapBodyManager(world, 1.0f, null, 0);
+		mapBodyManager.createPhysics(tiledMap, "Collision");
 		
 //		Gdx.input.setInputProcessor(new InputAdapter() {
 //			@Override

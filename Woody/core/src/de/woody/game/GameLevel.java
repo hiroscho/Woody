@@ -32,33 +32,35 @@ public class GameLevel implements Screen {
 		camera.update();
 		tiledMap = new TmxMapLoader().load("maps/test.tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / 64f);
-		Gdx.input.setInputProcessor(new InputAdapter() {
-			@Override
-			public boolean keyDown(int keycode) {
-				switch (keycode) {
-				case Keys.LEFT:
-					setLeftMove(true);
-					break;
-				case Keys.RIGHT:
-					setRightMove(true);
-					break;
-				}
-				return true;
-			}
-
-			@Override
-			public boolean keyUp(int keycode) {
-				switch (keycode) {
-				case Keys.LEFT:
-					setLeftMove(false);
-					break;
-				case Keys.RIGHT:
-					setRightMove(false);
-					break;
-				}
-				return true;
-			}
-		});
+		
+		
+//		Gdx.input.setInputProcessor(new InputAdapter() {
+//			@Override
+//			public boolean keyDown(int keycode) {
+//				switch (keycode) {
+//				case Keys.LEFT:
+//					setLeftMove(true);
+//					break;
+//				case Keys.RIGHT:
+//					setRightMove(true);
+//					break;
+//				}
+//				return true;
+//			}
+//
+//			@Override
+//			public boolean keyUp(int keycode) {
+//				switch (keycode) {
+//				case Keys.LEFT:
+//					setLeftMove(false);
+//					break;
+//				case Keys.RIGHT:
+//					setRightMove(false);
+//					break;
+//				}
+//				return true;
+//			}
+//		});
 	}
 
 	@Override
@@ -69,7 +71,7 @@ public class GameLevel implements Screen {
 		camera.update();
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render();
-		updateMotion();
+//		updateMotion();
 	}
 
 	@Override
@@ -98,25 +100,25 @@ public class GameLevel implements Screen {
 
 	}
 
-	public void updateMotion() {
-		if (leftMove) {
-			camera.translate(-16 * Gdx.graphics.getDeltaTime(), 0);
-		}
-		if (rightMove) {
-			camera.translate(16 * Gdx.graphics.getDeltaTime(), 0);
-		}
-	}
-
-	public void setLeftMove(boolean t) {
-		if (rightMove && t)
-			rightMove = false;
-		leftMove = t;
-	}
-
-	public void setRightMove(boolean t) {
-		if (leftMove && t)
-			leftMove = false;
-		rightMove = t;
-	}
+//	public void updateMotion() {
+//		if (leftMove) {
+//			camera.translate(-16 * Gdx.graphics.getDeltaTime(), 0);
+//		}
+//		if (rightMove) {
+//			camera.translate(16 * Gdx.graphics.getDeltaTime(), 0);
+//		}
+//	}
+//
+//	public void setLeftMove(boolean t) {
+//		if (rightMove && t)
+//			rightMove = false;
+//		leftMove = t;
+//	}
+//
+//	public void setRightMove(boolean t) {
+//		if (leftMove && t)
+//			leftMove = false;
+//		rightMove = t;
+//	}
 
 }

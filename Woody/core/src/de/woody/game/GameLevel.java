@@ -22,7 +22,7 @@ public class GameLevel implements Screen {
 	TiledMap tiledMap;
 	OrthographicCamera camera;
 	TiledMapRenderer tiledMapRenderer;
-	Texture woodytexture;
+	Texture woodyTexture;
 	boolean leftMove;
 	boolean rightMove;
 	int level;
@@ -31,7 +31,7 @@ public class GameLevel implements Screen {
 		this.game = gam;
 		this.level = level;
 		
-		Texture woodyTexture = new Texture("/textures/woody.png");
+		woodyTexture = new Texture("/textures/woody.png");
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 30, 20);

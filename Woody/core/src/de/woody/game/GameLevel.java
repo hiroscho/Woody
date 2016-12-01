@@ -8,6 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -21,8 +22,9 @@ public class GameLevel implements Screen {
 	Texture img;
 	TiledMap tiledMap;
 	OrthographicCamera camera;
-	TiledMapRenderer tiledMapRenderer;
+	OrthogonalTiledMapRenderer tiledMapRenderer;
 	Texture woodyTexture;
+	Vector2 position;
 	boolean leftMove;
 	boolean rightMove;
 	int level;
@@ -31,7 +33,7 @@ public class GameLevel implements Screen {
 		this.game = gam;
 		this.level = level;
 		
-		woodyTexture = new Texture("/textures/woody.png");
+		woodyTexture = new Texture("textures/Woddy.png");
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 30, 20);
@@ -43,6 +45,9 @@ public class GameLevel implements Screen {
 		
 		MapBodyManager mapBodyManager = new MapBodyManager(world, 1.0f, null, 0);
 		mapBodyManager.createPhysics(tiledMap, "Collision");
+		
+		position = new Vector2();
+		position.set(10, 1);
 		
 //		Gdx.input.setInputProcessor(new InputAdapter() {
 //			@Override
@@ -81,6 +86,19 @@ public class GameLevel implements Screen {
 		camera.update();
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render();
+		
+		Batch b = tiledMapRenderer.getBatch();
+		
+		b.begin();
+		b.draw(woodyTexture, position.x, position.y, 1/64f * woodyTexture.getWidth(), 1/64f * woodyTexture.getHeight());
+		b.end();
+		
+		if(Gdx.input.isKeyPressed(Keys.RIGHT)) {
+			
+			
+			
+			position.add(0.1f, 0);
+		}
 //		updateMotion();
 	}
 

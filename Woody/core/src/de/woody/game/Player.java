@@ -32,12 +32,7 @@ public class Player {
 
 	public Texture texture;
 
-	public void update(final GameScreen screen, float delta) {
-		movePlayer(delta);
-		renderPlayer(screen);
-	}
-
-	private void movePlayer(float delta) {
+	public void move(float delta) {
 		if (delta == 0)
 			return;
 
@@ -136,7 +131,7 @@ public class Player {
 	 * @param screen
 	 *            the active GameScreen
 	 */
-	private void renderPlayer(final GameScreen screen) {
+	public void render(final GameScreen screen) {
 		Batch batch = screen.getRenderer().getBatch();
 
 		batch.begin();

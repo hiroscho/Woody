@@ -7,47 +7,64 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 
 public class GameScreen implements Screen {
+
 	private final WoodyGame game;
+
+	// map and camera
 	private final TiledMap map;
 	private final OrthographicCamera camera;
 	private final OrthogonalTiledMapRenderer renderer;
-	
-	private final Woody woody;
-	private final float unitScale = WoodyGame.unitScale;
-	
+
+	private final Player player;
+
 	private final int level;
-	
-	private Texture woodyTexture;
 	private int checkpoint;
 
 	public GameScreen(final WoodyGame game, final int level) {
 		this.game = game;
 		this.level = level;
 
-		// our playable character
-		woody = new Woody();
-		woodyTexture = new Texture("textures/Woddy.png");
+		// playable character
+		player = new Player();
+		player.texture = new Texture("textures/Woddy.png");
 
 		// convert WIDTH and HEIGHT to tiles
-		Woody.WIDTH = unitScale * woodyTexture.getWidth();
-		Woody.HEIGHT = unitScale * woodyTexture.getHeight();
+		Player.WIDTH = game.unitScale * player.texture.getWidth();
+		Player.HEIGHT = game.unitScale * player.texture.getHeight();
 
-		// set woody's start position
-		woody.position.set(Level.getCurrentSpawn(level, checkpoint));
+		// set players start position
+		player.position.set(Level.getCurrentSpawn(level, checkpoint));
 
 		// load the corresponding map, set the unit scale
 		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, unitScale);
+		renderer = new OrthogonalTiledMapRenderer(map, game.unitScale);
+		Level.layer = (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
 
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
+		camera.setToOrtho(false, game.xTiles, game.yTiles);
 		camera.update();
 	}
 
@@ -60,30 +77,15 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// have the camera follow the character, x-axis only
-		camera.position.x = woody.position.x;
+		camera.position.x = player.position.x;
 		camera.update();
 
 		// set the renderer view based on what the camera sees and render it
 		renderer.setView(camera);
 		renderer.render();
 
-		Batch b = renderer.getBatch();
-
-		checkInput();
-		
-		b.begin();
-		b.draw(woodyTexture, woody.position.x, woody.position.y, Woody.WIDTH, Woody.HEIGHT);
-		b.end();
-
-	}
-	
-	private void checkInput() {
-		if(Gdx.input.isKeyPressed(Keys.LEFT)) {
-			woody.position.add(-0.5f, 0);
-		}
-		if(Gdx.input.isKeyPressed(Keys.RIGHT)) {
-			woody.position.add(0.5f, 0);
-		}
+		// update the player
+		player.update(this, delta);
 	}
 
 	@Override
@@ -109,6 +111,17 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
+	}
 
+	public TiledMap getMap() {
+		return map;
+	}
+
+	public WoodyGame getGameInstance() {
+		return game;
+	}
+
+	public OrthogonalTiledMapRenderer getRenderer() {
+		return renderer;
 	}
 }

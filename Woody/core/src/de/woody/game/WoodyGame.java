@@ -1,22 +1,24 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.math.Vector2;
 
 public class WoodyGame extends Game {
-
 	public static WoodyGame game;
 
 	/**
-	 * Scale from px to tiles 1/64f means 1 tile == 64px
+	 * Scale from px to tiles.
+	 * 
+	 * 1/64f means 1 tile == 64px
 	 **/
-	public static final float unitScale = 1 / 64f;
+	public final float unitScale = 1 / 64f;
 
 	/** number of shown tiles on the x-Axis **/
-	public static final int xTiles = 20;
+	public final int xTiles = 20;
 
 	/** number of shown tiles on the y-Axis **/
-	public static final int yTiles = 15;
+	public final int yTiles = 15;
+	
+	public final String collisionLayer = "Collidable Tiles";
 
 	@Override
 	public void create() {

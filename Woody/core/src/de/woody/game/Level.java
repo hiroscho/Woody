@@ -20,7 +20,7 @@ public class Level {
 			return new Rectangle();
 		}
 	};
-	public static Array<Rectangle> tiles = new Array<Rectangle>();
+	private static Array<Rectangle> tiles = new Array<Rectangle>();
 	public static TiledMapTileLayer layer;
 
 	/**
@@ -59,7 +59,7 @@ public class Level {
 	 * @param endY
 	 *            y-coordinate of the second point
 	 */
-	public static void getTiles(int startX, int startY, int endX, int endY) {
+	public static Array<Rectangle> getTiles(int startX, int startY, int endX, int endY) {
 		rectPool.freeAll(tiles);
 		tiles.clear();
 
@@ -73,5 +73,6 @@ public class Level {
 				}
 			}
 		}
+		return tiles;
 	}
 }

@@ -3,30 +3,17 @@ package de.woody.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.maps.Map;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 
 public class GameScreen implements Screen {
 
@@ -41,6 +28,9 @@ public class GameScreen implements Screen {
 
 	private final int level;
 	private int checkpoint;
+
+	private boolean debug = false;
+	private ShapeRenderer debugRenderer;
 
 	public GameScreen(final WoodyGame game, final int level) {
 		this.game = game;
@@ -66,6 +56,8 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, game.xTiles, game.yTiles);
 		camera.update();
+
+		debugRenderer = new ShapeRenderer();
 	}
 
 	@Override
@@ -75,9 +67,11 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0.7f, 0.7f, 1, 1);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		// checks input and collision then moves the player
 		player.move(delta);
+
+		checkGameInput();
 
 		// have the camera follow the character, x-axis only
 		camera.position.x = player.position.x;
@@ -89,6 +83,10 @@ public class GameScreen implements Screen {
 
 		// render the player
 		player.render(this);
+
+		// render debug rectangles
+		if (debug)
+			renderDebug();
 	}
 
 	@Override
@@ -126,5 +124,31 @@ public class GameScreen implements Screen {
 
 	public OrthogonalTiledMapRenderer getRenderer() {
 		return renderer;
+	}
+
+	private void renderDebug() {
+		debugRenderer.setProjectionMatrix(camera.combined);
+		debugRenderer.begin(ShapeType.Line);
+
+		debugRenderer.setColor(Color.RED);
+		debugRenderer.rect(player.position.x, player.position.y, Player.WIDTH, Player.HEIGHT);
+
+		debugRenderer.setColor(Color.YELLOW);
+		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
+		for (int y = 0; y <= layer.getHeight(); y++) {
+			for (int x = 0; x <= layer.getWidth(); x++) {
+				Cell cell = layer.getCell(x, y);
+				if (cell != null) {
+					if (camera.frustum.boundsInFrustum(x + 0.5f, y + 0.5f, 0, 1, 1, 0))
+						debugRenderer.rect(x, y, 1, 1);
+				}
+			}
+		}
+		debugRenderer.end();
+	}
+	
+	private void checkGameInput() {
+		if (Gdx.input.isKeyJustPressed(Keys.B))
+			debug = !debug;
 	}
 }

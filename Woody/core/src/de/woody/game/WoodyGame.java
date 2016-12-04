@@ -6,7 +6,7 @@ public class WoodyGame extends Game {
 	public static WoodyGame game;
 
 	/**
-	 * Scale from px to tiles.
+	 * scale from px to tiles
 	 * 
 	 * 1/64f means 1 tile == 64px
 	 **/
@@ -17,8 +17,12 @@ public class WoodyGame extends Game {
 
 	/** number of shown tiles on the y-Axis **/
 	public final int yTiles = 15;
-	
+
+	/** name of the collision layer **/
 	public final String collisionLayer = "Collidable Tiles";
+
+	/** gravity constant **/
+	public static final float GRAVITY = -2.5f;
 
 	@Override
 	public void create() {

@@ -24,14 +24,18 @@ public class WoodyGame extends Game {
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
 
+	Buttons controller;
+	
 	@Override
 	public void create() {
 		this.setScreen(new GameScreen(this, 1));
+		controller = new Buttons();
 	}
 
 	@Override
 	public void render() {
 		super.render();
+		controller.draw();
 	}
 
 	@Override

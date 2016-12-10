@@ -47,7 +47,7 @@ public class Player {
 		if (delta > 0.1f)
 			delta = 0.1f;
 
-		if ((Gdx.input.isKeyPressed(Keys.SPACE)|| Gdx.input.isKeyPressed(Keys.UP)) && grounded  ) {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE)|| Gdx.input.isKeyPressed(Keys.UP) /*|| Gdx.input.isButtonPressed(buttonLeft)*/) && grounded  ) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;

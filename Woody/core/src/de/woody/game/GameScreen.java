@@ -29,6 +29,8 @@ public class GameScreen implements Screen {
 	private final int level;
 	private int checkpoint;
 
+	private float frame = 0;
+
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
 
@@ -69,12 +71,14 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// checks input and collision then moves the player
-		player.move(delta);
 
+		player.move(delta);
 		checkGameInput();
 
 		// have the camera follow the character, x-axis only
-		camera.position.x = player.position.x;
+		if(!(player.position.x < game.xTiles/2))
+			camera.position.x = player.position.x;
+		//camera.position.y = player.position.y + game.yTiles/2 - 1;
 		camera.update();
 
 		// set the renderer view based on what the camera sees and render it
@@ -146,7 +150,7 @@ public class GameScreen implements Screen {
 		}
 		debugRenderer.end();
 	}
-	
+
 	private void checkGameInput() {
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debug = !debug;

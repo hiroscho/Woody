@@ -16,13 +16,13 @@ public class WoodyGame extends Game {
 	public final int xTiles = 20;
 
 	/** number of shown tiles on the y-Axis **/
-	public final int yTiles = 15;
+	public final int yTiles = 12;
 
 	/** name of the collision layer **/
 	public final String collisionLayer = "Collidable Tiles";
 
 	/** gravity constant **/
-	public static final float GRAVITY = -2.5f;
+	public static final float GRAVITY = -0.5f;
 
 	@Override
 	public void create() {

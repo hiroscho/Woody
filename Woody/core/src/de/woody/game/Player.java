@@ -13,7 +13,7 @@ public class Player {
 	public static float HEIGHT;
 
 	public static float MAX_VELOCITY = 10f;
-	public static float JUMP_VELOCITY = 40f;
+	public static float JUMP_VELOCITY = 15f;
 
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;
@@ -31,6 +31,8 @@ public class Player {
 	public boolean grounded = false;
 
 	public Texture texture;
+	
+	
 
 	/**
 	 * Check for input and set the velocity, check for collisions and finally
@@ -46,7 +48,7 @@ public class Player {
 		if (delta > 0.1f)
 			delta = 0.1f;
 
-		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE)|| Gdx.input.isKeyPressed(Keys.UP)) && grounded  ) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
@@ -78,7 +80,7 @@ public class Player {
 		// apply gravity if player isn't standing or grounded
 		if (!(state == State.Standing) || !grounded)
 			velocity.add(0, WoodyGame.GRAVITY);
-
+		
 		// scale to frame velocity
 		velocity.scl(delta);
 

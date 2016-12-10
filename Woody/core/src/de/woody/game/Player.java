@@ -33,7 +33,6 @@ public class Player {
 	public Texture texture;
 	
 	
-
 	/**
 	 * Check for input and set the velocity, check for collisions and finally
 	 * move the player.

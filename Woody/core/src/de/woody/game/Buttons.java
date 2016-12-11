@@ -21,21 +21,25 @@ public class Buttons extends WoodyGame
 {
    Viewport viewport;
    Stage stage;
-   boolean jumpPressed, attackPressed, leftPressed, rightPressed;
+   static boolean jumpPressed;
+   static boolean attackPressed;
+   static boolean leftPressed;
+static boolean rightPressed;
    OrthographicCamera cam;
+   int sizeVariable = 90;
    
    public Buttons(){
        cam = new OrthographicCamera();
-       viewport = new FitViewport(800, 480, cam);
+       viewport = new FitViewport(1280, 768, cam);
        stage = new Stage(viewport);
        Gdx.input.setInputProcessor(stage);
        
        Table table = new Table();
        table.left().bottom();
        
-       Image upImg = new Image(new Texture("textures/ButtonJump.png"));
-       upImg.setSize(50, 50);
-       upImg.addListener(new InputListener(){
+       Image jumpImg = new Image(new Texture("textures/ButtonJump.png"));
+       jumpImg.setSize(sizeVariable, sizeVariable);
+       jumpImg.addListener(new InputListener(){
            @Override
            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
                jumpPressed = true;
@@ -49,8 +53,8 @@ public class Buttons extends WoodyGame
        });
        
        Image rightImg = new Image(new Texture("textures/ButtonRight.png"));
-       upImg.setSize(50, 50);
-       upImg.addListener(new InputListener(){
+       rightImg.setSize(sizeVariable, sizeVariable);
+       rightImg.addListener(new InputListener(){
            @Override
            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
                rightPressed = true;
@@ -65,8 +69,8 @@ public class Buttons extends WoodyGame
        });
        
        Image leftImg = new Image(new Texture("textures/ButtonLeft.png"));
-       upImg.setSize(50, 50);
-       upImg.addListener(new InputListener(){
+       leftImg.setSize(sizeVariable, sizeVariable);
+       leftImg.addListener(new InputListener(){
            @Override
            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
                leftPressed = true;
@@ -79,18 +83,42 @@ public class Buttons extends WoodyGame
            }
        });
        
-       Image downImg = new Image(new Texture("textures/ButtonFight.png"));
+       Image attackImg = new Image(new Texture("textures/ButtonFight.png"));
+       attackImg.setSize(sizeVariable, sizeVariable);
+       attackImg.addListener(new InputListener(){
+           @Override
+           public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+               attackPressed = true;
+               return true;
+           }
+           
+           @Override
+           public void touchUp(InputEvent event, float x, float y, int pointer, int button){
+               attackPressed = false;
+           }
+       });
        
+//       table.add(jumpImg).size(jumpImg.getWidth(), jumpImg.getHeight());
+//       table.row().pad(5,5,5,5);
+//       table.add(leftImg).size(leftImg.getWidth(), leftImg.getHeight());
+//       table.add(rightImg).size(rightImg.getWidth(), rightImg.getHeight());
+//       table.row().padBottom(5);
+//       table.add(attackImg).size(attackImg.getWidth(), attackImg.getHeight());
+
        table.add();
-       table.add(upImg).size(upImg.getWidth(), upImg.getHeight());
+       table.add(jumpImg).size(jumpImg.getWidth(), jumpImg.getHeight());
        table.add();
+       
        table.row().pad(5,5,5,5);
+       
        table.add(leftImg).size(leftImg.getWidth(), leftImg.getHeight());
        table.add();
        table.add(rightImg).size(rightImg.getWidth(), rightImg.getHeight());
+       
        table.row().padBottom(5);
+       
        table.add();
-       table.add(downImg).size(downImg.getWidth(), downImg.getHeight());
+       table.add(attackImg).size(attackImg.getWidth(), attackImg.getHeight());
        table.add();
        
        stage.addActor(table);

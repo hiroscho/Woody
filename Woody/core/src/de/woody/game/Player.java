@@ -47,20 +47,20 @@ public class Player {
 		if (delta > 0.1f)
 			delta = 0.1f;
 
-		if ((Gdx.input.isKeyPressed(Keys.SPACE)|| Gdx.input.isKeyPressed(Keys.UP) /*|| Gdx.input.isButtonPressed(buttonLeft)*/) && grounded  ) {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE)|| Gdx.input.isKeyPressed(Keys.UP) || Buttons.jumpPressed) && grounded  ) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
+		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || Buttons.rightPressed) {
 			velocity.x = MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
 			facesRight = true;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
+		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)|| Buttons.leftPressed) {
 			velocity.x = -MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;

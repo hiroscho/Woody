@@ -1,6 +1,7 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.math.Vector2;
 
 public class WoodyGame extends Game {
 	public static WoodyGame game;
@@ -24,21 +25,21 @@ public class WoodyGame extends Game {
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
 
-	Buttons controller;
+
 	
 	@Override
 	public void create() {
+		
 		this.setScreen(new GameScreen(this, 1));
-		controller = new Buttons();
 	}
 
 	@Override
 	public void render() {
 		super.render();
-		controller.draw();
 	}
 
 	@Override
 	public void dispose() {
 	}
+
 }

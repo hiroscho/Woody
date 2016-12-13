@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
 public class Player {
 	public static float WIDTH;
@@ -31,41 +32,72 @@ public class Player {
 	public boolean grounded = false;
 
 	public Texture texture;
-	
-	
-	/**
-	 * Check for input and set the velocity, check for collisions and finally
-	 * move the player.
-	 * 
-	 * @param delta
-	 *            frames per second
-	 */
-	public void move(float delta) {
-		if (delta == 0)
-			return;
-		
-		if (delta > 0.1f)
-			delta = 0.1f;
 
-		if ((Gdx.input.isKeyPressed(Keys.SPACE)|| Gdx.input.isKeyPressed(Keys.UP) || Buttons.jumpPressed) && grounded  ) {
+	/**
+	 * Sets the velocity depending on input.
+	 * 
+	 * @param button
+	 *            the detected pressedButton
+	 */
+	public void setInputVelocity(Button button) {
+
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || button.getName().equals("Jump"))
+				&& grounded) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || Buttons.rightPressed) {
+		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || button.getName().equals("Right")) {
 			velocity.x = MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
 			facesRight = true;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)|| Buttons.leftPressed) {
+		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || button.getName().equals("Left")) {
 			velocity.x = -MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
 			facesRight = false;
 		}
+	}
+
+	/**
+	 * Intended for testing! Keyboard input only! Sets the velocity depending on
+	 * input.
+	 */
+	public void setKeyboardVelocity() {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)) && grounded) {
+			velocity.y = JUMP_VELOCITY;
+			state = State.Jumping;
+			grounded = false;
+		}
+
+		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
+			velocity.x = MAX_VELOCITY;
+			if (grounded)
+				state = State.Walking;
+			facesRight = true;
+		}
+
+		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
+			velocity.x = -MAX_VELOCITY;
+			if (grounded)
+				state = State.Walking;
+			facesRight = false;
+		}
+	}
+
+	/**
+	 * Add gravity, move player, check for collisions.
+	 * 
+	 * @param delta
+	 *            time since the last frame
+	 */
+	public void move(float delta) {
+		if (delta > 0.1f)
+			delta = 0.1f;
 
 		// clamp velocity to max, x-axis only
 		velocity.x = MathUtils.clamp(velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
@@ -79,7 +111,7 @@ public class Player {
 		// apply gravity if player isn't standing or grounded
 		if (!(state == State.Standing) || !grounded)
 			velocity.add(0, WoodyGame.GRAVITY);
-		
+
 		// scale to frame velocity
 		velocity.scl(delta);
 
@@ -89,7 +121,6 @@ public class Player {
 		velocity.scl(1 / delta);
 
 		velocity.x *= DAMPING;
-
 	}
 
 	/**

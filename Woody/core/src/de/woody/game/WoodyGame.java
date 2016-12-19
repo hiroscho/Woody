@@ -22,6 +22,7 @@ public class WoodyGame extends Game {
 	public final String collisionLayer = "Collidable Tiles";
 
 	/** gravity constant **/
+
 	public static final float GRAVITY = -2.5f;
 
 	@Override

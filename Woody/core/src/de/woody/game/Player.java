@@ -12,20 +12,23 @@ public class Player {
 	public static float WIDTH;
 	public static float HEIGHT;
 
-	public static float MAX_VELOCITY = 10f;
-	public static float JUMP_VELOCITY = 40f;
+	public static float MAX_VELOCITY = 10f; 
+	public static float JUMP_VELOCITY = 40f; 
 
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking
+		Standing, Walking, Jumping, Attacking,
 	}
 
 	public final Vector2 position = new Vector2();
 	public final Vector2 velocity = new Vector2();
 	public State state = State.Standing;
 	public float stateTime = 0;
+
+	public long lastJump = 0;
+	public boolean freeJump;
 
 	public boolean facesRight = true;
 	public boolean grounded = false;
@@ -46,12 +49,34 @@ public class Player {
 		if (delta > 0.1f)
 			delta = 0.1f;
 
+		
+		
+		// Jump 
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
+			freeJump = true;
+			lastJump = System.currentTimeMillis(); //long Wert der aktuellen Systemzeit
+			
 		}
 
+		// double Jump
+		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && (System.currentTimeMillis() > (lastJump + 350)) && (freeJump == true)) {
+		velocity.y = JUMP_VELOCITY;
+		state = State.Jumping;
+		grounded = false;
+		freeJump = false;
+		}
+		
+		
+//		fly function
+//		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded) {
+//		velocity.y = JUMP_VELOCITY;
+//		state = State.Jumping;
+//		grounded = false;
+//		}
+		
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
 			velocity.x = MAX_VELOCITY;
 			if (grounded)
@@ -65,6 +90,8 @@ public class Player {
 				state = State.Walking;
 			facesRight = false;
 		}
+		
+
 
 		// clamp velocity to max, x-axis only
 		velocity.x = MathUtils.clamp(velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
@@ -72,6 +99,7 @@ public class Player {
 		// velocity is < 1, set it to 0
 		if (Math.abs(velocity.x) < 1) {
 			velocity.x = 0;
+			freeJump = false;
 			state = State.Standing;
 		}
 

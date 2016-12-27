@@ -18,10 +18,6 @@ public class Buttons extends WoodyGame {
 	private TextureRegionDrawable buttonTexRegionDrawable;
 	private ImageButton button;
 	private Viewport viewport;
-	private boolean jumpPressed;
-	private boolean attackPressed;
-	private boolean leftPressed;
-	private boolean rightPressed;
 	private Array<Button> allButtons = new Array<Button>();
 
 	public Buttons() {

@@ -28,6 +28,9 @@ public class Player {
 	public State state = State.Standing;
 	public float stateTime = 0;
 
+	public long lastJump = 0;
+	public boolean freeJump;
+
 	public boolean facesRight = true;
 	public boolean grounded = false;
 
@@ -73,8 +76,27 @@ public class Player {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
+			freeJump = true;
+			lastJump = System.currentTimeMillis(); //long Wert der aktuellen Systemzeit
+			
 		}
 
+		// double Jump
+		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && (System.currentTimeMillis() > (lastJump + 350)) && (freeJump == true)) {
+		velocity.y = JUMP_VELOCITY;
+		state = State.Jumping;
+		grounded = false;
+		freeJump = false;
+		}
+		
+		
+//		fly function
+//		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded) {
+//		velocity.y = JUMP_VELOCITY;
+//		state = State.Jumping;
+//		grounded = false;
+//		}
+		
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
 			velocity.x = MAX_VELOCITY;
 			if (grounded)
@@ -106,6 +128,7 @@ public class Player {
 		// velocity is < 1, set it to 0
 		if (Math.abs(velocity.x) < 1) {
 			velocity.x = 0;
+			freeJump = false;
 			if (state != State.Jumping)
 				state = State.Standing;
 		}
@@ -215,6 +238,7 @@ public class Player {
 						position.y = tile.y + tile.height;
 						// set grounded to true to allow jumping
 						grounded = true;
+						freeJump = true;
 						if (velocity.x != 0)
 							state = State.Walking;
 						else

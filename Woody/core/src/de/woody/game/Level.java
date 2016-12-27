@@ -47,7 +47,7 @@ public class Level {
 	}
 
 	/**
-	 * Fills tiles with all the tiles of the collisionLayer between the start
+	 * Fills "tiles"-Array with all the tiles of the collisionLayer between the start
 	 * and end point.
 	 * 
 	 * @param startX

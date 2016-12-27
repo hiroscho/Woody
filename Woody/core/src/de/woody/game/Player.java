@@ -10,9 +10,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
 public class Player {
+	/** width of the player texture scaled to world coordinates **/
 	public static float WIDTH;
+	/** height of the player texture scaled to world coordinates **/
 	public static float HEIGHT;
 
+	/** maximum velocity's (maybe add a maximum fall velocity?) **/
 	public static float MAX_VELOCITY = 10f;
 	public static float JUMP_VELOCITY = 15f;
 
@@ -23,18 +26,51 @@ public class Player {
 		Standing, Walking, Jumping, Attacking
 	}
 
+	/** player position in world coordinates **/
 	public final Vector2 position = new Vector2();
+
+	/** player velocity in world coordinates per second **/
 	public final Vector2 velocity = new Vector2();
 	public State state = State.Standing;
-	public float stateTime = 0;
+	// public float stateTime = 0;
 
+	/** time since last jump **/
 	public long lastJump = 0;
-	public boolean freeJump;
 
-	public boolean facesRight = true;
+	/** is player touching the ground **/
 	public boolean grounded = false;
 
+	/** can player jump again **/
+	public boolean freeJump = false;
+
+	/** is player facing right **/
+	public boolean facesRight = true;
+
 	public Texture texture;
+
+	public Player() {
+		this(null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
+		System.err.println("Warning! No texture!");
+	}
+
+	public Player(Texture tex, Vector2 pos) {
+		this(tex, State.Standing, pos, 10f, 15f, 0.87f);
+	}
+
+	public Player(Texture tex, State state, Vector2 pos) {
+		this(tex, state, pos, 10f, 15f, 0.87f);
+	}
+
+	public Player(Texture tex, State state, Vector2 pos, float mVel, float mJump, float damp) {
+		texture = tex;
+		this.state = state;
+		position.set(pos);
+		MAX_VELOCITY = mVel;
+		JUMP_VELOCITY = mJump;
+		DAMPING = damp;
+		WIDTH = WoodyGame.UNIT_SCALE * texture.getWidth();
+		HEIGHT = WoodyGame.UNIT_SCALE * texture.getHeight();
+	}
 
 	/**
 	 * Sets the velocity depending on input.
@@ -77,26 +113,25 @@ public class Player {
 			state = State.Jumping;
 			grounded = false;
 			freeJump = true;
-			lastJump = System.currentTimeMillis(); //long Wert der aktuellen Systemzeit
-			
+			lastJump = System.currentTimeMillis();
 		}
 
 		// double Jump
-		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && (System.currentTimeMillis() > (lastJump + 350)) && (freeJump == true)) {
-		velocity.y = JUMP_VELOCITY;
-		state = State.Jumping;
-		grounded = false;
-		freeJump = false;
+		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && (System.currentTimeMillis() > (lastJump + 250))
+				&& freeJump) {
+			velocity.y = JUMP_VELOCITY;
+			state = State.Jumping;
+			grounded = false;
+			freeJump = false;
 		}
-		
-		
-//		fly function
-//		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded) {
-//		velocity.y = JUMP_VELOCITY;
-//		state = State.Jumping;
-//		grounded = false;
-//		}
-		
+
+		// fly function
+		// if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded) {
+		// velocity.y = JUMP_VELOCITY;
+		// state = State.Jumping;
+		// grounded = false;
+		// }
+
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
 			velocity.x = MAX_VELOCITY;
 			if (grounded)

@@ -10,7 +10,7 @@ public class WoodyGame extends Game {
 	 * 
 	 * 1/64f means 1 tile == 64px
 	 **/
-	public final float unitScale = 1 / 64f;
+	public static final float UNIT_SCALE = 1 / 64f;
 
 	/** number of shown tiles on the x-Axis **/
 	public final int xTiles = 20;

@@ -23,28 +23,37 @@ public class Buttons extends WoodyGame {
 	public Buttons() {
 		// create a new viewport for the ui
 		viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
-		
+
 		// set up a stage for the ui
 		stage = new Stage(viewport);
 
 	}
-	
+
 	public Button addButton(Texture tex, String name) {
+		return addButton(tex, name, 0, 0, 90, 90);
+	}
+
+	public Button addButton(Texture tex, String name, float xPos, float yPos) {
+		return addButton(tex, name, xPos, yPos, 90, 90);
+	}
+
+	public Button addButton(Texture tex, String name, float xPos, float yPos, float xSize, float ySize) {
 		// making an annoying drawable...
 		buttonTextureRegion = new TextureRegion(tex);
 		buttonTexRegionDrawable = new TextureRegionDrawable(buttonTextureRegion);
-		
+
 		// set the button up
-		button = new ImageButton(buttonTexRegionDrawable); 
+		button = new ImageButton(buttonTexRegionDrawable);
 		button.setName(name);
-		button.setSize(90, 90);
-		
-		//add the button to the list of all buttons
+		button.setSize(xSize, ySize);
+		button.setPosition(xPos, yPos);
+
+		// add the button to the list of all buttons
 		allButtons.add(button);
-		
+
 		// add the button to the stage to perform rendering and take input
 		stage.addActor(button);
-		
+
 		return button;
 	}
 

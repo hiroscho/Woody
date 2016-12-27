@@ -14,10 +14,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-
 
 public class GameScreen implements Screen {
 
@@ -39,29 +39,28 @@ public class GameScreen implements Screen {
 	public final Buttons controller = new Buttons();
 
 	public GameScreen(final WoodyGame game, final int level) {
-		
+
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, game.xTiles, game.yTiles);
 		camera.update();
-		
-		// kinda optional and kinda not, allows the setting of positions of UI elements in world coordinates
-		Vector3 uiPos; 
+
+		// kinda optional and kinda not, allows the setting of positions of UI
+		// elements in world coordinates
+		Vector3 uiPos;
 
 		Button button;
-		
+
 		// Create the buttons based on a texture, give them identifier names and
-		// set their screen position
-		uiPos = camera.project(new Vector3(3, 3, 0)); 
-		button = controller.addButton(new Texture("textures/ButtonJump.png"), "Jump");
-		button.setPosition(uiPos.x, uiPos.y);
-		button.setSize(64,  64);
-		
-		uiPos = camera.project(new Vector3(1.5f, 1.5f, 0)); 
-		controller.addButton(new Texture("textures/ButtonLeft.png"), "Left").setPosition(uiPos.x, uiPos.y);
-		
-		uiPos = camera.project(new Vector3(3, 1.5f, 0)); 
-		controller.addButton(new Texture("textures/ButtonRight.png"), "Right").setPosition(uiPos.x, uiPos.y);
+		// set their screen position and size
+		uiPos = camera.project(new Vector3(3, 3, 0));
+		controller.addButton(new Texture("textures/ButtonJump.png"), "Jump", uiPos.x, uiPos.y, 64, 64);
+
+		uiPos = camera.project(new Vector3(1.5f, 1.5f, 0));
+		controller.addButton(new Texture("textures/ButtonLeft.png"), "Left", uiPos.x, uiPos.y);
+
+		uiPos = camera.project(new Vector3(3, 1.5f, 0));
+		controller.addButton(new Texture("textures/ButtonRight.png"), "Right", uiPos.x, uiPos.y);
 
 		// controller.addButton(new
 		// Texture("textures/ButtonFight.png")).setName("Fight");
@@ -73,19 +72,11 @@ public class GameScreen implements Screen {
 		this.level = level;
 
 		// playable character
-		player = new Player();
-		player.texture = new Texture("textures/Woddy.png");
-
-		// convert WIDTH and HEIGHT to tiles
-		Player.WIDTH = game.unitScale * player.texture.getWidth();
-		Player.HEIGHT = game.unitScale * player.texture.getHeight();
-
-		// set players start position
-		player.position.set(Level.getCurrentSpawn(level, checkpoint));
+		player = new Player(new Texture("textures/Woddy.png"), Level.getCurrentSpawn(level, checkpoint));
 
 		// load the corresponding map, set the unit scale
 		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, game.unitScale);
+		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
 		Level.layer = (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
 
 		debugRenderer = new ShapeRenderer();
@@ -109,20 +100,14 @@ public class GameScreen implements Screen {
 			}
 			player.setKeyboardVelocity();
 
-			
 			// checks collision then moves the player
 			player.move(delta);
 
 			// currently only for debug mode
 			checkGameInput();
 
-			// have the camera follow the character, x-axis only
-			if (!(player.position.x < game.xTiles / 2))
-				camera.position.x = player.position.x;
-			else
-				camera.position.x = game.xTiles / 2;
-
-			camera.update();
+			// set the camera borders
+			setCamera().update();
 
 			// set the renderer view based on what the camera sees and render it
 			renderer.setView(camera);
@@ -140,6 +125,26 @@ public class GameScreen implements Screen {
 			if (debug)
 				renderDebug();
 		}
+	}
+
+	private OrthographicCamera setCamera() {
+		Vector2 vec = cameraBottomLeft();
+
+		if (player.position.x < vec.x + 3)
+			camera.position.x += player.position.x - (vec.x + 3);
+
+		if (player.position.x > vec.x + game.xTiles / 2)
+			camera.position.x = player.position.x;
+
+		// dont show the area left from the start
+		if (player.position.x < 3)
+			camera.position.x = game.xTiles / 2;
+
+		return camera;
+	}
+
+	private Vector2 cameraBottomLeft() {
+		return new Vector2(camera.position.x - (game.xTiles / 2), camera.position.y - (game.yTiles / 2));
 	}
 
 	@Override

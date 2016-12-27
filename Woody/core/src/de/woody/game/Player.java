@@ -71,7 +71,7 @@ public class Player {
 		WIDTH = WoodyGame.UNIT_SCALE * texture.getWidth();
 		HEIGHT = WoodyGame.UNIT_SCALE * texture.getHeight();
 	}
-
+	
 	/**
 	 * Sets the velocity depending on input.
 	 * 

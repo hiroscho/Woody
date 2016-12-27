@@ -41,8 +41,8 @@ public class Player {
 	 */
 	public void setInputVelocity(Button button) {
 
-		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || button.getName().equals("Jump"))
-				&& grounded) {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || button.getName().equals("Jump")
+				|| Gdx.input.isKeyPressed(Keys.W)) && grounded) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
@@ -68,7 +68,8 @@ public class Player {
 	 * input.
 	 */
 	public void setKeyboardVelocity() {
-		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)) && grounded) {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W))
+				&& grounded) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
@@ -98,14 +99,15 @@ public class Player {
 	public void move(float delta) {
 		if (delta > 0.1f)
 			delta = 0.1f;
-		
+
 		// clamp velocity to max, x-axis only
 		velocity.x = MathUtils.clamp(velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
 
 		// velocity is < 1, set it to 0
 		if (Math.abs(velocity.x) < 1) {
 			velocity.x = 0;
-			if(state != State.Jumping) state = State.Standing;
+			if (state != State.Jumping)
+				state = State.Standing;
 		}
 
 		// apply gravity if player isn't standing or grounded
@@ -213,7 +215,7 @@ public class Player {
 						position.y = tile.y + tile.height;
 						// set grounded to true to allow jumping
 						grounded = true;
-						if(velocity.x != 0)
+						if (velocity.x != 0)
 							state = State.Walking;
 						else
 							state = State.Standing;

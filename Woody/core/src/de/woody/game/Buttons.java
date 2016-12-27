@@ -41,6 +41,7 @@ public class Buttons extends WoodyGame {
 		// set the button up
 		button = new ImageButton(buttonTexRegionDrawable); 
 		button.setName(name);
+		button.setSize(90, 90);
 		
 		//add the button to the list of all buttons
 		allButtons.add(button);

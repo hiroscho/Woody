@@ -55,26 +55,6 @@ public class Buttons extends WoodyGame {
 		return stage;
 	}
 
-	public void draw() {
-		stage.draw();
-	}
-
-	public boolean isjumpPressed() {
-		return jumpPressed;
-	}
-
-	public boolean isLeftPressed() {
-		return leftPressed;
-	}
-
-	public boolean isRightPressed() {
-		return rightPressed;
-	}
-
-	public boolean isattackPressed() {
-		return attackPressed;
-	}
-
 	public void resize(int width, int height) {
 		viewport.update(width, height);
 	}

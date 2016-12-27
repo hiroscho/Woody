@@ -58,10 +58,14 @@ public class GameScreen implements Screen {
 		// kinda optional and kinda not, allows the setting of positions of UI elements in world coordinates
 		Vector3 uiPos; 
 
+		Button button;
+		
 		// Create the buttons based on a texture, give them identifier names and
 		// set their screen position
 		uiPos = camera.project(new Vector3(3, 3, 0)); 
-		controller.addButton(new Texture("textures/ButtonJump.png"), "Jump").setPosition(uiPos.x, uiPos.y);
+		button = controller.addButton(new Texture("textures/ButtonJump.png"), "Jump");
+		button.setPosition(uiPos.x, uiPos.y);
+		button.setSize(64,  64);
 		
 		uiPos = camera.project(new Vector3(1.5f, 1.5f, 0)); 
 		controller.addButton(new Texture("textures/ButtonLeft.png"), "Left").setPosition(uiPos.x, uiPos.y);
@@ -115,6 +119,7 @@ public class GameScreen implements Screen {
 			}
 			player.setKeyboardVelocity();
 
+			
 			// checks collision then moves the player
 			player.move(delta);
 
@@ -149,7 +154,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		controller.getStage().getViewport().update(width, height, true);
+		controller.resize(width, height);
 	}
 
 	@Override

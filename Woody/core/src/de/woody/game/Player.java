@@ -98,19 +98,22 @@ public class Player {
 	public void move(float delta) {
 		if (delta > 0.1f)
 			delta = 0.1f;
-
+		
 		// clamp velocity to max, x-axis only
 		velocity.x = MathUtils.clamp(velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
 
 		// velocity is < 1, set it to 0
 		if (Math.abs(velocity.x) < 1) {
 			velocity.x = 0;
-			state = State.Standing;
+			if(state != State.Jumping) state = State.Standing;
 		}
 
 		// apply gravity if player isn't standing or grounded
-		if (!(state == State.Standing) || !grounded)
+		if (!(state == State.Standing) || !grounded) {
 			velocity.add(0, WoodyGame.GRAVITY);
+			grounded = false;
+			state = State.Jumping;
+		}
 
 		// scale to frame velocity
 		velocity.scl(delta);
@@ -210,6 +213,10 @@ public class Player {
 						position.y = tile.y + tile.height;
 						// set grounded to true to allow jumping
 						grounded = true;
+						if(velocity.x != 0)
+							state = State.Walking;
+						else
+							state = State.Standing;
 					}
 					velocity.y = 0;
 					break;

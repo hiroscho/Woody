@@ -32,7 +32,7 @@ public class Player {
 	/** player velocity in world coordinates per second **/
 	public final Vector2 velocity = new Vector2();
 	public State state = State.Standing;
-	// public float stateTime = 0;
+	public float stateTime = 0;
 
 	/** time since last jump **/
 	public long lastJump = 0;
@@ -295,15 +295,17 @@ public class Player {
 	 *            the active GameScreen
 	 */
 	public void render(final GameScreen screen) {
-		Batch batch = screen.getRenderer().getBatch();
-
-		batch.begin();
-		if (facesRight) {
-			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
-		} else {
-			batch.draw(texture, position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-		}
-		batch.end();
+//		Batch batch = screen.getRenderer().getBatch();
+//
+//		batch.begin();
+//		if (facesRight && (state == State.Standing)) {
+//			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
+//		} 
+//
+//		else {
+//			batch.draw(texture, position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+//		}
+//		batch.end();
 	}
 
 }

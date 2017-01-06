@@ -15,7 +15,8 @@ public class Animations extends Player{
 	public static State previousState;
 	public static Animation woodyRun;
 	public static TextureRegion woodyStand;
-	public static TextureRegion  woodyJump;
+	public static TextureRegion woodyJump;
+	public static TextureRegion woodyFall;
 	public static Texture sheetRun;
 	
 	public static void cycleAnimations()
@@ -30,9 +31,9 @@ public class Animations extends Player{
 		woodyRun = new Animation(0.33f, frames);
 		
 		woodyJump = new TextureRegion(sheetRun, 256, 0, 64, 128);					//frame 5 == jumping pink
+		woodyFall = new TextureRegion(sheetRun, 320, 0, 64, 128);
 		
 		woodyStand = new TextureRegion(sheetRun, 0, 0, 64, 128);					//frame 1 == standing 
-		//To do: animations for jumping/attacking etc...
 	}
 	
 	public static TextureRegion getFrame(float dt)
@@ -49,6 +50,10 @@ public class Animations extends Player{
 			
 		case Jumping:
 			region = woodyJump;
+			break;
+			
+		case Falling:
+			region = woodyFall;
 			break;
 			
 			default:

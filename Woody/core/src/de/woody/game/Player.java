@@ -27,7 +27,7 @@ public class Player {
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking
+		Standing, Walking, Jumping, Attacking, Falling
 	}
 
 	/** player position in world coordinates **/
@@ -176,9 +176,13 @@ public class Player {
 		if (!(state == State.Standing) || !grounded) {
 			velocity.add(0, WoodyGame.GRAVITY);
 			grounded = false;
-			state = State.Jumping;
+//			state = State.Jumping;
 		}
 
+		if (!(state == State.Jumping) && !grounded && (velocity.y < 0)) {
+			state = State.Falling;
+		}
+		
 		// scale to frame velocity
 		velocity.scl(delta);
 
@@ -313,6 +317,10 @@ public class Player {
 		else if (facesRight && (state == State.Jumping))
 			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
 		else if (!facesRight && (state == State.Jumping))
+			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+		else if (facesRight && (state == State.Falling))
+			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+		else if (!facesRight && (state == State.Falling))
 			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
 		else
 			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);

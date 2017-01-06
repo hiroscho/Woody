@@ -300,7 +300,6 @@ public class Player {
 	 */
 	public void render(final GameScreen screen) {
 		Batch batch = screen.getRenderer().getBatch();
-		stateTime += Gdx.graphics.getDeltaTime();
 		
 		batch.begin();
 		if (facesRight && (state == State.Standing))

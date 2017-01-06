@@ -15,6 +15,7 @@ public class Animations extends Player{
 	public static State previousState;
 	public static Animation woodyRun;
 	public static TextureRegion woodyStand;
+	public static TextureRegion  woodyJump;
 	public static Texture sheetRun;
 	
 	public static void cycleAnimations()
@@ -24,11 +25,13 @@ public class Animations extends Player{
 		previousState = Player.state;
 		
 		Array<TextureRegion> frames = new Array<TextureRegion>();
-		for(int i = 0; i < 7; i++)
+		for(int i = 1; i < 4; i++)													//frame 2-4 == walking weiß-grün-blau
 			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 128));
-		woodyRun = new Animation(0.2f, frames);
+		woodyRun = new Animation(0.33f, frames);
 		
-		woodyStand = new TextureRegion(sheetRun, 0, 0, 64, 128);
+		woodyJump = new TextureRegion(sheetRun, 256, 0, 64, 128);					//frame 5 == jumping pink
+		
+		woodyStand = new TextureRegion(sheetRun, 0, 0, 64, 128);					//frame 1 == standing 
 		//To do: animations for jumping/attacking etc...
 	}
 	
@@ -44,17 +47,18 @@ public class Animations extends Player{
 			region = woodyRun.getKeyFrame(stateTime);
 			break;
 			
-//		extra cases für später:
-//		case Jumping:
-//			region =woodyJump.getKeyFrame(stateTime);
-//			break;
+		case Jumping:
+			region = woodyJump;
+			break;
 			
 			default:
 				region = woodyStand;
 		}
 		
-		stateTime = currentState == previousState ? stateTime + dt : 0;
+		stateTime = currentState == previousState ? stateTime + Gdx.graphics.getDeltaTime() : 0;
 		previousState = currentState;
+		if (currentState == state.Walking && (stateTime >= 1))
+			stateTime = 0;
 		return region;	
 	}	
 	

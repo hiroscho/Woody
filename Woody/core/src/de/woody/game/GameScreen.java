@@ -53,13 +53,13 @@ public class GameScreen implements Screen {
 
 		// Create the buttons based on a texture, give them identifier names and
 		// set their screen position and size
-		uiPos = camera.project(new Vector3(3, 3, 0));
+		uiPos = camera.project(new Vector3(18f, 0.25f, 0));
 		controller.addButton(new Texture("textures/ButtonJump.png"), "Jump", uiPos.x, uiPos.y, 64, 64);
 
-		uiPos = camera.project(new Vector3(1.5f, 1.5f, 0));
+		uiPos = camera.project(new Vector3(0.1f, 0.25f, 0));
 		controller.addButton(new Texture("textures/ButtonLeft.png"), "Left", uiPos.x, uiPos.y);
 
-		uiPos = camera.project(new Vector3(3, 1.5f, 0));
+		uiPos = camera.project(new Vector3(3f, 0.25f, 0));
 		controller.addButton(new Texture("textures/ButtonRight.png"), "Right", uiPos.x, uiPos.y);
 
 		// controller.addButton(new

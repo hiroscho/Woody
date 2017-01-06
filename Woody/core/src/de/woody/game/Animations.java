@@ -11,10 +11,10 @@ import de.woody.game.Player.State;
 
 public class Animations extends Player{
 
-	public State currentState;
-	public State previousState;
-	public Animation woodyRun;
-	public TextureRegion woodyStand;
+	public static State currentState;
+	public static State previousState;
+	public static Animation woodyRun;
+	public static TextureRegion woodyStand;
 	public Texture sheetRun;
 	
 	public void cycleAnimations()
@@ -33,7 +33,7 @@ public class Animations extends Player{
 		
 	}
 	
-	public TextureRegion getFrame(float dt)
+	public static TextureRegion getFrame(float dt)
 	{
 		currentState = state;
 		TextureRegion region;
@@ -41,7 +41,7 @@ public class Animations extends Player{
 		switch(currentState)
 		{
 		case Walking:
-			region =woodyRun.getKeyFrame(stateTime);
+			region = woodyRun.getKeyFrame(stateTime);
 			
 //		extra cases für später:
 //		case Jumping:
@@ -53,27 +53,31 @@ public class Animations extends Player{
 		
 		stateTime = currentState == previousState ? stateTime + dt : 0;
 		previousState = currentState;
-		return region;		
+		return region;	
 	}
 	
-	@Override
-	public void render(final GameScreen screen)
-	{
-		Batch batch = screen.getRenderer().getBatch();
-
-		batch.begin();
-		if (facesRight && (state == State.Standing)) {
-			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
-		} 
-		else if(facesRight && (state == State.Walking))
-			batch.draw(getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
-		else if(!facesRight && (state == State.Walking))
-			batch.draw(getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
-		else {
-			batch.draw(texture, position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-		}
-		batch.end();
-
-	}
+//	@Override
+//	public void render(final GameScreen screen)
+//	{
+//	Batch batch = screen.getRenderer().getBatch();
+//
+//	batch.begin();
+//	if (facesRight && (state == State.Standing))
+//		batch.draw(getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+//	else if (!facesRight && (state == State.Standing))
+//		batch.draw(getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+//	else if (facesRight && (state == State.Walking))
+//		batch.draw(getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+//	else if (!facesRight && (state == State.Walking))
+//		batch.draw(getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+//	else if (facesRight && (state == State.Jumping))
+//		batch.draw(getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+//	else if (!facesRight && (state == State.Jumping))
+//		batch.draw(texture, position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+//	else
+//		batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
+//	batch.end();
+//
+//	}
 	
 }

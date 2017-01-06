@@ -20,7 +20,7 @@ public class Player {
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking
+		Standing, Walking, Jumping, Attacking, Dead
 	}
 
 	public final Vector2 position = new Vector2();
@@ -238,4 +238,65 @@ public class Player {
 		batch.end();
 	}
 
+	//Lifesystem @Sami
+	
+	//ÄNDERUNG
+	private String test;
+	
+	private int health = 3;		//if health = 0 -> dead
+	private boolean status = true;		// is true until falls down (or gets hit 3 times by enemies (in future))
+	
+	/**
+	 * 
+	 * @param health
+	 * @param status
+	 */
+	public Player(int health, boolean status){
+		this.health = health;		
+		this.status = status;
+	}
+	
+	//getters & setters
+	
+	public Player() {					//for Gamescreen Player
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public int getHealth(){
+		return health;
+	}
+	/**
+	 * 
+	 * @param updHealth
+	 */
+	public void setHealth(int updHealth){
+		health = updHealth;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isPlayerAlive(){
+		return status;
+	}
+	/**
+	 * 
+	 */
+	public void setPlayerDead(){
+		status = false;
+	}
+	
+	//is alive or dead method
+	
+	public void isAliveorNot(){
+		if(position.y < 0){
+			this.setPlayerDead();
+			System.out.println("PLAYER IS DEAD");
+		}
+	}
+	
+	
+	
 }

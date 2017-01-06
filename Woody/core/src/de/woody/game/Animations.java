@@ -21,7 +21,7 @@ public class Animations extends Player{
 	{
 		sheetRun = new Texture(Gdx.files.internal("textures/loadingsheet.png"));
 		currentState = Player.state;
-		previousState = State.Standing;
+		previousState = Player.state;
 		
 		Array<TextureRegion> frames = new Array<TextureRegion>();
 		for(int i = 0; i < 7; i++)
@@ -57,4 +57,10 @@ public class Animations extends Player{
 		previousState = currentState;
 		return region;	
 	}	
+	
+	public void dispose()
+	{
+		sheetRun.dispose();
+		
+	}
 }

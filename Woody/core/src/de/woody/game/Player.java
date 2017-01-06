@@ -300,7 +300,8 @@ public class Player {
 	 */
 	public void render(final GameScreen screen) {
 		Batch batch = screen.getRenderer().getBatch();
-
+		stateTime += Gdx.graphics.getDeltaTime();
+		
 		batch.begin();
 		if (facesRight && (state == State.Standing))
 			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
@@ -313,7 +314,7 @@ public class Player {
 		else if (facesRight && (state == State.Jumping))
 			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
 		else if (!facesRight && (state == State.Jumping))
-			batch.draw(texture, position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
 		else
 			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
 		batch.end();

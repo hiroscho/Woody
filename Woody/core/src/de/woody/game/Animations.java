@@ -26,14 +26,14 @@ public class Animations extends Player{
 		previousState = Player.state;
 		
 		Array<TextureRegion> frames = new Array<TextureRegion>();
-		for(int i = 1; i < 4; i++)													//frame 2-4 == walking weiß-grün-blau
-			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 128));
-		woodyRun = new Animation(0.33f, frames);
+		for(int i = 1; i < 5; i++)													//frame 2-4 == walking weiß-grün-blau
+			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 94));
+		woodyRun = new Animation(0.25f, frames);
 		
-		woodyJump = new TextureRegion(sheetRun, 256, 0, 64, 128);					//frame 5 == jumping pink
-		woodyFall = new TextureRegion(sheetRun, 320, 0, 64, 128);
+		woodyJump = new TextureRegion(sheetRun, 5*64, 0, 64, 94);					//frame 5 == jumping pink
+		woodyFall = new TextureRegion(sheetRun, 6*64, 0, 64, 94);
 		
-		woodyStand = new TextureRegion(sheetRun, 0, 0, 64, 128);					//frame 1 == standing 
+		woodyStand = new TextureRegion(sheetRun, 0, 0, 64, 94);					//frame 1 == standing 
 	}
 	
 	public static TextureRegion getFrame(float dt)

@@ -27,6 +27,7 @@ public class WoodyGame extends Game {
 	@Override
 	public void create() {
 		
+//		this.setScreen(new GameoverScreen(this));
 		this.setScreen(new GameScreen(this, 1));
 	}
 

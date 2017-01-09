@@ -124,6 +124,8 @@ public class GameScreen implements Screen {
 			// render debug rectangles
 			if (debug)
 				renderDebug();
+			// is player alive or not
+			player.isAliveorNot();
 		}
 	}
 

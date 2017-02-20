@@ -3,11 +3,15 @@ package de.woody.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+
+import de.woody.game.Player.State;
 
 public class Player {
 	/** width of the player texture scaled to world coordinates **/
@@ -23,7 +27,7 @@ public class Player {
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking
+		Standing, Walking, Jumping, Attacking, Falling
 	}
 
 	/** player position in world coordinates **/
@@ -31,8 +35,8 @@ public class Player {
 
 	/** player velocity in world coordinates per second **/
 	public final Vector2 velocity = new Vector2();
-	public State state = State.Standing;
-	// public float stateTime = 0;
+	public static State state = State.Standing;
+	public static float stateTime = 0;
 
 	/** time since last jump **/
 	public long lastJump = 0;
@@ -50,7 +54,7 @@ public class Player {
 	private boolean isAlive = true;
 
 	public Texture texture;
-
+	
 	public Player() {
 		this(null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
 		System.err.println("Warning! No texture!");
@@ -175,9 +179,13 @@ public class Player {
 		if (!(state == State.Standing) || !grounded) {
 			velocity.add(0, WoodyGame.GRAVITY);
 			grounded = false;
-			state = State.Jumping;
+//			state = State.Jumping;
 		}
 
+		if (!grounded && (velocity.y < 0)) {
+			state = State.Falling;
+		}
+		
 		// scale to frame velocity
 		velocity.scl(delta);
 
@@ -292,20 +300,33 @@ public class Player {
 	}
 
 	/**
-	 * Render the player //TODO: depending on state.
+	 * Render the player depending on state.
 	 * 
 	 * @param screen
 	 *            the active GameScreen
 	 */
 	public void render(final GameScreen screen) {
 		Batch batch = screen.getRenderer().getBatch();
-
+		
 		batch.begin();
-		if (facesRight) {
+		if (facesRight && (state == State.Standing))
+			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+		else if (!facesRight && (state == State.Standing))
+			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+		else if (facesRight && (state == State.Walking))
+			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+		else if (!facesRight && (state == State.Walking))
+			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+		else if (facesRight && (state == State.Jumping))
+			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+		else if (!facesRight && (state == State.Jumping))
+			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+		else if (facesRight && (state == State.Falling))
+			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+		else if (!facesRight && (state == State.Falling))
+			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+		else
 			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
-		} else {
-			batch.draw(texture, position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-		}
 		batch.end();
 	}
 

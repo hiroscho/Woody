@@ -97,9 +97,10 @@ public class GameScreen implements Screen {
 			// checks input, sets velocity
 			if (pressedButton != null) {
 				player.setInputVelocity(pressedButton);
+			} else {
+				player.setKeyboardVelocity();
 			}
-			player.setKeyboardVelocity();
-
+			
 			// checks collision then moves the player
 			player.move(delta);
 
@@ -112,6 +113,12 @@ public class GameScreen implements Screen {
 			// set the renderer view based on what the camera sees and render it
 			renderer.setView(camera);
 			renderer.render();
+			
+			player.checkAltitude();
+			if(!player.getIsAlive()) {
+				player.setIsAlive(true);
+				player.position.set(Level.getCurrentSpawn(level, checkpoint));
+			}
 
 			// render the player
 			player.render(this);

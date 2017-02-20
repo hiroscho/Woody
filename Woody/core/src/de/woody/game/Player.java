@@ -325,10 +325,10 @@ public class Player {
 	}
 	
 	/**
-	 * Check if the player died by falling.
+	 * Check if the player is below the ground.
 	 */
-	public void fallDownCheck(){
-		if(position.y < 0){
+	public void checkAltitude(){
+		if(position.y + HEIGHT < 0){
 			setIsAlive(false);
 			//System.out.println("PLAYER IS DEAD");
 		}

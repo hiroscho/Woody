@@ -23,7 +23,7 @@ public class Player {
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking, Dead
+		Standing, Walking, Jumping, Attacking
 	}
 
 	/** player position in world coordinates **/
@@ -45,6 +45,9 @@ public class Player {
 
 	/** is player facing right **/
 	public boolean facesRight = true;
+	
+	/** is player alive **/
+	private boolean isAlive = true;
 
 	public Texture texture;
 
@@ -306,62 +309,28 @@ public class Player {
 		batch.end();
 	}
 
-	//Lifesystem @Sami
-	
-	//ÄNDERUNG
-	private String test;
-	
-	private int health = 3;		//if health = 0 -> dead
-	private boolean status = true;		// is true until falls down (or gets hit 3 times by enemies (in future))
-	
 	/**
+	 * Get the player status.
 	 * 
-	 * @param health
-	 * @param status
+	 * @return the status of the player
 	 */
-	public Player(int health, boolean status){
-		this.health = health;		
-		this.status = status;
-	}
-	
-	//getters & setters
-	/**
-	 * 
-	 * @return
-	 */
-	public int getHealth(){
-		return health;
+	public boolean getIsAlive(){
+		return isAlive;
 	}
 	/**
-	 * 
-	 * @param updHealth
+	 * Changes the player status.
 	 */
-	public void setHealth(int updHealth){
-		health = updHealth;
-	}
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isPlayerAlive(){
-		return status;
-	}
-	/**
-	 * 
-	 */
-	public void setPlayerDead(){
-		status = false;
+	public void setIsAlive(boolean status){
+		isAlive = status;
 	}
 	
-	//is alive or dead method
-	
-	public void isAliveorNot(){
+	/**
+	 * Check if the player died by falling.
+	 */
+	public void fallDownCheck(){
 		if(position.y < 0){
-			this.setPlayerDead();
-			System.out.println("PLAYER IS DEAD");
+			setIsAlive(false);
+			//System.out.println("PLAYER IS DEAD");
 		}
 	}
-	
-	
-	
 }

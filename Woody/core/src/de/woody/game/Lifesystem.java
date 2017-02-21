@@ -47,11 +47,11 @@ public class Lifesystem extends Player implements Screen{
 	 * 
 	 * @param newHealth
 	 */
-	public void setHearts(int newHearts){
+	public static void setHearts(int newHearts){
 		hearts = newHearts;
 	}
 	
-	public int getLife()
+	public static int getLife()
 	{
 		return life;
 	}
@@ -64,8 +64,7 @@ public class Lifesystem extends Player implements Screen{
 	
 	public void setStateDead()
 	{
-		if (getHearts() < 1)
-			state = State.Dead;
+		state = State.Dead;
 	}
 	
 	public boolean isLifeLost()

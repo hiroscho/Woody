@@ -123,6 +123,8 @@ public class GameScreen implements Screen {
 			Lifesystem.checkAlive();
 			if(Player.state == State.Dead) {
 				player.position.set(Level.getCurrentSpawn(level, checkpoint));
+				if(Lifesystem.getLife() >= 1)
+					Lifesystem.setHearts(3);													//TEMPORÄR!!!!!!!!!!!!!
 			}
 
 			// render the player

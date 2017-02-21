@@ -5,97 +5,96 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * 
- * @author Sami
+ * @author Sami, Otto, Stefan
  *
- *Lifesystem: 	- if player falls down a cliff, he dies
- *			   	- if player gets hit he loses a life (will be added later)
+ *Lifesystem: 	- if player falls down a cliff he looses a ALL hearts
+ *			   	- if player gets hit he looses ONE heart
+ *				- whenever woody looses all hearts he gets respawned at a respawn position (or the start if there are none / he hasn't passed one yet)
+ *					AND he looses ONE life (hearts need to be refilled)
+ *				- if his life count gets below 1 => state.DEAD and he is always respawned at the start of the level
  */
 public class Lifesystem extends Player implements Screen{
-	//life 
 	
-//	private int health = 3;		//if health = 0 -> dead
-//	private boolean status = true;		// is true until falls down (or gets hit 3 times by enemies (in future))
-	
-	//Gameoverbanner size
-//	private static final int GAMEOVERBANNER_WITH = 800;
-//	private static final int GAMEOVERBANNER_HEIGHT = 600;
-//	private Viewport viewport;
-//	private Stage stage;
-	
-	
-//	Texture gameOverBanner;
-//	WoodyGame game;
+	public static int hearts = 3;				//if health = 0 -> State.Dead and a life gets deducted. Furthermore Woody gets respawned and hearts refilled
+	public static int life = 2;				//if life < 1 -> State.Dead and Woody starts at the start of the level
+	public int oldLife = life;			//used to check if Woody has lost a life (method isLifeLost() maybe necessary for respawn)
 
 	/**
 	 * 
 	 * @param health
-	 * @param status
+	 * @param life
 	 */
-//	public Lifesystem(WoodyGame game, int health, boolean status){
-//		this.health = health;
-//		this.status = status;
-//		
-//		this.game = game;
-//		viewport = new FitViewport(Player.WIDTH, Player.HEIGHT, new OrthographicCamera());
-//		stage = new Stage(viewport, ((WoodyGame) game).batch);
-		
-		//load Banner ---> following in render method(from implemented Screen)
-//		gameOverBanner = new Texture("Gameoverscreen.png");
-//	}
+	public Lifesystem(int health, int life){
+		this.hearts = hearts;
+		this.life = life;
+	}
 	
-	//Getters and Setters
 	/**
 	 * 
 	 * @return
 	 */
-//	public int getHealth(){
-//		return health;
-//	}
+	public int getHearts(){
+		return hearts;
+	}
 	/**
 	 * 
-	 * @param updhealth
+	 * @param newHealth
 	 */
-//	public void setHealth(int updhealth){
-//		health = updhealth;
-//	}
-	/**
-	 * 
-	 * @return
-	 */
-//	public boolean isPlayerAlive(){
-//		return status;
-//	}
-	/**
-	 * sets player status = dead
-	 */
-//	public void setPlayerDead(){
-//		status = false;
-//	}
+	public void setHearts(int newHearts){
+		hearts = newHearts;
+	}
 	
-	//Dead or allive method
-	/**
-	 * sets the player dead or alive
-	 */
-//	public void isaliveornot(){
-//		if(position.y < 0){
-//			this.setPlayerDead();
-//			System.out.println("DIEDD");
-//			Gdx.app.log("PLAYER", "DIED");
-//			if(this.isPlayerAlive() == false){
-//				
-//			}
-//		}else{
-//			status = true;
-//		}
-//	}
-//	
+	public int getLife()
+	{
+		return life;
+	}
 	
+	public int setLife(int newLife)
+	{
+		life = newLife;
+		return life;
+	}
+	
+	public void setStateDead()
+	{
+		if (getHearts() < 1)
+			state = State.Dead;
+	}
+	
+	public boolean isLifeLost()
+	{
+		if(oldLife > getLife())
+			{
+				oldLife = getLife();
+				return true;
+			}
+		else
+			return false;
+	}
+	
+	public static void checkAltitude()
+	{
+		if (position.y + Player.HEIGHT < 0)
+		{
+			hearts = hearts - 3;
+		}
+	}
+	
+	public static void checkAlive()
+	{
+		if(hearts < 1)
+		{
+			state = State.Dead;
+			life = life -1;
+		}
+	}
 	
 	// Screen methods for the game over Screen (implemented)
 	@Override
@@ -131,6 +130,4 @@ public class Lifesystem extends Player implements Screen{
 		// TODO Auto-generated method stub
 		
 	}
-	
-	
 }

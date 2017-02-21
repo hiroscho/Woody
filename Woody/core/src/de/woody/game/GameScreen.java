@@ -19,6 +19,8 @@ import com.badlogic.gdx.math.Vector3;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
+import de.woody.game.Player.State;
+
 public class GameScreen implements Screen {
 
 	private final WoodyGame game;
@@ -117,9 +119,9 @@ public class GameScreen implements Screen {
 			renderer.setView(camera);
 			renderer.render();
 			
-			player.checkAltitude();
-			if(!player.getIsAlive()) {
-				player.setIsAlive(true);
+			Lifesystem.checkAltitude();	
+			Lifesystem.checkAlive();
+			if(Player.state == State.Dead) {
 				player.position.set(Level.getCurrentSpawn(level, checkpoint));
 			}
 

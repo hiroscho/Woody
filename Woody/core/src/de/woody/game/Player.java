@@ -27,11 +27,11 @@ public class Player {
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking, Falling
+		Standing, Walking, Jumping, Attacking, Falling, Dead
 	}
 
 	/** player position in world coordinates **/
-	public final Vector2 position = new Vector2();
+	public static Vector2 position = new Vector2();
 
 	/** player velocity in world coordinates per second **/
 	public final Vector2 velocity = new Vector2();
@@ -49,9 +49,6 @@ public class Player {
 
 	/** is player facing right **/
 	public boolean facesRight = true;
-	
-	/** is player alive **/
-	private boolean isAlive = true;
 
 	public Texture texture;
 	
@@ -298,7 +295,7 @@ public class Player {
 		Level.rectPool.free(playerRect);
 		return velocity;
 	}
-
+	
 	/**
 	 * Render the player depending on state.
 	 * 
@@ -328,30 +325,5 @@ public class Player {
 		else
 			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
 		batch.end();
-	}
-
-	/**
-	 * Get the player status.
-	 * 
-	 * @return the status of the player
-	 */
-	public boolean getIsAlive(){
-		return isAlive;
-	}
-	/**
-	 * Changes the player status.
-	 */
-	public void setIsAlive(boolean status){
-		isAlive = status;
-	}
-	
-	/**
-	 * Check if the player is below the ground.
-	 */
-	public void checkAltitude(){
-		if(position.y + HEIGHT < 0){
-			setIsAlive(false);
-			//System.out.println("PLAYER IS DEAD");
-		}
 	}
 }

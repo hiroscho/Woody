@@ -16,15 +16,17 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import de.woody.game.Player.State;
 
 public class GameScreen implements Screen {
 
 	private final WoodyGame game;
-
+	
 	// map and camera
 	private final TiledMap map;
 	private final OrthographicCamera camera;
@@ -37,6 +39,11 @@ public class GameScreen implements Screen {
 
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
+	
+//	private Image imageZeroHearts;
+//	private Image imageOneHeart;
+//	private Image imageTwoHearts;
+//	private Image imageThreeHearts;
 
 	public final Buttons controller = new Buttons();
 
@@ -72,6 +79,9 @@ public class GameScreen implements Screen {
 		
 		//load the textures for animations
 		Animations.loadAnimations();
+		
+//		uiPos = camera.project(new Vector3(1f, 1f, 0));
+//		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 10, 10);
 
 		this.game = game;
 		this.level = level;
@@ -85,6 +95,8 @@ public class GameScreen implements Screen {
 		Level.layer = (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
 
 		debugRenderer = new ShapeRenderer();
+		
+		
 	}
 
 	@Override
@@ -138,6 +150,7 @@ public class GameScreen implements Screen {
 			// render debug rectangles
 			if (debug)
 				renderDebug();
+				
 		}
 	}
 
@@ -223,5 +236,9 @@ public class GameScreen implements Screen {
 	private void checkGameInput() {
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debug = !debug;
+		if (Gdx.input.isKeyJustPressed(Keys.L))
+			Lifesystem.hearts = Lifesystem.changeHearts(Lifesystem.hearts -1);
+		if(Gdx.input.isKeyJustPressed(Keys.R))
+			Lifesystem.life = Lifesystem.setLife(3);			//BUG! increases the life counter by just 2 for some reason...
 	}
 }

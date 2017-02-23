@@ -6,7 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -19,6 +23,7 @@ public class Buttons extends WoodyGame {
 	private ImageButton button;
 	private Viewport viewport;
 	private Array<Button> allButtons = new Array<Button>();
+	public Image image;
 
 	public Buttons() {
 		// create a new viewport for the ui
@@ -26,7 +31,6 @@ public class Buttons extends WoodyGame {
 
 		// set up a stage for the ui
 		stage = new Stage(viewport);
-
 	}
 
 	public Button addButton(Texture tex, String name) {
@@ -55,6 +59,16 @@ public class Buttons extends WoodyGame {
 		stage.addActor(button);
 
 		return button;
+	}
+	
+	public Image addImage(TextureRegion tex, String name, float xPos, float yPos, float xSize, float ySize)
+	{
+		image = new Image(tex);
+		image.setName(name);
+		image.setPosition(xPos, yPos);
+		image.setSize(xSize, ySize);
+		stage.addActor(image);
+		return image;
 	}
 
 	public Stage getStage() {

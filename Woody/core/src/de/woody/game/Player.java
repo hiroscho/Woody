@@ -121,7 +121,7 @@ public class Player {
 		}
 
 		// double Jump
-		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && (System.currentTimeMillis() > (lastJump + 250))
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || (Gdx.input.isKeyPressed(Keys.UP))) && !grounded && (System.currentTimeMillis() > (lastJump + 250))
 				&& freeJump) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;

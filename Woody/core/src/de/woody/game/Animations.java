@@ -86,7 +86,7 @@ public class Animations extends Player{
 		return region;	
 	}	
 	
-//	public static TextureRegion chooseCorrectHeartsImage()
+//	public static TextureRegion chooseCorrectHeartsImage()			//irrelevant?
 //	{		
 //		if(Lifesystem.hearts == 0)
 //			textureRegionPlaceholder = heartsZero;

@@ -86,20 +86,6 @@ public class Animations extends Player{
 		return region;	
 	}	
 	
-//	public static TextureRegion chooseCorrectHeartsImage()			//irrelevant?
-//	{		
-//		if(Lifesystem.hearts == 0)
-//			textureRegionPlaceholder = heartsZero;
-//		else if(Lifesystem.hearts == 1)
-//			textureRegionPlaceholder = heartsOne;
-//		else if(Lifesystem.hearts == 2)
-//			textureRegionPlaceholder = heartsTwo;
-//		else
-//			textureRegionPlaceholder = heartsThree;
-//		
-//		return textureRegionPlaceholder;
-//	}
-	
 	public void dispose()
 	{
 		sheetRun.dispose();

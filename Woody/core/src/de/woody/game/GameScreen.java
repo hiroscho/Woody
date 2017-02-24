@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -40,10 +41,7 @@ public class GameScreen implements Screen {
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
 	
-//	private Image imageZeroHearts;
-//	private Image imageOneHeart;
-//	private Image imageTwoHearts;
-//	private Image imageThreeHearts;
+	public Image imageTest;
 
 	public final Buttons controller = new Buttons();
 
@@ -79,9 +77,27 @@ public class GameScreen implements Screen {
 		
 		//load the textures for animations
 		Animations.loadAnimations();
+
+		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
+		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 50, 13);
 		
-//		uiPos = camera.project(new Vector3(1f, 1f, 0));
-//		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 10, 10);
+		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
+		controller.addImage(Animations.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 50, 13);
+		
+		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
+		controller.addImage(Animations.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 50, 13);
+		
+		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
+		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 50, 13);
+		
+		if(Lifesystem.hearts == 0)
+		{
+			for(Actor actor : controller.getStage().getActors())
+			{
+				if(actor.getName() == ("imageOneHeart" || "imageTwoHearts" || "imageThreeHearts"))
+					actor.remove();
+			}
+		}
 
 		this.game = game;
 		this.level = level;

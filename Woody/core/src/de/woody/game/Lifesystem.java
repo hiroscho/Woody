@@ -99,7 +99,7 @@ public class Lifesystem extends Player implements Screen{
 		if(hearts < 1)
 		{
 			state = State.Dead;
-			life = life -1;
+			life = life - 1;
 		}
 	}
 	

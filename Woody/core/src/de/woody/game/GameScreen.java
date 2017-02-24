@@ -255,10 +255,10 @@ public class GameScreen implements Screen {
 			Lifesystem.hearts = Lifesystem.changeHearts(Lifesystem.hearts -1);
 		if(Gdx.input.isKeyJustPressed(Keys.R))
 		{
-			if(Lifesystem.getLife() == 0)
-				Lifesystem.life = Lifesystem.setLife(3);			//BUG! increases the life counter by just 2 for some reason...
-			else
+			if(Lifesystem.getLife() >= 1)
 				Lifesystem.life = Lifesystem.setLife(2);
+			else
+				Lifesystem.life = Lifesystem.setLife(3);
 		}
 	}
 }

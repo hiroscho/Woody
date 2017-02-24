@@ -1,9 +1,12 @@
 package de.woody.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.maps.Map;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -12,8 +15,8 @@ public class Player {
 	public static float WIDTH;
 	public static float HEIGHT;
 
-	public static float MAX_VELOCITY = 10f; 
-	public static float JUMP_VELOCITY = 40f; 
+	public static float MAX_VELOCITY = 10f;
+	public static float JUMP_VELOCITY = 40f;
 
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;
@@ -28,10 +31,14 @@ public class Player {
 	public float stateTime = 0;
 
 	public long lastJump = 0;
+	public long axeCooldown = System.currentTimeMillis();
+
 	public boolean freeJump;
 
 	public boolean facesRight = true;
 	public boolean grounded = false;
+
+	public boolean hasAxe = true;
 
 	public Texture texture;
 
@@ -45,38 +52,64 @@ public class Player {
 	public void move(float delta) {
 		if (delta == 0)
 			return;
-		
+
 		if (delta > 0.1f)
 			delta = 0.1f;
 
-		
-		
-		// Jump 
+		// Jump
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && grounded) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
 			freeJump = true;
-			lastJump = System.currentTimeMillis(); //long Wert der aktuellen Systemzeit
-			
+			lastJump = System.currentTimeMillis(); // long Wert der aktuellen
+													// Systemzeit
+
 		}
 
 		// double Jump
-		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && (System.currentTimeMillis() > (lastJump + 350)) && (freeJump == true)) {
-		velocity.y = JUMP_VELOCITY;
-		state = State.Jumping;
-		grounded = false;
-		freeJump = false;
+		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && (System.currentTimeMillis() > (lastJump + 350))
+				&& (freeJump == true)) {
+			velocity.y = JUMP_VELOCITY;
+			state = State.Jumping;
+			grounded = false;
+			freeJump = false;
+			System.out.println(position.x);
+			System.out.println(position.y);
+			System.out.println("");
 		}
-		
-		
-//		fly function
-//		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded) {
-//		velocity.y = JUMP_VELOCITY;
-//		state = State.Jumping;
-//		grounded = false;
-//		}
-		
+
+		// attack function
+		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
+
+			if ((axeCooldown + 200) < System.currentTimeMillis()) {
+
+				if (facesRight) {
+					double x2 = (position.x + WIDTH);
+					double y2 = position.y;
+					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell((int) x2, (int) y2,
+							null);
+					axeCooldown = System.currentTimeMillis();
+
+				} else {
+					double x2 = (position.x - WIDTH);
+					double y2 = position.y;
+					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell((int) x2, (int) y2,
+							null);
+					axeCooldown = System.currentTimeMillis();
+				}
+
+				axeCooldown = System.currentTimeMillis();
+			}
+		}
+
+		// fly function
+		// if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded) {
+		// velocity.y = JUMP_VELOCITY;
+		// state = State.Jumping;
+		// grounded = false;
+		// }
+
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
 			velocity.x = MAX_VELOCITY;
 			if (grounded)
@@ -90,8 +123,6 @@ public class Player {
 				state = State.Walking;
 			facesRight = false;
 		}
-		
-
 
 		// clamp velocity to max, x-axis only
 		velocity.x = MathUtils.clamp(velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
@@ -99,7 +130,6 @@ public class Player {
 		// velocity is < 1, set it to 0
 		if (Math.abs(velocity.x) < 1) {
 			velocity.x = 0;
-			freeJump = false;
 			state = State.Standing;
 		}
 

@@ -1,6 +1,7 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.utils.Array;
 
 public class WoodyGame extends Game {
 	public static WoodyGame game;
@@ -19,7 +20,7 @@ public class WoodyGame extends Game {
 	public final int yTiles = 12;
 
 	/** name of the collision layer **/
-	public final String collisionLayer = "Collidable Tiles";
+	public static final Array<String> collisionLayers = new Array<String>();
 
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;

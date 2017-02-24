@@ -82,7 +82,7 @@ public class GameScreen implements Screen {
 		// load the corresponding map, set the unit scale
 		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
-		Level.layer = (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
+		
 
 		debugRenderer = new ShapeRenderer();
 	}

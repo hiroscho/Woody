@@ -21,7 +21,7 @@ public class Level {
 		}
 	};
 	private static Array<Rectangle> tiles = new Array<Rectangle>();
-	public static TiledMapTileLayer layer;
+	public static Array<TiledMapTileLayer> layers;
 
 	/**
 	 * Returns the current spawn for the level and number of reached
@@ -45,6 +45,10 @@ public class Level {
 			return new Vector2(0, 0);
 		}
 	}
+	
+	public static void addCollisionLayer(String name) {
+		layers.add((TiledMapTileLayer) map.getLayers().get(name));
+	}
 
 	/**
 	 * Fills "tiles"-Array with all the tiles of the collisionLayer between the start
@@ -63,6 +67,7 @@ public class Level {
 		rectPool.freeAll(tiles);
 		tiles.clear();
 
+		for ( :WoodyGame.collisionLayers)
 		for (int y = startY; y <= endY; y++) {
 			for (int x = startX; x <= endX; x++) {
 				Cell cell = layer.getCell(x, y);

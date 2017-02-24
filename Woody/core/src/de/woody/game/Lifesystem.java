@@ -55,8 +55,13 @@ public class Lifesystem extends Player implements Screen{
 		hearts = newHearts;
 	}
 	
-	public static int changeHearts(int newHearts){
+	public static int changeHearts(int newHearts){				//used to change the number of hearts
 		return hearts = newHearts;
+	}
+	
+	public static int damagePlayer(int damage)					//used to decrease the number of hearts by a predefined number
+	{
+		return hearts = hearts - damage;
 	}
 	
 	public static int getLife()

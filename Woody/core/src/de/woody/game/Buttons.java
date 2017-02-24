@@ -63,12 +63,13 @@ public class Buttons extends WoodyGame {
 		return button;
 	}
 	
-	public Image addImage(TextureRegion tex, String name, float xPos, float yPos, float xSize, float ySize)
+	public Image addImage(TextureRegion tex, String name, float xPos, float yPos, float xSize, float ySize, float scale)
 	{
 		image = new Image(tex);
 		image.setName(name);
 		image.setPosition(xPos, yPos);
 		image.setSize(xSize, ySize);
+		image.setScale(scale);
 		allImages.add(image);
 		stage.addActor(image);
 		return image;

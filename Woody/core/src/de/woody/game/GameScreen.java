@@ -78,17 +78,17 @@ public class GameScreen implements Screen {
 		//load the textures for animations
 		Animations.loadAnimations();
 		
-		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
-		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 50, 13);
+		uiPos = camera.project(new Vector3(1f, 11f, 0));
+		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 50, 13, 2);
 		
-		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
-		controller.addImage(Animations.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 50, 13);
+		uiPos = camera.project(new Vector3(1f, 11f, 0));
+		controller.addImage(Animations.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 50, 13, 2);
 		
-		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
-		controller.addImage(Animations.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 50, 13);
+		uiPos = camera.project(new Vector3(1f, 11f, 0));
+		controller.addImage(Animations.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 50, 13, 2);
 		
-		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
-		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 50, 13);
+		uiPos = camera.project(new Vector3(1f, 11f, 0));
+		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 50, 13, 2);
 		
 		this.game = game;
 		this.level = level;

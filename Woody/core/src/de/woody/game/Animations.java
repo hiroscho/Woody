@@ -30,6 +30,11 @@ public class Animations extends Player{
 	public static TextureRegion textureRegionPlaceholder;
 	public static Image imageHearts;
 	
+	public static Texture sheetLives;
+	public static TextureRegion livesZero;
+	public static TextureRegion livesOne;
+	public static TextureRegion livesTwo;
+	
 	public static void loadAnimations()
 	{
 		sheetRun = new Texture(Gdx.files.internal("textures/loadingsheet.png"));
@@ -53,6 +58,11 @@ public class Animations extends Player{
 		heartsOne = new TextureRegion(sheetLife, 52, 0, 52, 16);
 		heartsTwo = new TextureRegion(sheetLife, 2*52, 0, 52, 16);
 		heartsThree = new TextureRegion(sheetLife, 3*52, 0, 52, 16);
+		
+		sheetLives = new Texture(Gdx.files.internal("textures/sheetLives.png"));
+		livesZero = new TextureRegion(sheetLives, 0, 0, 18, 18);
+		livesOne = new TextureRegion(sheetLives, 18, 0, 18, 18);
+		livesTwo = new TextureRegion(sheetLives, 36, 0, 18, 18);
 	}
 	
 	public static TextureRegion getFrame(float dt)
@@ -90,5 +100,6 @@ public class Animations extends Player{
 	{
 		sheetRun.dispose();
 		sheetLife.dispose();
+		sheetLives.dispose();
 	}
 }

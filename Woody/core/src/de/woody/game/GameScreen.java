@@ -90,6 +90,15 @@ public class GameScreen implements Screen {
 		uiPos = camera.project(new Vector3(1f, 11f, 0));
 		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 50, 13, 2);
 		
+		uiPos = camera.project(new Vector3(17f, 11f, 0));
+		controller.addImage(Animations.livesZero, "imageLifeZero", uiPos.x, uiPos.y, 18, 18, 2);
+		
+		uiPos = camera.project(new Vector3(17f, 11f, 0));
+		controller.addImage(Animations.livesOne, "imageLifeOne", uiPos.x, uiPos.y, 18, 18, 2);
+		
+		uiPos = camera.project(new Vector3(17f, 11f, 0));
+		controller.addImage(Animations.livesTwo, "imageLifeTwo", uiPos.x, uiPos.y, 18, 18, 2);
+		
 		this.game = game;
 		this.level = level;
 
@@ -149,6 +158,7 @@ public class GameScreen implements Screen {
 			}
 			
 			Buttons.checkCorrectHeartsImage();
+			Buttons.checkCorrectLifeImage();
 
 			// render the player
 			player.render(this);

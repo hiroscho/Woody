@@ -138,4 +138,40 @@ public class Buttons extends WoodyGame {
 			}
 		}
 	}
+	
+	public static void checkCorrectLifeImage()
+	{
+		if(Lifesystem.life == 0)
+		{
+			for(Actor actor : GameScreen.controller.getStage().getActors())
+			{
+				if(actor.getName().equals("imageLifeOne") || actor.getName().equals("imageLifeTwo"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageLifeZero"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.life == 1)
+		{
+			for(Actor actor : GameScreen.controller.getStage().getActors())
+			{
+				if(actor.getName().equals("imageLifeZero") || actor.getName().equals("imageLifeTwo"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageLifeOne"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.life == 2)
+		{
+			for(Actor actor : GameScreen.controller.getStage().getActors())
+			{
+				if(actor.getName().equals("imageLifeOne") || actor.getName().equals("imageLifeZero"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageLifeTwo"))
+					actor.setVisible(true);
+			}
+		}
+	}
 }

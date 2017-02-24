@@ -82,13 +82,13 @@ public class GameScreen implements Screen {
 		//load the textures for animations
 		Animations.loadAnimations();
 		
-		uiPos = camera.project(new Vector3(1f, 11f, 0));
-		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 50, 13, scaleHearts);
-		controller.addImage(Animations.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 50, 13, scaleHearts);
-		controller.addImage(Animations.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 50, 13, scaleHearts);
-		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 50, 13, scaleHearts);
+		uiPos = camera.project(new Vector3(16.75f, 11f, 0));
+		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(Animations.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(Animations.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
 		
-		uiPos = camera.project(new Vector3(17f, 11f, 0));
+		uiPos = camera.project(new Vector3(15f, 11f, 0));
 		controller.addImage(Animations.livesZero, "imageLifeZero", uiPos.x, uiPos.y, 18, 18, scaleLives);
 		controller.addImage(Animations.livesOne, "imageLifeOne", uiPos.x, uiPos.y, 18, 18, scaleLives);
 		controller.addImage(Animations.livesTwo, "imageLifeTwo", uiPos.x, uiPos.y, 18, 18, scaleLives);

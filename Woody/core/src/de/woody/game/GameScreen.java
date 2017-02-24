@@ -28,6 +28,10 @@ public class GameScreen implements Screen {
 
 	private final WoodyGame game;
 	
+	//Variables to change the scale of the hearts / lives image conveniently
+	private final float scaleHearts = 2;
+	private final float scaleLives = 2;
+	
 	// map and camera
 	private final TiledMap map;
 	private final OrthographicCamera camera;
@@ -79,25 +83,15 @@ public class GameScreen implements Screen {
 		Animations.loadAnimations();
 		
 		uiPos = camera.project(new Vector3(1f, 11f, 0));
-		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 50, 13, 2);
-		
-		uiPos = camera.project(new Vector3(1f, 11f, 0));
-		controller.addImage(Animations.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 50, 13, 2);
-		
-		uiPos = camera.project(new Vector3(1f, 11f, 0));
-		controller.addImage(Animations.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 50, 13, 2);
-		
-		uiPos = camera.project(new Vector3(1f, 11f, 0));
-		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 50, 13, 2);
+		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 50, 13, scaleHearts);
+		controller.addImage(Animations.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 50, 13, scaleHearts);
+		controller.addImage(Animations.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 50, 13, scaleHearts);
+		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 50, 13, scaleHearts);
 		
 		uiPos = camera.project(new Vector3(17f, 11f, 0));
-		controller.addImage(Animations.livesZero, "imageLifeZero", uiPos.x, uiPos.y, 18, 18, 2);
-		
-		uiPos = camera.project(new Vector3(17f, 11f, 0));
-		controller.addImage(Animations.livesOne, "imageLifeOne", uiPos.x, uiPos.y, 18, 18, 2);
-		
-		uiPos = camera.project(new Vector3(17f, 11f, 0));
-		controller.addImage(Animations.livesTwo, "imageLifeTwo", uiPos.x, uiPos.y, 18, 18, 2);
+		controller.addImage(Animations.livesZero, "imageLifeZero", uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addImage(Animations.livesOne, "imageLifeOne", uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addImage(Animations.livesTwo, "imageLifeTwo", uiPos.x, uiPos.y, 18, 18, scaleLives);
 		
 		this.game = game;
 		this.level = level;
@@ -260,6 +254,11 @@ public class GameScreen implements Screen {
 		if (Gdx.input.isKeyJustPressed(Keys.L))
 			Lifesystem.hearts = Lifesystem.changeHearts(Lifesystem.hearts -1);
 		if(Gdx.input.isKeyJustPressed(Keys.R))
-			Lifesystem.life = Lifesystem.setLife(3);			//BUG! increases the life counter by just 2 for some reason...
+		{
+			if(Lifesystem.getLife() == 0)
+				Lifesystem.life = Lifesystem.setLife(3);			//BUG! increases the life counter by just 2 for some reason...
+			else
+				Lifesystem.life = Lifesystem.setLife(2);
+		}
 	}
 }

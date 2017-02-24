@@ -144,6 +144,8 @@ public class GameScreen implements Screen {
 				player.position.set(Level.getCurrentSpawn(level, checkpoint));
 				if(Lifesystem.getLife() >= 1)
 					Lifesystem.setHearts(3);													//TEMPORÄR!!!!!!!!!!!!!
+				else
+					Lifesystem.setHearts(0);
 			}
 			
 			Buttons.checkCorrectHeartsImage();

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -24,6 +25,7 @@ public class Buttons extends WoodyGame {
 	private Viewport viewport;
 	private Array<Button> allButtons = new Array<Button>();
 	public Image image;
+	public static Array<Image> allImages = new Array<Image>();
 
 	public Buttons() {
 		// create a new viewport for the ui
@@ -67,6 +69,7 @@ public class Buttons extends WoodyGame {
 		image.setName(name);
 		image.setPosition(xPos, yPos);
 		image.setSize(xSize, ySize);
+		allImages.add(image);
 		stage.addActor(image);
 		return image;
 	}
@@ -85,5 +88,53 @@ public class Buttons extends WoodyGame {
 				return but;
 		}
 		return null;
+	}
+	
+	public static void checkCorrectHeartsImage()
+	{
+
+		if(Lifesystem.hearts == 0)
+		{
+			for(Actor actor : GameScreen.controller.getStage().getActors())
+			{
+				if(actor.getName().equals("imageOneHeart") || actor.getName().equals("imageTwoHearts") || actor.getName().equals("imageThreeHearts"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageZeroHearts"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.hearts == 1)
+		{
+			for(Actor actor : GameScreen.controller.getStage().getActors())
+			{
+				if(actor.getName().equals("imageZeroHearts") || actor.getName().equals("imageTwoHearts") || actor.getName().equals("imageThreeHearts"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageOneHeart"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.hearts == 2)
+		{
+			for(Actor actor : GameScreen.controller.getStage().getActors())
+			{
+				if(actor.getName().equals("imageZeroHearts") || actor.getName().equals("imageOneHeart") || actor.getName().equals("imageThreeHearts"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageTwoHearts"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.hearts == 3)
+		{
+			for(Actor actor : GameScreen.controller.getStage().getActors())
+			{
+				if(actor.getName().equals("imageZeroHearts") || actor.getName().equals("imageOneHeart") || actor.getName().equals("imageTwoHearts"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageThreeHearts"))
+					actor.setVisible(true);
+			}
+		}
 	}
 }

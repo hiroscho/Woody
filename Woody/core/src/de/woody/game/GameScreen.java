@@ -43,7 +43,7 @@ public class GameScreen implements Screen {
 	
 	public Image imageTest;
 
-	public final Buttons controller = new Buttons();
+	public final static Buttons controller = new Buttons();
 
 	public GameScreen(final WoodyGame game, final int level) {
 
@@ -77,7 +77,7 @@ public class GameScreen implements Screen {
 		
 		//load the textures for animations
 		Animations.loadAnimations();
-
+		
 		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
 		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 50, 13);
 		
@@ -90,15 +90,6 @@ public class GameScreen implements Screen {
 		uiPos = camera.project(new Vector3(1f, 11.5f, 0));
 		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 50, 13);
 		
-		if(Lifesystem.hearts == 0)
-		{
-			for(Actor actor : controller.getStage().getActors())
-			{
-				if(actor.getName() == ("imageOneHeart" || "imageTwoHearts" || "imageThreeHearts"))
-					actor.remove();
-			}
-		}
-
 		this.game = game;
 		this.level = level;
 
@@ -154,6 +145,8 @@ public class GameScreen implements Screen {
 				if(Lifesystem.getLife() >= 1)
 					Lifesystem.setHearts(3);													//TEMPORÄR!!!!!!!!!!!!!
 			}
+			
+			Buttons.checkCorrectHeartsImage();
 
 			// render the player
 			player.render(this);

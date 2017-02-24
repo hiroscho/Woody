@@ -69,8 +69,8 @@ public class GameScreen implements Screen {
 
 		// Start taking input from the ui
 		Gdx.input.setInputProcessor(controller.getStage());
-		
-		//load the textures for animations
+
+		// load the textures for animations
 		Animations.loadAnimations();
 
 		this.game = game;
@@ -82,7 +82,10 @@ public class GameScreen implements Screen {
 		// load the corresponding map, set the unit scale
 		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
-		
+		//Register all layers that have collision
+		for (String name : WoodyGame.collisionLayers) {
+			Level.addCollisionLayer(name, this);
+		}
 
 		debugRenderer = new ShapeRenderer();
 	}
@@ -105,7 +108,7 @@ public class GameScreen implements Screen {
 			} else {
 				player.setKeyboardVelocity();
 			}
-			
+
 			// checks collision then moves the player
 			player.move(delta);
 
@@ -118,15 +121,15 @@ public class GameScreen implements Screen {
 			// set the renderer view based on what the camera sees and render it
 			renderer.setView(camera);
 			renderer.render();
-			
-			Lifesystem.checkAltitude();	
-			Lifesystem.checkAlive();
-			if(Player.state == State.Dead) {
-				player.position.set(Level.getCurrentSpawn(level, checkpoint));
-				if(Lifesystem.getLife() >= 1)
-					Lifesystem.setHearts(3);													//TEMPORÄR!!!!!!!!!!!!!
-			}
 
+			Lifesystem.checkAltitude();
+			Lifesystem.checkAlive();
+			if (Player.state == State.Dead) {
+				player.position.set(Level.getCurrentSpawn(level, checkpoint));
+				if (Lifesystem.getLife() >= 1)
+					Lifesystem.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
+			}
+			
 			// render the player
 			player.render(this);
 
@@ -207,7 +210,7 @@ public class GameScreen implements Screen {
 		debugRenderer.rect(player.position.x, player.position.y, Player.WIDTH, Player.HEIGHT);
 
 		debugRenderer.setColor(Color.YELLOW);
-		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
+		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(game.collisionLayers[0]);
 		for (int y = 0; y <= layer.getHeight(); y++) {
 			for (int x = 0; x <= layer.getWidth(); x++) {
 				Cell cell = layer.getCell(x, y);

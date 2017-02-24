@@ -19,9 +19,9 @@ public class WoodyGame extends Game {
 	/** number of shown tiles on the y-Axis **/
 	public final int yTiles = 12;
 
-	/** name of the collision layer **/
-	public static final Array<String> collisionLayers = new Array<String>();
-
+	/** names of the collision layers **/
+	public static final String[] collisionLayers = new String[]{"Collidable Tiles", "Destructible Tiles"};
+	
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
 

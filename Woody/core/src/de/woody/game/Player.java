@@ -111,22 +111,20 @@ public class Player {
 	 * input.
 	 */
 	public void setKeyboardVelocity() {
-		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W))
-				&& grounded) {
-			velocity.y = JUMP_VELOCITY;
-			state = State.Jumping;
-			grounded = false;
-			freeJump = true;
-			lastJump = System.currentTimeMillis();
-		}
-
-		// double Jump
-		if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded && (System.currentTimeMillis() > (lastJump + 250))
-				&& freeJump) {
-			velocity.y = JUMP_VELOCITY;
-			state = State.Jumping;
-			grounded = false;
-			freeJump = false;
+		if(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
+			if(grounded) {
+				velocity.y = JUMP_VELOCITY;
+				state = State.Jumping;
+				grounded = false;
+				freeJump = true;
+			} else {
+				if(freeJump && velocity.y < 1){
+					velocity.y = JUMP_VELOCITY;
+					state = State.Jumping;
+					grounded = false;
+					freeJump = false;
+				}
+			}
 		}
 
 		// fly function
@@ -167,8 +165,7 @@ public class Player {
 		// velocity is < 1, set it to 0
 		if (Math.abs(velocity.x) < 1) {
 			velocity.x = 0;
-			freeJump = false;
-			if (state != State.Jumping)
+			if (velocity.y == 0)
 				state = State.Standing;
 		}
 

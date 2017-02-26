@@ -26,7 +26,7 @@ public class GameScreen implements Screen {
 	private final WoodyGame game;
 
 	// map and camera
-	private final TiledMap map;
+	public static TiledMap map;
 	private final OrthographicCamera camera;
 	private final OrthogonalTiledMapRenderer renderer;
 
@@ -41,6 +41,10 @@ public class GameScreen implements Screen {
 	public final Buttons controller = new Buttons();
 
 	public GameScreen(final WoodyGame game, final int level) {
+
+		
+		// (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
+		
 
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();

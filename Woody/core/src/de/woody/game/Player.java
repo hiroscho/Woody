@@ -1,5 +1,6 @@
 package de.woody.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,8 +11,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-
-import de.woody.game.Player.State;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player {
 	/** width of the player texture scaled to world coordinates **/
@@ -41,17 +41,21 @@ public class Player {
 	/** time since last jump **/
 	public long lastJump = 0;
 
+	/** can player jump in the air **/
+	public boolean freeJump;
+
+	public long axeCooldown = System.currentTimeMillis();
+
 	/** is player touching the ground **/
 	public boolean grounded = false;
 
-	/** can player jump again **/
-	public boolean freeJump = false;
+	public boolean hasAxe = true;
 
 	/** is player facing right **/
 	public boolean facesRight = true;
 
 	public Texture texture;
-	
+
 	public Player() {
 		this(null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
 		System.err.println("Warning! No texture!");
@@ -75,7 +79,7 @@ public class Player {
 		WIDTH = WoodyGame.UNIT_SCALE * texture.getWidth();
 		HEIGHT = WoodyGame.UNIT_SCALE * texture.getHeight();
 	}
-	
+
 	/**
 	 * Sets the velocity depending on input.
 	 * 
@@ -111,19 +115,42 @@ public class Player {
 	 * input.
 	 */
 	public void setKeyboardVelocity() {
-		if(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
-			if(grounded) {
+		if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
+			if (grounded) {
 				velocity.y = JUMP_VELOCITY;
 				state = State.Jumping;
 				grounded = false;
 				freeJump = true;
 			} else {
-				if(freeJump && velocity.y < 1){
+				if (freeJump && velocity.y < 1) {
 					velocity.y = JUMP_VELOCITY;
 					state = State.Jumping;
 					grounded = false;
 					freeJump = false;
 				}
+			}
+		}
+		// attack function
+		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
+
+			if ((axeCooldown + 200) < System.currentTimeMillis()) {
+
+				if (facesRight) {
+					double x2 = (position.x + WIDTH);
+					double y2 = position.y;
+					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell((int) x2, (int) y2,
+							null);
+					axeCooldown = System.currentTimeMillis();
+
+				} else {
+					double x2 = (position.x - WIDTH);
+					double y2 = position.y;
+					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell((int) x2, (int) y2,
+							null);
+					axeCooldown = System.currentTimeMillis();
+				}
+
+				axeCooldown = System.currentTimeMillis();
 			}
 		}
 
@@ -134,7 +161,9 @@ public class Player {
 		// grounded = false;
 		// }
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
+		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D))
+
+		{
 			velocity.x = MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
@@ -173,13 +202,12 @@ public class Player {
 		if (!(state == State.Standing) || !grounded) {
 			velocity.add(0, WoodyGame.GRAVITY);
 			grounded = false;
-//			state = State.Jumping;
 		}
 
 		if (!grounded && (velocity.y < 0)) {
 			state = State.Falling;
 		}
-		
+
 		// scale to frame velocity
 		velocity.scl(delta);
 
@@ -292,7 +320,7 @@ public class Player {
 		Level.rectPool.free(playerRect);
 		return velocity;
 	}
-	
+
 	/**
 	 * Render the player depending on state.
 	 * 
@@ -301,7 +329,7 @@ public class Player {
 	 */
 	public void render(final GameScreen screen) {
 		Batch batch = screen.getRenderer().getBatch();
-		
+
 		batch.begin();
 		if (facesRight && (state == State.Standing))
 			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);

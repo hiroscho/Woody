@@ -5,8 +5,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -23,8 +27,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class Lifesystem extends Player implements Screen{
 	
 	public static int hearts = 3;				//if health = 0 -> State.Dead and a life gets deducted. Furthermore Woody gets respawned and hearts refilled
-	public static int life = 2;				//if life < 1 -> State.Dead and Woody starts at the start of the level
-	public int oldLife = life;			//used to check if Woody has lost a life (method isLifeLost() maybe necessary for respawn)
+	public static int life = 2;					//if life < 1 -> State.Dead and Woody starts at the start of the level
+	public int oldLife = life;					//used to check if Woody has lost a life (method isLifeLost() maybe necessary for respawn)
 
 	/**
 	 * 
@@ -51,12 +55,21 @@ public class Lifesystem extends Player implements Screen{
 		hearts = newHearts;
 	}
 	
+	public static int changeHearts(int newHearts){				//used to change the number of hearts
+		return hearts = newHearts;
+	}
+	
+	public static int damagePlayer(int damage)					//used to decrease the number of hearts by a predefined number
+	{
+		return hearts = hearts - damage;
+	}
+	
 	public static int getLife()
 	{
 		return life;
 	}
 	
-	public int setLife(int newLife)
+	public static int setLife(int newLife)
 	{
 		life = newLife;
 		return life;
@@ -91,7 +104,7 @@ public class Lifesystem extends Player implements Screen{
 		if(hearts < 1)
 		{
 			state = State.Dead;
-			life = life -1;
+			life = life - 1;
 		}
 	}
 	
@@ -101,7 +114,7 @@ public class Lifesystem extends Player implements Screen{
 		// TODO Auto-generated method stub
 	}
 	@Override
-	public void render(float delta) {
+	public void render(final GameScreen screen) {
 		// TODO Auto-generated method stub
 	}
 	@Override
@@ -126,6 +139,12 @@ public class Lifesystem extends Player implements Screen{
 	}
 	@Override
 	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void render(float delta) {
 		// TODO Auto-generated method stub
 		
 	}

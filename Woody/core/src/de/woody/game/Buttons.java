@@ -4,9 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -19,6 +24,8 @@ public class Buttons extends WoodyGame {
 	private ImageButton button;
 	private Viewport viewport;
 	private Array<Button> allButtons = new Array<Button>();
+	public Image image;
+	public static Array<Image> allImages = new Array<Image>();
 
 	public Buttons() {
 		// create a new viewport for the ui
@@ -26,7 +33,6 @@ public class Buttons extends WoodyGame {
 
 		// set up a stage for the ui
 		stage = new Stage(viewport);
-
 	}
 
 	public Button addButton(Texture tex, String name) {
@@ -56,6 +62,18 @@ public class Buttons extends WoodyGame {
 
 		return button;
 	}
+	
+	public Image addImage(TextureRegion tex, String name, float xPos, float yPos, float xSize, float ySize, float scale)
+	{
+		image = new Image(tex);
+		image.setName(name);
+		image.setPosition(xPos, yPos);
+		image.setSize(xSize, ySize);
+		image.setScale(scale);
+		allImages.add(image);
+		stage.addActor(image);
+		return image;
+	}
 
 	public Stage getStage() {
 		return stage;
@@ -71,5 +89,89 @@ public class Buttons extends WoodyGame {
 				return but;
 		}
 		return null;
+	}
+	
+	public void checkCorrectHeartsImage()
+	{
+
+		if(Lifesystem.hearts == 0)
+		{
+			for(Actor actor : stage.getActors())
+			{
+				if(actor.getName().equals("imageOneHeart") || actor.getName().equals("imageTwoHearts") || actor.getName().equals("imageThreeHearts"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageZeroHearts"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.hearts == 1)
+		{
+			for(Actor actor : stage.getActors())
+			{
+				if(actor.getName().equals("imageZeroHearts") || actor.getName().equals("imageTwoHearts") || actor.getName().equals("imageThreeHearts"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageOneHeart"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.hearts == 2)
+		{
+			for(Actor actor : stage.getActors())
+			{
+				if(actor.getName().equals("imageZeroHearts") || actor.getName().equals("imageOneHeart") || actor.getName().equals("imageThreeHearts"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageTwoHearts"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.hearts == 3)
+		{
+			for(Actor actor : stage.getActors())
+			{
+				if(actor.getName().equals("imageZeroHearts") || actor.getName().equals("imageOneHeart") || actor.getName().equals("imageTwoHearts"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageThreeHearts"))
+					actor.setVisible(true);
+			}
+		}
+	}
+	
+	public void checkCorrectLifeImage()
+	{
+		if(Lifesystem.life == 0)
+		{
+			for(Actor actor : stage.getActors())
+			{
+				if(actor.getName().equals("imageLifeOne") || actor.getName().equals("imageLifeTwo"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageLifeZero"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.life == 1)
+		{
+			for(Actor actor : stage.getActors())
+			{
+				if(actor.getName().equals("imageLifeZero") || actor.getName().equals("imageLifeTwo"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageLifeOne"))
+					actor.setVisible(true);
+			}
+		}
+		
+		if(Lifesystem.life == 2)
+		{
+			for(Actor actor : stage.getActors())
+			{
+				if(actor.getName().equals("imageLifeOne") || actor.getName().equals("imageLifeZero"))
+					actor.setVisible(false);
+				if(actor.getName().equals("imageLifeTwo"))
+					actor.setVisible(true);
+			}
+		}
 	}
 }

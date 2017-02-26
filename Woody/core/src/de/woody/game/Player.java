@@ -132,7 +132,6 @@ public class Player {
 		}
 		// attack function
 		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
-
 			if ((axeCooldown + 200) < System.currentTimeMillis()) {
 
 				if (facesRight) {

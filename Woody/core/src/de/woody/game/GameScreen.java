@@ -16,15 +16,22 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import de.woody.game.Player.State;
 
 public class GameScreen implements Screen {
 
 	private final WoodyGame game;
-
+	
+	//Variables to change the scale of the hearts / lives image conveniently
+	private final float scaleHearts = 2;
+	private final float scaleLives = 2;
+	
 	// map and camera
 	public static TiledMap map;
 	private final OrthographicCamera camera;
@@ -37,6 +44,8 @@ public class GameScreen implements Screen {
 
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
+	
+	public Image imageTest;
 
 	public final Buttons controller = new Buttons();
 
@@ -76,7 +85,18 @@ public class GameScreen implements Screen {
 
 		// load the textures for animations
 		Animations.loadAnimations();
-
+		
+		uiPos = camera.project(new Vector3(16.75f, 11f, 0));
+		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(Animations.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(Animations.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		
+		uiPos = camera.project(new Vector3(15f, 11f, 0));
+		controller.addImage(Animations.livesZero, "imageLifeZero", uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addImage(Animations.livesOne, "imageLifeOne", uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addImage(Animations.livesTwo, "imageLifeTwo", uiPos.x, uiPos.y, 18, 18, scaleLives);
+		
 		this.game = game;
 		this.level = level;
 
@@ -132,7 +152,12 @@ public class GameScreen implements Screen {
 				player.position.set(Level.getCurrentSpawn(level, checkpoint));
 				if (Lifesystem.getLife() >= 1)
 					Lifesystem.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
+				else
+					Lifesystem.setHearts(0);
 			}
+			
+			controller.checkCorrectHeartsImage();
+			controller.checkCorrectLifeImage();
 			
 			// render the player
 			player.render(this);
@@ -230,5 +255,14 @@ public class GameScreen implements Screen {
 	private void checkGameInput() {
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debug = !debug;
+		if (Gdx.input.isKeyJustPressed(Keys.L))
+			Lifesystem.hearts = Lifesystem.changeHearts(Lifesystem.hearts -1);
+		if(Gdx.input.isKeyJustPressed(Keys.R))
+		{
+			if(Lifesystem.getLife() >= 1)
+				Lifesystem.life = Lifesystem.setLife(2);
+			else
+				Lifesystem.life = Lifesystem.setLife(3);
+		}
 	}
 }

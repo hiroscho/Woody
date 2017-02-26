@@ -31,10 +31,10 @@ public class Player {
 	}
 
 	/** player position in world coordinates **/
-	public static Vector2 position = new Vector2();
+	public Vector2 position = new Vector2();
 
 	/** player velocity in world coordinates per second **/
-	public final Vector2 velocity = new Vector2();
+	public Vector2 velocity = new Vector2();
 	public static State state = State.Standing;
 	public static float stateTime = 0;
 

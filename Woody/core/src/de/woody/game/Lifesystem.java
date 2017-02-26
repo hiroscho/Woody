@@ -78,9 +78,9 @@ public class Lifesystem extends Player implements Screen{
 			return false;
 	}
 	
-	public static void checkAltitude()
+	public static void checkAltitude(Player player)
 	{
-		if (position.y + Player.HEIGHT < 0)
+		if (player.position.y + Player.HEIGHT < 0)
 		{
 			hearts = hearts - 3;
 		}

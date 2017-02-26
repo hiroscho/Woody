@@ -126,7 +126,7 @@ public class GameScreen implements Screen {
 			renderer.setView(camera);
 			renderer.render();
 
-			Lifesystem.checkAltitude();
+			Lifesystem.checkAltitude(player);
 			Lifesystem.checkAlive();
 			if (Player.state == State.Dead) {
 				player.position.set(Level.getCurrentSpawn(level, checkpoint));

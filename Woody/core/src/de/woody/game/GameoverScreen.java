@@ -1,24 +1,44 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class GameoverScreen implements Screen{
+public class GameoverScreen extends WoodyGame implements Screen{
 
 	private Viewport viewport;
-	private Stage stage;
-	private Game game;
+	private Stage gameoverstate;
+	private Game gameover;
 	
-	public GameoverScreen(Game game){
-		this.game = game;
-		viewport = new FitViewport(Player.WIDTH, Player.HEIGHT, new OrthographicCamera());
-		stage = new Stage(viewport, new SpriteBatch());
+	
+	private static final int BANNER_WIDTH = 350;
+	private static final int BANNER_HEIGHT = 100;
+	Texture gameOverBanner = new Texture("textures/Gameoverscreen.png");
+	
+	public GameoverScreen(GameoverScreen gameoverScreen) {
+		this.gameover = game;
 	}
+
+	@Override
+	public void create(){
+		this.setScreen(new GameoverScreen(this));
+	}
+
+	
+	
+//	public GameoverScreen(Game game){
+//		this.game = game;
+//		viewport = new FitViewport(Player.WIDTH, Player.HEIGHT, new OrthographicCamera());
+//		gameover = new Stage(viewport, new SpriteBatch());
+//	}
 	
 	
 	@Override
@@ -29,8 +49,12 @@ public class GameoverScreen implements Screen{
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
-		
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Batch batch = (Batch) game;
+		batch.begin();
+		batch.draw(gameOverBanner, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.end();
 		
 	}
 

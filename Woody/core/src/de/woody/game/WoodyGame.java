@@ -1,6 +1,7 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Texture;
 
 public class WoodyGame extends Game {
 	public static WoodyGame game;
@@ -26,11 +27,10 @@ public class WoodyGame extends Game {
 
 	@Override
 	public void create() {
-		
-//		this.setScreen(new GameoverScreen(this));
-		this.setScreen(new GameScreen(this, 1));
+		this.setScreen(new GameoverScreen(this));
+	//	this.setScreen(new GameScreen(this, 1));
 	}
-
+	
 	@Override
 	public void render() {
 		super.render();
@@ -39,5 +39,4 @@ public class WoodyGame extends Game {
 	@Override
 	public void dispose() {
 	}
-
 }

@@ -1,5 +1,7 @@
 package de.woody.game;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -135,9 +137,22 @@ public class Player {
 		}
 		// attack function
 		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
-			if(Level.findDoorRect(game.getGameScreen(), position)){
-				position.set(new Vector2(Level.getCurrentSpawn(game.getGameScreen().getLevel(), game.getGameScreen().getCheckpoint())));
+//			if(Level.findDoorRect(game.getGameScreen(), position)){
+//				position.set(new Vector2(Level.getCurrentSpawn(game.getGameScreen().getLevel(), game.getGameScreen().getCheckpoint())));
+//			}
+			Rectangle playerRect = Level.rectPool.obtain();
+			playerRect.set(position.x, position.y, WIDTH-0.1f, HEIGHT);
+			
+			Iterator<ExtendedRectangle> it = Level.doors.iterator();
+			while(it.hasNext()) {
+				ExtendedRectangle rec = it.next();
+				System.out.println(rec.x + "   " + rec.y);
+				System.out.println(playerRect.x + "   " + playerRect.y);
+				if(playerRect.overlaps(rec)) {
+					position.set(rec.getTeleportPoint());
+				}
 			}
+			
 			
 			
 			

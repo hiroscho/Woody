@@ -1,5 +1,11 @@
 package de.woody.game;
 
+import java.util.Iterator;
+
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,6 +27,7 @@ public class Level {
 		}
 	};
 	private static Array<Rectangle> tiles = new Array<Rectangle>();
+	public static Array<ExtendedRectangle> doors = new Array<ExtendedRectangle>();
 	public static Array<TiledMapTileLayer> layers = new Array<TiledMapTileLayer>();
 
 	/**
@@ -50,28 +57,48 @@ public class Level {
 		layers.add((TiledMapTileLayer) screen.getMap().getLayers().get(name));
 	}
 	
-	/**
-	 * Check all the tiles a player currently is in if they have a door piece.
-	 * 
-	 * @param screen  current GameScreen
-	 * @param position  current player position
-	 * @return  true if a door is found, false otherwise
-	 */
-	public static boolean findDoorRect(GameScreen screen, Vector2 position) {
-		TiledMapTileLayer doorLayer = (TiledMapTileLayer) screen.getMap().getLayers().get("Doors");
-		
-		//maximum number of tiles a player can be in at a time is 6
-		for (int y = (int)position.y; y <= (int)(position.y + Player.HEIGHT); y++) {
-			for (int x = (int)position.x; x <= (int)(position.x + Player.WIDTH - 0.1f); x++) {
-				Cell cell = doorLayer.getCell(x, y);
-				if (cell != null) {
-					return true;
-				}
+//	/**
+//	 * Check all the tiles a player currently is in if they have a door piece.
+//	 * 
+//	 * @param screen  current GameScreen
+//	 * @param position  current player position
+//	 * @return  true if a door is found, false otherwise
+//	 */
+//	public static boolean findDoorRect(GameScreen screen, Vector2 position) {
+//		TiledMapTileLayer doorLayer = (TiledMapTileLayer) screen.getMap().getLayers().get("Doors");
+//		
+//		//maximum number of tiles a player can be in at a time is 6
+//		for (int y = (int)position.y; y <= (int)(position.y + Player.HEIGHT); y++) {
+//			for (int x = (int)position.x; x <= (int)(position.x + Player.WIDTH - 0.1f); x++) {
+//				Cell cell = doorLayer.getCell(x, y);
+//				if (cell != null) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//		
+//	}
+	
+	public static void rectanglesFromObjectLayer(MapLayer objectLayer, String namePrefix, Array<ExtendedRectangle> toBeFilled) {
+		MapObjects objects = objectLayer.getObjects();
+		Iterator<MapObject> it= objects.iterator();
+		while(it.hasNext()) {
+			MapObject object = it.next();
+			if(object.getName().startsWith(namePrefix)) {
+				MapProperties properties = object.getProperties();
+				float x = properties.get("x", Float.class) * WoodyGame.UNIT_SCALE;
+				float y = properties.get("y", Float.class) * WoodyGame.UNIT_SCALE;
+				float width = properties.get("width", Float.class) * WoodyGame.UNIT_SCALE;
+				float height = properties.get("height", Float.class) * WoodyGame.UNIT_SCALE;
+				
+				ExtendedRectangle rec = new ExtendedRectangle(x, y, width, height, object.getName());
+				rec.setTeleportPoint(properties.get("tpX", Integer.class), properties.get("tpY", Integer.class));
+				toBeFilled.add(rec);
 			}
 		}
-		return false;
-		
 	}
+	
 
 	/**
 	 * Fills "tiles"-Array with all the tiles of the collisionLayer between the

@@ -1,5 +1,7 @@
 package de.woody.game;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -9,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -24,11 +27,11 @@ import de.woody.game.Player.State;
 public class GameScreen implements Screen {
 
 	private final WoodyGame game;
-	
-	//Variables to change the scale of the hearts / lives image conveniently
+
+	// Variables to change the scale of the hearts / lives image conveniently
 	private final float scaleHearts = 2;
 	private final float scaleLives = 2;
-	
+
 	// map and camera
 	public static TiledMap map;
 	private final OrthographicCamera camera;
@@ -41,18 +44,16 @@ public class GameScreen implements Screen {
 
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
-	
+
 	public Image imageTest;
 
 	public final Buttons controller = new Buttons();
-	
+
 	private Animations playerAnimationHandler;
 
 	public GameScreen(final WoodyGame game, final int level) {
 
-		
 		// (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
-		
 
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
@@ -84,18 +85,20 @@ public class GameScreen implements Screen {
 
 		// load the textures for animations
 		playerAnimationHandler = new Animations();
-		
+
 		uiPos = camera.project(new Vector3(16.75f, 11f, 0));
-		controller.addImage(playerAnimationHandler.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(playerAnimationHandler.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 52, 16,
+				scaleHearts);
 		controller.addImage(playerAnimationHandler.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 52, 16, scaleHearts);
 		controller.addImage(playerAnimationHandler.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		controller.addImage(playerAnimationHandler.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		
+		controller.addImage(playerAnimationHandler.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 52, 16,
+				scaleHearts);
+
 		uiPos = camera.project(new Vector3(15f, 11f, 0));
 		controller.addImage(playerAnimationHandler.livesZero, "imageLifeZero", uiPos.x, uiPos.y, 18, 18, scaleLives);
 		controller.addImage(playerAnimationHandler.livesOne, "imageLifeOne", uiPos.x, uiPos.y, 18, 18, scaleLives);
 		controller.addImage(playerAnimationHandler.livesTwo, "imageLifeTwo", uiPos.x, uiPos.y, 18, 18, scaleLives);
-		
+
 		this.game = game;
 		this.level = level;
 
@@ -109,6 +112,18 @@ public class GameScreen implements Screen {
 		for (String name : WoodyGame.collisionLayers) {
 			Level.addCollisionLayer(name, this);
 		}
+
+		// get specific rectangles and add them to an array
+		Level.rectanglesFromObjectLayer((MapLayer) map.getLayers().get("Doors"), "door", Level.doors);
+		
+		// set the teleport point, someone wanna do this in xml?
+//		Iterator<ExtendedRectangle> it = Level.doors.iterator();
+//		while(it.hasNext()) {
+//			ExtendedRectangle rec = it.next();
+//			if(rec.getName().equals("door_to_spawn")) {
+//				rec.setTeleportPoint(Level.getCurrentSpawn(level, checkpoint));
+//			}
+//		}
 
 		debugRenderer = new ShapeRenderer();
 	}
@@ -154,10 +169,10 @@ public class GameScreen implements Screen {
 				else
 					Lifesystem.setHearts(0);
 			}
-			
+
 			controller.checkCorrectHeartsImage();
 			controller.checkCorrectLifeImage();
-			
+
 			// render the player
 			player.render(this);
 
@@ -229,15 +244,15 @@ public class GameScreen implements Screen {
 	public OrthogonalTiledMapRenderer getRenderer() {
 		return renderer;
 	}
-	
+
 	public int getLevel() {
 		return level;
 	}
-	
+
 	public int getCheckpoint() {
 		return checkpoint;
 	}
-	
+
 	public Animations getPlayerAnimationHandler() {
 		return playerAnimationHandler;
 	}
@@ -267,10 +282,9 @@ public class GameScreen implements Screen {
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debug = !debug;
 		if (Gdx.input.isKeyJustPressed(Keys.L))
-			Lifesystem.hearts = Lifesystem.changeHearts(Lifesystem.hearts -1);
-		if(Gdx.input.isKeyJustPressed(Keys.R))
-		{
-			if(Lifesystem.getLife() >= 1)
+			Lifesystem.hearts = Lifesystem.changeHearts(Lifesystem.hearts - 1);
+		if (Gdx.input.isKeyJustPressed(Keys.R)) {
+			if (Lifesystem.getLife() >= 1)
 				Lifesystem.life = Lifesystem.setLife(2);
 			else
 				Lifesystem.life = Lifesystem.setLife(3);

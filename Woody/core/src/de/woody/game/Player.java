@@ -137,9 +137,6 @@ public class Player {
 		}
 		// attack function
 		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
-//			if(Level.findDoorRect(game.getGameScreen(), position)){
-//				position.set(new Vector2(Level.getCurrentSpawn(game.getGameScreen().getLevel(), game.getGameScreen().getCheckpoint())));
-//			}
 			Rectangle playerRect = Level.rectPool.obtain();
 			playerRect.set(position.x, position.y, WIDTH-0.1f, HEIGHT);
 			
@@ -235,7 +232,7 @@ public class Player {
 		// scale to frame velocity
 		velocity.scl(delta);
 
-		position.add(checkTileCollision(delta));
+		position.add(checkTileCollision());
 
 		// unscale velocity
 		velocity.scl(1 / delta);
@@ -250,7 +247,7 @@ public class Player {
 	 *            frames per second
 	 * @return the velocity of the player
 	 */
-	private Vector2 checkTileCollision(float delta) {
+	private Vector2 checkTileCollision() {
 		// create the bounding box of the player
 		Rectangle playerRect = Level.rectPool.obtain();
 		playerRect.set(position.x, position.y, WIDTH-0.1f, HEIGHT);

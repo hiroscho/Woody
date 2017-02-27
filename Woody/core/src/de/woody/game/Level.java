@@ -57,29 +57,6 @@ public class Level {
 		layers.add((TiledMapTileLayer) screen.getMap().getLayers().get(name));
 	}
 	
-//	/**
-//	 * Check all the tiles a player currently is in if they have a door piece.
-//	 * 
-//	 * @param screen  current GameScreen
-//	 * @param position  current player position
-//	 * @return  true if a door is found, false otherwise
-//	 */
-//	public static boolean findDoorRect(GameScreen screen, Vector2 position) {
-//		TiledMapTileLayer doorLayer = (TiledMapTileLayer) screen.getMap().getLayers().get("Doors");
-//		
-//		//maximum number of tiles a player can be in at a time is 6
-//		for (int y = (int)position.y; y <= (int)(position.y + Player.HEIGHT); y++) {
-//			for (int x = (int)position.x; x <= (int)(position.x + Player.WIDTH - 0.1f); x++) {
-//				Cell cell = doorLayer.getCell(x, y);
-//				if (cell != null) {
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-//		
-//	}
-	
 	public static void rectanglesFromObjectLayer(MapLayer objectLayer, String namePrefix, Array<ExtendedRectangle> toBeFilled) {
 		MapObjects objects = objectLayer.getObjects();
 		Iterator<MapObject> it= objects.iterator();

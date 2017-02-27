@@ -135,17 +135,17 @@ public class Player {
 			if ((axeCooldown + 200) < System.currentTimeMillis()) {
 
 				if (facesRight) {
-					double x2 = (position.x + WIDTH);
-					double y2 = position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell((int) x2, (int) y2,
-							null);
+					int x2 = (int)position.x + 1;
+					int y2 = (int)position.y;
+					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2, null);
+					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
 					axeCooldown = System.currentTimeMillis();
 
 				} else {
-					double x2 = (position.x - WIDTH);
-					double y2 = position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell((int) x2, (int) y2,
-							null);
+					int x2 = (int)position.x - 1;
+					int y2 = (int)position.y;
+					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2,null);
+					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
 					axeCooldown = System.currentTimeMillis();
 				}
 

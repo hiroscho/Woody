@@ -45,6 +45,8 @@ public class GameScreen implements Screen {
 	public Image imageTest;
 
 	public final Buttons controller = new Buttons();
+	
+	private Animations playerAnimationHandler;
 
 	public GameScreen(final WoodyGame game, final int level) {
 
@@ -81,29 +83,29 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(controller.getStage());
 
 		// load the textures for animations
-		Animations.loadAnimations();
+		playerAnimationHandler = new Animations();
 		
 		uiPos = camera.project(new Vector3(16.75f, 11f, 0));
-		controller.addImage(Animations.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		controller.addImage(Animations.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		controller.addImage(Animations.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		controller.addImage(Animations.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(playerAnimationHandler.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(playerAnimationHandler.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(playerAnimationHandler.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addImage(playerAnimationHandler.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
 		
 		uiPos = camera.project(new Vector3(15f, 11f, 0));
-		controller.addImage(Animations.livesZero, "imageLifeZero", uiPos.x, uiPos.y, 18, 18, scaleLives);
-		controller.addImage(Animations.livesOne, "imageLifeOne", uiPos.x, uiPos.y, 18, 18, scaleLives);
-		controller.addImage(Animations.livesTwo, "imageLifeTwo", uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addImage(playerAnimationHandler.livesZero, "imageLifeZero", uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addImage(playerAnimationHandler.livesOne, "imageLifeOne", uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addImage(playerAnimationHandler.livesTwo, "imageLifeTwo", uiPos.x, uiPos.y, 18, 18, scaleLives);
 		
 		this.game = game;
 		this.level = level;
 
 		// playable character
-		player = new Player(new Texture("textures/Woddy.png"), Level.getCurrentSpawn(level, checkpoint));
+		player = new Player(game, new Texture("textures/Woddy.png"), Level.getCurrentSpawn(level, checkpoint));
 
 		// load the corresponding map, set the unit scale
 		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
-		//Register all layers that have collision
+		// register all layers that have collision
 		for (String name : WoodyGame.collisionLayers) {
 			Level.addCollisionLayer(name, this);
 		}
@@ -226,6 +228,18 @@ public class GameScreen implements Screen {
 
 	public OrthogonalTiledMapRenderer getRenderer() {
 		return renderer;
+	}
+	
+	public int getLevel() {
+		return level;
+	}
+	
+	public int getCheckpoint() {
+		return checkpoint;
+	}
+	
+	public Animations getPlayerAnimationHandler() {
+		return playerAnimationHandler;
 	}
 
 	private void renderDebug() {

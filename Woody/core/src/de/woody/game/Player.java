@@ -36,7 +36,6 @@ public class Player {
 	/** player velocity in world coordinates per second **/
 	public Vector2 velocity = new Vector2();
 	public static State state = State.Standing;
-	public static float stateTime = 0;
 
 	/** time since last jump **/
 	public long lastJump = 0;
@@ -55,21 +54,24 @@ public class Player {
 	public boolean facesRight = true;
 
 	public Texture texture;
+	
+	// easy access game instance
+	private WoodyGame game;
 
-	public Player() {
-		this(null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
+	public Player(final WoodyGame game) {
+		this(game, null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
 		System.err.println("Warning! No texture!");
 	}
 
-	public Player(Texture tex, Vector2 pos) {
-		this(tex, State.Standing, pos, 10f, 15f, 0.87f);
+	public Player(final WoodyGame game, Texture tex, Vector2 pos) {
+		this(game, tex, State.Standing, pos, 10f, 15f, 0.87f);
 	}
 
-	public Player(Texture tex, State state, Vector2 pos) {
-		this(tex, state, pos, 10f, 15f, 0.87f);
+	public Player(final WoodyGame game, Texture tex, State state, Vector2 pos) {
+		this(game, tex, state, pos, 10f, 15f, 0.87f);
 	}
 
-	public Player(Texture tex, State state, Vector2 pos, float mVel, float mJump, float damp) {
+	public Player(final WoodyGame game, Texture tex, State state, Vector2 pos, float mVel, float mJump, float damp) {
 		texture = tex;
 		this.state = state;
 		position.set(pos);
@@ -78,6 +80,7 @@ public class Player {
 		DAMPING = damp;
 		WIDTH = WoodyGame.UNIT_SCALE * texture.getWidth();
 		HEIGHT = WoodyGame.UNIT_SCALE * texture.getHeight();
+		this.game = game;
 	}
 
 	/**
@@ -132,6 +135,12 @@ public class Player {
 		}
 		// attack function
 		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
+			if(Level.findDoorRect(game.getGameScreen(), position)){
+				position.set(new Vector2(Level.getCurrentSpawn(game.getGameScreen().getLevel(), game.getGameScreen().getCheckpoint())));
+			}
+			
+			
+			
 			if ((axeCooldown + 200) < System.currentTimeMillis()) {
 
 				if (facesRight) {
@@ -189,6 +198,7 @@ public class Player {
 
 		// clamp velocity to max, x-axis only
 		velocity.x = MathUtils.clamp(velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
+		velocity.y = MathUtils.clamp(velocity.y, -JUMP_VELOCITY, JUMP_VELOCITY);
 
 		// velocity is < 1, set it to 0
 		if (Math.abs(velocity.x) < 1) {
@@ -228,7 +238,7 @@ public class Player {
 	private Vector2 checkTileCollision(float delta) {
 		// create the bounding box of the player
 		Rectangle playerRect = Level.rectPool.obtain();
-		playerRect.set(position.x, position.y, WIDTH, HEIGHT);
+		playerRect.set(position.x, position.y, WIDTH-0.1f, HEIGHT);
 
 		// the start-(startX, startY) and end-(endX, endY) point define an area
 		// the player can collide against
@@ -328,24 +338,25 @@ public class Player {
 	 */
 	public void render(final GameScreen screen) {
 		Batch batch = screen.getRenderer().getBatch();
+		Animations pAH = screen.getPlayerAnimationHandler();
 
 		batch.begin();
 		if (facesRight && (state == State.Standing))
-			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
 		else if (!facesRight && (state == State.Standing))
-			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+			batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
 		else if (facesRight && (state == State.Walking))
-			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
 		else if (!facesRight && (state == State.Walking))
-			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+			batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
 		else if (facesRight && (state == State.Jumping))
-			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
 		else if (!facesRight && (state == State.Jumping))
-			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+			batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
 		else if (facesRight && (state == State.Falling))
-			batch.draw(Animations.getFrame(stateTime), position.x, position.y, WIDTH, HEIGHT);
+			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
 		else if (!facesRight && (state == State.Falling))
-			batch.draw(Animations.getFrame(stateTime), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+			batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
 		else
 			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
 		batch.end();

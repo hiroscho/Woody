@@ -12,31 +12,34 @@ import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.Player.State;
 
-public class Animations extends Player{
+public class Animations{
 
-	public static State currentState;
-	public static State previousState;
-	public static Animation woodyRun;
-	public static TextureRegion woodyStand;
-	public static TextureRegion woodyJump;
-	public static TextureRegion woodyFall;
-	public static Texture sheetRun;
+	public State currentState;
+	public State previousState;
+	public Animation woodyRun;
+	public TextureRegion woodyStand;
+	public TextureRegion woodyJump;
+	public TextureRegion woodyFall;
+	public Texture sheetRun;
 	
-	public static Texture sheetLife;
-	public static TextureRegion heartsZero;
-	public static TextureRegion heartsOne;
-	public static TextureRegion heartsTwo;
-	public static TextureRegion heartsThree;
-	public static TextureRegion textureRegionPlaceholder;
-	public static Image imageHearts;
+	public Texture sheetLife;
+	public TextureRegion heartsZero;
+	public TextureRegion heartsOne;
+	public TextureRegion heartsTwo;
+	public TextureRegion heartsThree;
+	public TextureRegion textureRegionPlaceholder;
+	public Image imageHearts;
 	
-	public static Texture sheetLives;
-	public static TextureRegion livesZero;
-	public static TextureRegion livesOne;
-	public static TextureRegion livesTwo;
+	public Texture sheetLives;
+	public TextureRegion livesZero;
+	public TextureRegion livesOne;
+	public TextureRegion livesTwo;
 	
-	public static void loadAnimations()
+	public float stateTime;
+	
+	public Animations()
 	{
+		stateTime = 0;
 		sheetRun = new Texture(Gdx.files.internal("textures/loadingsheet.png"));
 		currentState = Player.state;
 		previousState = Player.state;
@@ -65,10 +68,10 @@ public class Animations extends Player{
 		livesTwo = new TextureRegion(sheetLives, 36, 0, 18, 18);
 	}
 	
-	public static TextureRegion getFrame(float dt)
+	public TextureRegion getFrame()
 	{
 		
-		currentState = state;
+		currentState = Player.state;
 		TextureRegion region;
 		
 		switch(currentState)
@@ -91,7 +94,7 @@ public class Animations extends Player{
 		
 		stateTime = currentState == previousState ? stateTime + Gdx.graphics.getDeltaTime() : 0;
 		previousState = currentState;
-		if (currentState == state.Walking && (stateTime >= 1))
+		if (currentState == Player.state.Walking && (stateTime >= 1))
 			stateTime = 0;
 		return region;	
 	}	

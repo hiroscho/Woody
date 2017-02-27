@@ -108,6 +108,30 @@ public class Player {
 				state = State.Walking;
 			facesRight = false;
 		}
+		
+		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded || button.getName().equals("Fight")) {
+			if ((axeCooldown + 200) < System.currentTimeMillis()) {
+
+				if (facesRight) {
+                    int x2 = (int)position.x + 1;
+                    int y2 = (int)position.y;
+                    ((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2, null);
+                    ((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
+                    axeCooldown = System.currentTimeMillis();
+
+                } else {
+                    int x2 = (int)position.x - 1;
+                    int y2 = (int)position.y;
+                    ((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2,null);
+                    ((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
+                    axeCooldown = System.currentTimeMillis();
+                }
+
+				axeCooldown = System.currentTimeMillis();
+			}
+		}
+		
+		
 	}
 
 	/**
@@ -135,19 +159,19 @@ public class Player {
 			if ((axeCooldown + 200) < System.currentTimeMillis()) {
 
 				if (facesRight) {
-					double x2 = (position.x + WIDTH);
-					double y2 = position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell((int) x2, (int) y2,
-							null);
-					axeCooldown = System.currentTimeMillis();
+                    int x2 = (int)position.x + 1;
+                    int y2 = (int)position.y;
+                    ((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2, null);
+                    ((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
+                    axeCooldown = System.currentTimeMillis();
 
-				} else {
-					double x2 = (position.x - WIDTH);
-					double y2 = position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell((int) x2, (int) y2,
-							null);
-					axeCooldown = System.currentTimeMillis();
-				}
+                } else {
+                    int x2 = (int)position.x - 1;
+                    int y2 = (int)position.y;
+                    ((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2,null);
+                    ((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
+                    axeCooldown = System.currentTimeMillis();
+                }
 
 				axeCooldown = System.currentTimeMillis();
 			}
@@ -225,6 +249,10 @@ public class Player {
 	 *            frames per second
 	 * @return the velocity of the player
 	 */
+	
+	// private  
+	
+	
 	private Vector2 checkTileCollision(float delta) {
 		// create the bounding box of the player
 		Rectangle playerRect = Level.rectPool.obtain();

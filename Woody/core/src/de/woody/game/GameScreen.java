@@ -77,9 +77,9 @@ public class GameScreen implements Screen {
 		uiPos = camera.project(new Vector3(3f, 0.25f, 0));
 		controller.addButton(new Texture("textures/ButtonRight.png"), "Right", uiPos.x, uiPos.y);
 
-		// controller.addButton(new
-		// Texture("textures/ButtonFight.png")).setName("Fight");
-
+		uiPos = camera.project(new Vector3(15f, 0.4f, 0));
+		controller.addButton(new Texture("textures/ButtonFight.png"), "Fight", uiPos.x, uiPos.y);
+		
 		// Start taking input from the ui
 		Gdx.input.setInputProcessor(controller.getStage());
 

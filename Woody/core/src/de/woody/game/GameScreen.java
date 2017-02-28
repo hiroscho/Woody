@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapLayer;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -51,6 +53,8 @@ public class GameScreen implements Screen {
 	public final Buttons controller = new Buttons();
 
 	private Animations playerAnimationHandler;
+	
+	private Array<Sprite> ar = new Array<Sprite>();
 
 	public GameScreen(final WoodyGame game, final int level) {
 
@@ -117,6 +121,9 @@ public class GameScreen implements Screen {
 		// get specific rectangles and add them to an array
 		Level.rectanglesFromObjectLayer((MapLayer) map.getLayers().get("Doors"), "door", Level.doors);
 		
+		
+		Level.registerCoins((MapLayer) map.getLayers().get("Doors"), ar);
+		
 		// set the teleport point, someone wanna do this in xml?
 //		Iterator<ExtendedRectangle> it = Level.doors.iterator();
 //		while(it.hasNext()) {
@@ -162,6 +169,8 @@ public class GameScreen implements Screen {
 			// set the renderer view based on what the camera sees and render it
 			renderer.setView(camera);
 			renderer.render();
+			
+			checkCoinPickup();
 
 			Lifesystem.checkAltitude(player);
 			Lifesystem.checkAlive();
@@ -176,8 +185,16 @@ public class GameScreen implements Screen {
 			controller.checkCorrectHeartsImage();
 			controller.checkCorrectLifeImage();
 
+			renderer.getBatch().begin();
+			for(Sprite s : ar) {
+				s.draw(renderer.getBatch());
+			}
+			renderer.getBatch().end();
+			
 			// render the player
 			player.render(this);
+			
+//			Level.spriteTestRectangle(renderer.getBatch());
 
 			// Perform ui logic
 			controller.getStage().act(Gdx.graphics.getDeltaTime());
@@ -292,5 +309,17 @@ public class GameScreen implements Screen {
 			else
 				Lifesystem.life = Lifesystem.setLife(3);
 		}
+	}
+	
+	private boolean checkCoinPickup() {
+		Rectangle playerRect = Level.rectPool.obtain();
+		playerRect.set(player.position.x, player.position.y, Player.WIDTH-0.1f, Player.HEIGHT);
+		for(Sprite s : ar) {
+			if(playerRect.overlaps(s.getBoundingRectangle())) {
+				ar.removeValue(s, false);
+				return true;
+			}	
+		}		
+		return false;
 	}
 }

@@ -2,6 +2,11 @@ package de.woody.game;
 
 import java.util.Iterator;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -54,12 +59,13 @@ public class Level {
 		}
 	}
 
-	
 	/**
 	 * Adds the name-layer to be checked for collisions.
 	 * 
-	 * @param name  the name of the layer
-	 * @param map  the map with the layers
+	 * @param name
+	 *            the name of the layer
+	 * @param map
+	 *            the map with the layers
 	 */
 	public static void addCollisionLayer(String name, TiledMap map) {
 		layers.add((TiledMapTileLayer) map.getLayers().get(name));
@@ -70,10 +76,13 @@ public class Level {
 	 * them to the given array. This implementation is special because all
 	 * rectangle objects MUST have the tpX and tpY properties.
 	 * 
-	 * @param objectLayer  the layer from which objects are read
-	 * @param namePrefix  the name Prefix by which objects are differentiated
-	 * @param toBeFilled  array in which rectangles are saved
-	 * @return  the array after being filled
+	 * @param objectLayer
+	 *            the layer from which objects are read
+	 * @param namePrefix
+	 *            the name Prefix by which objects are differentiated
+	 * @param toBeFilled
+	 *            array in which rectangles are saved
+	 * @return the array after being filled
 	 */
 	public static Array<ExtendedRectangle> rectanglesFromObjectLayer(MapLayer objectLayer, String namePrefix,
 			Array<ExtendedRectangle> toBeFilled) {
@@ -131,4 +140,37 @@ public class Level {
 		}
 		return tiles;
 	}
+	
+	public static Array<Sprite> registerCoins(MapLayer objectLayer, Array<Sprite> toBeFilled) {
+		MapObjects objects = objectLayer.getObjects();
+		Texture test = new Texture(Gdx.files.internal("textures/test.png"));
+		TextureRegion coinTest = new TextureRegion(test, 0, 0, 64, 64);
+		Iterator<MapObject> it = objects.iterator();
+		while (it.hasNext()) {
+			MapObject object = it.next();
+			if (object.getName().startsWith("coin")) {
+				MapProperties properties = object.getProperties();
+				float x = properties.get("x", Float.class) * WoodyGame.UNIT_SCALE;
+				float y = properties.get("y", Float.class) * WoodyGame.UNIT_SCALE;
+				float width = properties.get("width", Float.class) * WoodyGame.UNIT_SCALE;
+				float height = properties.get("height", Float.class) * WoodyGame.UNIT_SCALE;
+
+				Sprite coin = new Sprite(coinTest);
+				coin.setBounds(x, y, width, height);
+				toBeFilled.add(coin);
+			}
+		}
+		return toBeFilled;
+	}
+	
+//	public static void spriteTestRectangle(Batch batch) {
+//		Sprite sprite = new Sprite(new Texture("textures/ButtonJump.png"));
+//		sprite.setSize(sprite.getWidth()*WoodyGame.UNIT_SCALE, sprite.getHeight()*WoodyGame.UNIT_SCALE);
+//		batch.begin();
+//		sprite.draw(batch);
+//		batch.end();
+//	}
+	
+	
+	
 }

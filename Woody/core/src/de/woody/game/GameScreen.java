@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.Player.State;
 
@@ -138,11 +139,13 @@ public class GameScreen implements Screen {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 			// get the touched/pressed button
-			Button pressedButton = controller.checkAllButtons();
+			Array<Button> pressedButtons = controller.checkAllButtons();
 
 			// checks input, sets velocity
-			if (pressedButton != null) {
-				player.setInputVelocity(pressedButton);
+			if(pressedButtons.size != 0) {
+				for(Button but : pressedButtons) {
+					player.setInputVelocity(but);
+				}
 			} else {
 				player.setKeyboardVelocity();
 			}

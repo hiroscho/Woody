@@ -83,12 +83,13 @@ public class Buttons extends WoodyGame {
 		viewport.update(width, height);
 	}
 
-	public Button checkAllButtons() {
+	public Array<Button> checkAllButtons() {
+		Array<Button> pressedButtons = new Array<Button>();
 		for (Button but : allButtons) {
 			if (but.isPressed())
-				return but;
+				pressedButtons.add(but);
 		}
-		return null;
+		return pressedButtons;
 	}
 	
 	public void checkCorrectHeartsImage()

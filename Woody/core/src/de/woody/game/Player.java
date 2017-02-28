@@ -143,8 +143,6 @@ public class Player {
 			Iterator<ExtendedRectangle> it = Level.doors.iterator();
 			while(it.hasNext()) {
 				ExtendedRectangle rec = it.next();
-				System.out.println(rec.x + "   " + rec.y);
-				System.out.println(playerRect.x + "   " + playerRect.y);
 				if(playerRect.overlaps(rec)) {
 					position.set(rec.getTeleportPoint());
 				}

@@ -1,5 +1,7 @@
 package de.woody.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -329,10 +331,19 @@ public class Player {
 		Level.rectPool.free(playerRect);
 		return velocity;
 	}
-
-	/**
-	 * Render the player depending on state.
-	 * 
+	
+	public void checkPlayerAboveDamageBlock()
+	{
+		int x2 = (int)position.x;
+		int y2 = (int)position.y -1;
+		if((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null)
+		{
+			Lifesystem.hearts = Lifesystem.damagePlayer(1);
+		}
+		
+	}	
+	
+	 /* 
 	 * @param screen
 	 *            the active GameScreen
 	 */

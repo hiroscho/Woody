@@ -157,6 +157,7 @@ public class GameScreen implements Screen {
 			
 			controller.checkCorrectHeartsImage();
 			controller.checkCorrectLifeImage();
+			player.checkPlayerAboveDamageBlock();
 			
 			// render the player
 			player.render(this);

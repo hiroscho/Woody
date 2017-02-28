@@ -111,7 +111,7 @@ public class GameScreen implements Screen {
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
 		// register all layers that have collision
 		for (String name : WoodyGame.collisionLayers) {
-			Level.addCollisionLayer(name, this);
+			Level.addCollisionLayer(name, map);
 		}
 
 		// get specific rectangles and add them to an array

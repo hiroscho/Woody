@@ -33,7 +33,6 @@ public class Level {
 		}
 	};
 	private static Array<Rectangle> tiles = new Array<Rectangle>();
-	public static Array<ExtendedRectangle> doors = new Array<ExtendedRectangle>();
 	public static Array<TiledMapTileLayer> layers = new Array<TiledMapTileLayer>();
 
 	/**
@@ -72,41 +71,42 @@ public class Level {
 	}
 
 	/**
-	 * Create all rectangles with the namePrefix from the given layer and add
-	 * them to the given array. This implementation is special because all
-	 * rectangle objects MUST have the tpX and tpY properties.
+	 * Create Door-objects out of all the MapObject's add them to an Array and return it.
 	 * 
-	 * @param objectLayer
-	 *            the layer from which objects are read
-	 * @param namePrefix
-	 *            the name Prefix by which objects are differentiated
-	 * @param toBeFilled
-	 *            array in which rectangles are saved
-	 * @return the array after being filled
+	 * @param mapObjects  objects from which properties are read to create the doors
+	 * @return  an array with all the created doors
 	 */
-	public static Array<ExtendedRectangle> rectanglesFromObjectLayer(MapLayer objectLayer, String namePrefix,
-			Array<ExtendedRectangle> toBeFilled) {
-		MapObjects objects = objectLayer.getObjects();
-		Iterator<MapObject> it = objects.iterator();
+	public static Array<Door> createDoors(MapObjects mapObjects) {
+		Array<Door> doors = new Array<Door>();
+
+		Iterator<MapObject> it = mapObjects.iterator();
+		
+		int tpX = 0;
+		int tpY = 0;
+		float x, y, width, height;
+		
 		while (it.hasNext()) {
 			MapObject object = it.next();
-			if (object.getName().startsWith(namePrefix)) {
-				MapProperties properties = object.getProperties();
-				float x = properties.get("x", Float.class) * WoodyGame.UNIT_SCALE;
-				float y = properties.get("y", Float.class) * WoodyGame.UNIT_SCALE;
-				float width = properties.get("width", Float.class) * WoodyGame.UNIT_SCALE;
-				float height = properties.get("height", Float.class) * WoodyGame.UNIT_SCALE;
-
-				ExtendedRectangle rec = new ExtendedRectangle(x, y, width, height, object.getName());
-				try {
-					rec.setTeleportPoint(properties.get("tpX", Integer.class), properties.get("tpY", Integer.class));
-				} catch (Exception e) {
-					System.err.println("The properties tpX/tpY are missing in one or more object!");
-				}
-				toBeFilled.add(rec);
+			
+			// get the properties of the object and save some of them in variables
+			MapProperties properties = object.getProperties();
+			x = properties.get("x", Float.class) * WoodyGame.UNIT_SCALE;
+			y = properties.get("y", Float.class) * WoodyGame.UNIT_SCALE;
+			width = properties.get("width", Float.class) * WoodyGame.UNIT_SCALE;
+			height = properties.get("height", Float.class) * WoodyGame.UNIT_SCALE;
+			
+			// try getting the custom properties tpX/tpY, if they are missing someone fucked up and it's defaulting
+			try {
+				tpX = properties.get("tpX", Integer.class);
+				tpY = properties.get("tpY", Integer.class);
+			} catch(Exception e) {
+				System.err.println("Missing tpX/tpY in " + object.getName() + "! Defaulting to (0, 0)!");
 			}
+
+			//create the door and add it to the array
+			doors.add(new Door(x, y, width, height, tpX, tpY));
 		}
-		return toBeFilled;
+		return doors;
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class Level {
 		}
 		return tiles;
 	}
-	
+
 	public static Array<Sprite> registerCoins(MapLayer objectLayer, Array<Sprite> toBeFilled) {
 		MapObjects objects = objectLayer.getObjects();
 		Texture test = new Texture(Gdx.files.internal("textures/test.png"));
@@ -162,15 +162,18 @@ public class Level {
 		}
 		return toBeFilled;
 	}
-	
-//	public static void spriteTestRectangle(Batch batch) {
-//		Sprite sprite = new Sprite(new Texture("textures/ButtonJump.png"));
-//		sprite.setSize(sprite.getWidth()*WoodyGame.UNIT_SCALE, sprite.getHeight()*WoodyGame.UNIT_SCALE);
-//		batch.begin();
-//		sprite.draw(batch);
-//		batch.end();
-//	}
-	
-	
-	
+
+	public static MapLayer getLayer(TiledMap map, String name) {
+		return map.getLayers().get(name);
+	}
+
+	public static MapObjects filterObjects(MapObjects objects, String prefix) {
+		for (MapObject obj : objects) {
+			if (!obj.getName().startsWith(prefix)) {
+				objects.remove(obj);
+			}
+		}
+		return objects;
+	}
+
 }

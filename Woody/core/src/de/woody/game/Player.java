@@ -140,9 +140,9 @@ public class Player {
 			Rectangle playerRect = Level.rectPool.obtain();
 			playerRect.set(position.x, position.y, WIDTH-0.1f, HEIGHT);
 			
-			Iterator<ExtendedRectangle> it = Level.doors.iterator();
+			Iterator<Door> it = game.getGameScreen().doors.iterator();
 			while(it.hasNext()) {
-				ExtendedRectangle rec = it.next();
+				Door rec = it.next();
 				if(playerRect.overlaps(rec)) {
 					position.set(rec.getTeleportPoint());
 				}

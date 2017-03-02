@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -42,19 +43,23 @@ public class GameScreen implements Screen {
 
 	private final Player player;
 
+	// nr of the level
 	private final int level;
+	//current checkpoint (could be changed to a vector and used directly)
 	private int checkpoint;
 
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
 
-	public Image imageTest;
-
 	public final Buttons controller = new Buttons();
 
 	private Animations playerAnimationHandler;
 	
+	//Test
 	private Array<Sprite> ar = new Array<Sprite>();
+	
+	// All doors in the current level
+	public static Array<Door> doors = new Array<Door>();
 
 	public GameScreen(final WoodyGame game, final int level) {
 
@@ -118,20 +123,11 @@ public class GameScreen implements Screen {
 			Level.addCollisionLayer(name, map);
 		}
 
-		// get specific rectangles and add them to an array
-		Level.rectanglesFromObjectLayer((MapLayer) map.getLayers().get("Doors"), "door", Level.doors);
+		// create the doors and save them in an easy access array
+		doors = Level.createDoors(Level.filterObjects(Level.getLayer(map, "Doors").getObjects(), "door"));
 		
 		
-		Level.registerCoins((MapLayer) map.getLayers().get("Doors"), ar);
-		
-		// set the teleport point, someone wanna do this in xml?
-//		Iterator<ExtendedRectangle> it = Level.doors.iterator();
-//		while(it.hasNext()) {
-//			ExtendedRectangle rec = it.next();
-//			if(rec.getName().equals("door_to_spawn")) {
-//				rec.setTeleportPoint(Level.getCurrentSpawn(level, checkpoint));
-//			}
-//		}
+		Level.registerCoins(Level.getLayer(map, "Doors"), ar);
 
 		debugRenderer = new ShapeRenderer();
 	}
@@ -169,8 +165,8 @@ public class GameScreen implements Screen {
 			// set the renderer view based on what the camera sees and render it
 			renderer.setView(camera);
 			renderer.render();
-			
-			checkCoinPickup();
+			if(checkCoinPickup())
+				System.out.println("true");
 
 			Lifesystem.checkAltitude(player);
 			Lifesystem.checkAlive();
@@ -185,16 +181,18 @@ public class GameScreen implements Screen {
 			controller.checkCorrectHeartsImage();
 			controller.checkCorrectLifeImage();
 
-			renderer.getBatch().begin();
-			for(Sprite s : ar) {
-				s.draw(renderer.getBatch());
-			}
-			renderer.getBatch().end();
+
 			
 			// render the player
 			player.render(this);
 			
 //			Level.spriteTestRectangle(renderer.getBatch());
+			
+			renderer.getBatch().begin();
+			for(Sprite s : ar) {
+				s.draw(renderer.getBatch());
+			}
+			renderer.getBatch().end();
 
 			// Perform ui logic
 			controller.getStage().act(Gdx.graphics.getDeltaTime());

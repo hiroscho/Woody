@@ -1,12 +1,5 @@
 package de.woody.game;
 
-import java.util.Iterator;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -33,7 +26,7 @@ public class Level {
 		}
 	};
 	private static Array<Rectangle> tiles = new Array<Rectangle>();
-	public static Array<TiledMapTileLayer> layers = new Array<TiledMapTileLayer>();
+	public static Array<TiledMapTileLayer> tileLayers = new Array<TiledMapTileLayer>();
 
 	/**
 	 * Returns the current spawn for the level and number of reached
@@ -67,7 +60,7 @@ public class Level {
 	 *            the map with the layers
 	 */
 	public static void addCollisionLayer(String name, TiledMap map) {
-		layers.add((TiledMapTileLayer) map.getLayers().get(name));
+		tileLayers.add((TiledMapTileLayer) getLayer(map, name));
 	}
 
 	/**
@@ -76,17 +69,14 @@ public class Level {
 	 * @param mapObjects  objects from which properties are read to create the doors
 	 * @return  an array with all the created doors
 	 */
-	public static Array<Door> createDoors(MapObjects mapObjects) {
+	public static Array<Door> createDoors(Array<MapObject> mapObjects) {
 		Array<Door> doors = new Array<Door>();
-
-		Iterator<MapObject> it = mapObjects.iterator();
 		
 		int tpX = 0;
 		int tpY = 0;
 		float x, y, width, height;
 		
-		while (it.hasNext()) {
-			MapObject object = it.next();
+		for (MapObject object : mapObjects) {
 			
 			// get the properties of the object and save some of them in variables
 			MapProperties properties = object.getProperties();
@@ -126,7 +116,7 @@ public class Level {
 		rectPool.freeAll(tiles);
 		tiles.clear();
 
-		for (TiledMapTileLayer layer : layers) {
+		for (TiledMapTileLayer layer : tileLayers) {
 			for (int y = startY; y <= endY; y++) {
 				for (int x = startX; x <= endX; x++) {
 					Cell cell = layer.getCell(x, y);
@@ -141,39 +131,61 @@ public class Level {
 		return tiles;
 	}
 
-	public static Array<Sprite> registerCoins(MapLayer objectLayer, Array<Sprite> toBeFilled) {
-		MapObjects objects = objectLayer.getObjects();
-		Texture test = new Texture(Gdx.files.internal("textures/test.png"));
-		TextureRegion coinTest = new TextureRegion(test, 0, 0, 64, 64);
-		Iterator<MapObject> it = objects.iterator();
-		while (it.hasNext()) {
-			MapObject object = it.next();
-			if (object.getName().startsWith("coin")) {
-				MapProperties properties = object.getProperties();
-				float x = properties.get("x", Float.class) * WoodyGame.UNIT_SCALE;
-				float y = properties.get("y", Float.class) * WoodyGame.UNIT_SCALE;
-				float width = properties.get("width", Float.class) * WoodyGame.UNIT_SCALE;
-				float height = properties.get("height", Float.class) * WoodyGame.UNIT_SCALE;
+	
+	//fun with coins and sprites TODO: Remove or rewrite
+//	public static Array<Sprite> registerCoins(MapLayer objectLayer, Array<Sprite> toBeFilled) {
+//		MapObjects objects = objectLayer.getObjects();
+//		
+//		Texture test = new Texture(Gdx.files.internal("textures/test.png"));
+//		TextureRegion coinTest = new TextureRegion(test, 0, 0, 64, 64);
+//		Iterator<MapObject> it = objects.iterator();
+//		
+//		while (it.hasNext()) {
+//			MapObject object = it.next();
+//			System.out.println(object.getName());
+//			if (object.getName().startsWith("coin")) {
+//				MapProperties properties = object.getProperties();
+//				float x = properties.get("x", Float.class) * WoodyGame.UNIT_SCALE;
+//				float y = properties.get("y", Float.class) * WoodyGame.UNIT_SCALE;
+//				float width = properties.get("width", Float.class) * WoodyGame.UNIT_SCALE;
+//				float height = properties.get("height", Float.class) * WoodyGame.UNIT_SCALE;
+//
+//				Sprite coin = new Sprite(coinTest);
+//				coin.setBounds(x, y, width, height);
+//				toBeFilled.add(coin);
+//				
+//			}
+//		}
+//		return toBeFilled;
+//	}
 
-				Sprite coin = new Sprite(coinTest);
-				coin.setBounds(x, y, width, height);
-				toBeFilled.add(coin);
-			}
-		}
-		return toBeFilled;
-	}
-
+	/**
+	 * Returns the name layer of map-
+	 * 
+	 * @param map  map with layer
+	 * @param name  name of the layer
+	 * @return  the layer
+	 */
 	public static MapLayer getLayer(TiledMap map, String name) {
 		return map.getLayers().get(name);
 	}
 
-	public static MapObjects filterObjects(MapObjects objects, String prefix) {
+	/**
+	 * Get a filtered Array of MapObject's
+	 * 
+	 * @param objects  collection with all objects
+	 * @param prefix  filter requirement
+	 * @return  an Array with MapObject's fitting the given prefix
+	 */
+	public static Array<MapObject> filterObjects(MapObjects objects, String prefix) {
+		Array<MapObject> filteredObjects = new Array<MapObject>();
+		
 		for (MapObject obj : objects) {
-			if (!obj.getName().startsWith(prefix)) {
-				objects.remove(obj);
+			if (obj.getName().startsWith(prefix)) {
+				filteredObjects.add(obj);
 			}
 		}
-		return objects;
+		return filteredObjects;
 	}
 
 }

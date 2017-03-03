@@ -140,7 +140,7 @@ public class Player {
 			Rectangle playerRect = Level.rectPool.obtain();
 			playerRect.set(position.x, position.y, WIDTH-0.1f, HEIGHT);
 			
-			Iterator<Door> it = game.getGameScreen().doors.iterator();
+			Iterator<Door> it = GameScreen.doors.iterator();
 			while(it.hasNext()) {
 				Door rec = it.next();
 				if(playerRect.overlaps(rec)) {
@@ -351,24 +351,41 @@ public class Player {
 		Animations pAH = screen.getPlayerAnimationHandler();
 
 		batch.begin();
-		if (facesRight && (state == State.Standing))
-			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
-		else if (!facesRight && (state == State.Standing))
-			batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-		else if (facesRight && (state == State.Walking))
-			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
-		else if (!facesRight && (state == State.Walking))
-			batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-		else if (facesRight && (state == State.Jumping))
-			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
-		else if (!facesRight && (state == State.Jumping))
-			batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-		else if (facesRight && (state == State.Falling))
-			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
-		else if (!facesRight && (state == State.Falling))
-			batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-		else
-			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
+		if (facesRight) {
+			switch (state) {
+			case Standing:
+				batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
+				break;
+			case Walking:
+				batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
+				break;
+			case Jumping:
+				batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
+				break;
+			case Falling:
+				batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
+				break;
+			default:
+				batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
+			}
+		} else { // faces left
+			switch (state) {
+			case Standing:
+				batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+				break;
+			case Walking:
+				batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+				break;
+			case Jumping:
+				batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+				break;
+			case Falling:
+				batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+				break;
+			default:
+				batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
+			}
+		}
 		batch.end();
 	}
 }

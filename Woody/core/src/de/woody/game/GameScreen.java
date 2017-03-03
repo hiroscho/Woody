@@ -55,8 +55,8 @@ public class GameScreen implements Screen {
 
 	private Animations playerAnimationHandler;
 	
-	//Test
-	private Array<Sprite> ar = new Array<Sprite>();
+	//Test sprites TODO: remove or rewrite
+	//private Array<Sprite> ar = new Array<Sprite>();
 	
 	// All doors in the current level
 	public static Array<Door> doors = new Array<Door>();
@@ -126,8 +126,8 @@ public class GameScreen implements Screen {
 		// create the doors and save them in an easy access array
 		doors = Level.createDoors(Level.filterObjects(Level.getLayer(map, "Doors").getObjects(), "door"));
 		
-		
-		Level.registerCoins(Level.getLayer(map, "Doors"), ar);
+		// fun with coins TODO: remove or rewrite
+		//Level.registerCoins(Level.getLayer(map, "Doors"), ar);
 
 		debugRenderer = new ShapeRenderer();
 	}
@@ -165,8 +165,15 @@ public class GameScreen implements Screen {
 			// set the renderer view based on what the camera sees and render it
 			renderer.setView(camera);
 			renderer.render();
-			if(checkCoinPickup())
-				System.out.println("true");
+			
+
+			//fun with coins and sprites TODO: remove or rewrite
+//			checkCoinPickup();
+//			renderer.getBatch().begin();
+//			for(Sprite s : ar) {
+//				s.draw(renderer.getBatch());
+//			}
+//			renderer.getBatch().end();
 
 			Lifesystem.checkAltitude(player);
 			Lifesystem.checkAlive();
@@ -181,18 +188,8 @@ public class GameScreen implements Screen {
 			controller.checkCorrectHeartsImage();
 			controller.checkCorrectLifeImage();
 
-
-			
 			// render the player
 			player.render(this);
-			
-//			Level.spriteTestRectangle(renderer.getBatch());
-			
-			renderer.getBatch().begin();
-			for(Sprite s : ar) {
-				s.draw(renderer.getBatch());
-			}
-			renderer.getBatch().end();
 
 			// Perform ui logic
 			controller.getStage().act(Gdx.graphics.getDeltaTime());
@@ -309,15 +306,16 @@ public class GameScreen implements Screen {
 		}
 	}
 	
-	private boolean checkCoinPickup() {
-		Rectangle playerRect = Level.rectPool.obtain();
-		playerRect.set(player.position.x, player.position.y, Player.WIDTH-0.1f, Player.HEIGHT);
-		for(Sprite s : ar) {
-			if(playerRect.overlaps(s.getBoundingRectangle())) {
-				ar.removeValue(s, false);
-				return true;
-			}	
-		}		
-		return false;
-	}
+	//tested sprites TODO: remove or rewrite
+//	private boolean checkCoinPickup() {
+//		Rectangle playerRect = Level.rectPool.obtain();
+//		playerRect.set(player.position.x, player.position.y, Player.WIDTH-0.1f, Player.HEIGHT);
+//		for(Sprite s : ar) {
+//			if(playerRect.overlaps(s.getBoundingRectangle())) {
+//				ar.removeValue(s, false);
+//				return true;
+//			}	
+//		}		
+//		return false;
+//	}
 }

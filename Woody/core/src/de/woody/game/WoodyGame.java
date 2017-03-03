@@ -30,15 +30,6 @@ public class WoodyGame extends Game {
 		
 		this.setScreen(new GameScreen(this, 1));
 	}
-	
-	/**
-	 * Has to be used with care, forced typecast on screen
-	 * 
-	 * @return
-	 */
-	public GameScreen getGameScreen() {
-		return ((GameScreen)this.getScreen());
-	}
 
 	@Override
 	public void render() {

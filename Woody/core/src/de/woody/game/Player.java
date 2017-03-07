@@ -352,7 +352,6 @@ public class Player {
 		status = false;
 		state = Player.State.Dead;
 	}
-	
 	//is alive or dead method
 	
 	public void isAliveorNot(){

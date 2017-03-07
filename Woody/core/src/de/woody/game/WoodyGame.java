@@ -27,15 +27,26 @@ public class WoodyGame extends Game {
 
 	@Override
 	public void create() {
-		this.setScreen(new GameoverScreen(this));
-	//	this.setScreen(new GameScreen(this, 1));
+		this.setScreen(new MainMenueScreen(this));
+		//GameScreen(this, 1) für Plebs
 	}
-	
+	public void gamescreen(){
+		this.setScreen(new GameScreen(this, 1));
+	}
+	public void deathscreen(){
+		this.setScreen(new GameoverScreen(this));
+	}
+	public void menuscreen(){
+		this.setScreen(new MainMenueScreen(this));
+	}
+	public void settingscreen(){
+		this.setScreen(new SettingsScreen(this));
+	}
 	@Override
 	public void render() {
 		super.render();
 	}
-
+	
 	@Override
 	public void dispose() {
 	}

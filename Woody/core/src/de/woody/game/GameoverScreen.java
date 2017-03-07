@@ -14,17 +14,30 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameoverScreen extends WoodyGame implements Screen {
 
-	private Viewport viewport;
-	private Stage gameoverstate;
-	private Game gameover;
+//	private Viewport viewport;
+//	private Stage gameoverstate;
+	
+//	private game gameover;
+	WoodyGame game;
 	private Batch batch;
 
-	private static final int BANNER_WIDTH = 350;
-	private static final int BANNER_HEIGHT = 100;
+//	private static final int GAMEOVER_BANNER_WIDTH = 170;
+//	private static final int GAMEOVER_BANNER_HEIGHT = 40;
+	private static final int REPLAY_BUTTON_WIDTH = 300;
+	private static final int REPLAY_BUTTON_HEIGHT = 150;
+	private static final int MENU_BUTTON_WIDTH = 300;
+	private static final int MENU_BUTTON_HEIGHT = 150;
+	private static final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
+	private static final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
+	
 	Texture gameOverBanner = new Texture("textures/Gameoverscreen.png");
+	Texture ReplayButtonun = new Texture("textures/Replay_un.png");
+	Texture ReplayButtonak = new Texture("textures/Replay_ak.png");
+	Texture MenuButtonun = new Texture("textures/Menu_un.png");
+	Texture MenuButtonak = new Texture("textures/Menu_ak.png");
 
 	public GameoverScreen(WoodyGame game) {
-		this.gameover = game;
+		this.game = game;
 		batch = new SpriteBatch();
 	}
 
@@ -32,13 +45,6 @@ public class GameoverScreen extends WoodyGame implements Screen {
 	public void create() {
 		this.setScreen(new GameoverScreen(this));
 	}
-
-	// public GameoverScreen(Game game){
-	// this.game = game;
-	// viewport = new FitViewport(Player.WIDTH, Player.HEIGHT, new
-	// OrthographicCamera());
-	// gameover = new Stage(viewport, new SpriteBatch());
-	// }
 
 	@Override
 	public void show() {
@@ -51,7 +57,33 @@ public class GameoverScreen extends WoodyGame implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(gameOverBanner, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		//Background
+		batch.draw(gameOverBanner, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+		
+		//REPLAY
+		int x = Gdx.graphics.getWidth() / 2 - REPLAY_BUTTON_WIDTH / 2;
+		if(Gdx.input.getX() < x + REPLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Gdx.graphics.getHeight() - Gdx.input.getY() < 130 + REPLAY_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > 130){
+			batch.draw(ReplayButtonak, 170, 140, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
+			if(Gdx.input.isTouched()){
+				this.dispose();
+				game.gamescreen();
+			}
+		}else{
+			batch.draw(ReplayButtonun, 170, 140, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
+		}
+		//MENU
+		int n = Gdx.graphics.getWidth() / 4 - MENU_BUTTON_WIDTH / 4;
+		if(Gdx.input.getX() < n + MENU_BUTTON_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < -20 + MENU_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > -20){
+			batch.draw(MenuButtonak, 165, -10, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+			if(Gdx.input.justTouched()){
+				this.dispose();
+				game.menuscreen();
+			}
+		}else{
+			batch.draw(MenuButtonun, 165, -10, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+		}
+		
+		
 		batch.end();
 
 	}

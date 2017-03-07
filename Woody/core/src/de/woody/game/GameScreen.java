@@ -29,6 +29,7 @@ public class GameScreen implements Screen {
 	private final OrthogonalTiledMapRenderer renderer;
 
 	private final Player player;
+	private GameoverScreen gameoverscreen;
 
 	private final int level;
 	private int checkpoint;
@@ -120,12 +121,16 @@ public class GameScreen implements Screen {
 			controller.getStage().act(Gdx.graphics.getDeltaTime());
 			// Draw the ui
 			controller.getStage().draw();
-
+			
 			// render debug rectangles
 			if (debug)
 				renderDebug();
 			// is player alive or not
 			player.isAliveorNot();
+			if(player.isPlayerAlive() == false){
+				this.dispose();
+				game.deathscreen();
+			}
 		}
 	}
 

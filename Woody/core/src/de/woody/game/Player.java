@@ -54,6 +54,7 @@ public class Player {
 
 	/** is player facing right **/
 	public boolean facesRight = true;
+	public boolean sliding = false;
 
 	public Texture texture;
 	
@@ -96,20 +97,20 @@ public class Player {
 	public void setInputVelocity(Button button) {
 
 		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || button.getName().equals("Jump")
-				|| Gdx.input.isKeyPressed(Keys.W)) && grounded) {
+				|| Gdx.input.isKeyPressed(Keys.W)) && grounded  && !sliding) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || button.getName().equals("Right")) {
+		if ((Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || button.getName().equals("Right")) && !sliding) {
 			velocity.x = MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
 			facesRight = true;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || button.getName().equals("Left")) {
+		if ((Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || button.getName().equals("Left"))  && !sliding) {
 			velocity.x = -MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
@@ -122,7 +123,7 @@ public class Player {
 	 * input.
 	 */
 	public void setKeyboardVelocity() {
-		if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) && !sliding) {
 			if (grounded) {
 				velocity.y = JUMP_VELOCITY;
 				state = State.Jumping;
@@ -173,7 +174,7 @@ public class Player {
 		// grounded = false;
 		// }
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D))
+		if ((Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) && !sliding)
 
 		{
 			velocity.x = MAX_VELOCITY;
@@ -182,7 +183,7 @@ public class Player {
 			facesRight = true;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
+		if ((Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) && !sliding) {
 			velocity.x = -MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
@@ -346,12 +347,22 @@ public class Player {
 			timeSinceCollision = System.currentTimeMillis() - 100;
 		}
 		
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Slowing")).getCell(x2, y2)) != null))
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Slime")).getCell(x2, y2)) != null))
 		{
 			MAX_VELOCITY = MAX_VELOCITY / 5;
 		}
 		else
 			MAX_VELOCITY = 10f;
+		
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ice")).getCell(x2, y2)) != null))
+		{
+			DAMPING = 0.975f;
+			sliding = true;
+		}
+		else
+		{
+			DAMPING = 0.87f;
+		}
 	}	
 	
 	public void checkPlayerInBlock()
@@ -362,6 +373,12 @@ public class Player {
 		{
 			MAX_VELOCITY = MAX_VELOCITY / 5;
 		}
+	}
+	
+	public void checkSliding()
+	{
+		if(velocity.x == 0)
+			sliding = false;
 	}
 	
 	 /* 

@@ -59,6 +59,8 @@ public class Player {
 	
 	// easy access game instance
 	private WoodyGame game;
+	
+	float timeSinceCollision = 0;
 
 	public Player(final WoodyGame game) {
 		this(game, null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
@@ -332,16 +334,28 @@ public class Player {
 		return velocity;
 	}
 	
+	
 	public void checkPlayerAboveDamageBlock()
 	{
+
 		int x2 = (int)position.x;
 		int y2 = (int)position.y -1;
-		if((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null)
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null) && ((timeSinceCollision) < System.currentTimeMillis()))
 		{
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
+			timeSinceCollision = System.currentTimeMillis();
 		}
-		
 	}	
+	
+	public void checkPlayerInBlock()
+	{
+		int x2 = (int)position.x;
+		int y2 = (int)position.y;
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Obstacle")).getCell(x2, y2)) != null))
+		{
+			velocity.x = velocity.x / 10;
+		}
+	}
 	
 	 /* 
 	 * @param screen

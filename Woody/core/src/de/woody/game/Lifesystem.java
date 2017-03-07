@@ -31,6 +31,7 @@ public class Lifesystem{
 	public static int life = 2;					//if life < 1 -> State.Dead and Woody starts at the start of the level
 	public int oldLife = life;					//used to check if Woody has lost a life (method isLifeLost() maybe necessary for respawn)
 	
+	private static long lastDamage = 0;
 	public int getHearts(){
 		return hearts;
 	}
@@ -45,7 +46,13 @@ public class Lifesystem{
 	
 	public static int damagePlayer(int damage)					//used to decrease the number of hearts by a predefined number
 	{
-		return hearts -= damage;
+		if((System.currentTimeMillis() - lastDamage) < 500)
+			return hearts;
+		else
+		{
+			lastDamage = System.currentTimeMillis();
+			return hearts -= damage;
+		}
 	}
 	
 	public static int getLife()

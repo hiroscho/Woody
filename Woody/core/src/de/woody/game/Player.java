@@ -55,13 +55,13 @@ public class Player {
 	/** is player facing right **/
 	public boolean facesRight = true;
 	public boolean sliding = false;
+	public boolean slidingLeft = false;
+	public boolean slidingRight = false;
 
 	public Texture texture;
 	
 	// easy access game instance
 	private WoodyGame game;
-	
-	float timeSinceCollision = 0;
 
 	public Player(final WoodyGame game) {
 		this(game, null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
@@ -97,20 +97,20 @@ public class Player {
 	public void setInputVelocity(Button button) {
 
 		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || button.getName().equals("Jump")
-				|| Gdx.input.isKeyPressed(Keys.W)) && grounded  && !sliding) {
+				|| Gdx.input.isKeyPressed(Keys.W)) && grounded) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
 		}
 
-		if ((Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || button.getName().equals("Right")) && !sliding) {
+		if ((Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || button.getName().equals("Right")) && !slidingLeft) {
 			velocity.x = MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
 			facesRight = true;
 		}
 
-		if ((Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || button.getName().equals("Left"))  && !sliding) {
+		if ((Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || button.getName().equals("Left"))  && !slidingRight) {
 			velocity.x = -MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
@@ -123,7 +123,7 @@ public class Player {
 	 * input.
 	 */
 	public void setKeyboardVelocity() {
-		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) && !sliding) {
+		if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
 			if (grounded) {
 				velocity.y = JUMP_VELOCITY;
 				state = State.Jumping;
@@ -174,7 +174,7 @@ public class Player {
 		// grounded = false;
 		// }
 
-		if ((Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) && !sliding)
+		if ((Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) && !slidingLeft)
 
 		{
 			velocity.x = MAX_VELOCITY;
@@ -183,7 +183,7 @@ public class Player {
 			facesRight = true;
 		}
 
-		if ((Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) && !sliding) {
+		if ((Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) && !slidingRight) {
 			velocity.x = -MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
@@ -338,13 +338,11 @@ public class Player {
 	
 	public void checkPlayerAboveDamageBlock()
 	{
-
 		int x2 = (int)position.x;
 		int y2 = (int)position.y - 1;
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null) && ((timeSinceCollision) < System.currentTimeMillis()))
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null))
 		{
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
-			timeSinceCollision = System.currentTimeMillis() - 100;
 		}
 		
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Slime")).getCell(x2, y2)) != null))
@@ -361,6 +359,7 @@ public class Player {
 		}
 		else
 		{
+//			sliding = false;
 			DAMPING = 0.87f;
 		}
 	}	
@@ -377,8 +376,23 @@ public class Player {
 	
 	public void checkSliding()
 	{
+		if(velocity.x > 0 && sliding)
+		{
+			slidingRight = true;
+			slidingLeft = false;
+		}
+		if(velocity.x < 0 && sliding)
+		{
+			slidingLeft = true;
+			slidingRight = false;
+		}
 		if(velocity.x == 0)
 			sliding = false;
+		if(!sliding)
+		{
+			slidingLeft = false;
+			slidingRight = false;
+		}
 	}
 	
 	 /* 

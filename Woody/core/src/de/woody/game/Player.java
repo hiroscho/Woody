@@ -339,21 +339,28 @@ public class Player {
 	{
 
 		int x2 = (int)position.x;
-		int y2 = (int)position.y -1;
+		int y2 = (int)position.y - 1;
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null) && ((timeSinceCollision) < System.currentTimeMillis()))
 		{
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
-			timeSinceCollision = System.currentTimeMillis();
+			timeSinceCollision = System.currentTimeMillis() - 100;
 		}
+		
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Slowing")).getCell(x2, y2)) != null))
+		{
+			MAX_VELOCITY = MAX_VELOCITY / 5;
+		}
+		else
+			MAX_VELOCITY = 10f;
 	}	
 	
 	public void checkPlayerInBlock()
 	{
 		int x2 = (int)position.x;
 		int y2 = (int)position.y;
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Obstacle")).getCell(x2, y2)) != null))
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Foliage")).getCell(x2, y2)) != null))
 		{
-			velocity.x = velocity.x / 10;
+			MAX_VELOCITY = MAX_VELOCITY / 5;
 		}
 	}
 	

@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
@@ -38,6 +39,7 @@ public class GameScreen implements Screen {
 
 	private final int level;
 	private int checkpoint;
+	private int counterU;
 
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
@@ -277,6 +279,23 @@ public class GameScreen implements Screen {
 				Lifesystem.life = Lifesystem.setLife(2);
 			else
 				Lifesystem.life = Lifesystem.setLife(3);
+		}
+		
+		if(Gdx.input.isKeyJustPressed(Keys.U))																		//Disable Button UI
+		{
+			counterU++;
+			if(counterU%2 == 1)
+			{
+				for(Actor actor : controller.getStage().getActors())
+				{
+					actor.setVisible(false);
+				}
+			}
+			else
+				for(Actor actor : controller.getStage().getActors())
+				{
+					actor.setVisible(true);
+				}
 		}
 	}
 }

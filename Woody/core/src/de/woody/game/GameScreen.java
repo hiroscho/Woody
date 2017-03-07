@@ -281,7 +281,7 @@ public class GameScreen implements Screen {
 				Lifesystem.life = Lifesystem.setLife(3);
 		}
 		
-		if(Gdx.input.isKeyJustPressed(Keys.U))																		//Disable Button UI
+		if(Gdx.input.isKeyJustPressed(Keys.U))															//Disable Button UI
 		{
 			counterU++;
 			if(counterU%2 == 1)

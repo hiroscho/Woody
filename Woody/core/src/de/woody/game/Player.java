@@ -13,6 +13,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Player {
@@ -340,12 +342,11 @@ public class Player {
 		Level.rectPool.free(playerRect);
 		return velocity;
 	}
-	
-	
-	public void checkPlayerAboveDamageBlock()
+		
+	public void checkPlayerAboveBlock()
 	{
-		int x2 = (int)position.x;
-		int y2 = (int)position.y - 1;
+		final int x2 = (int)position.x;
+		final int y2 = (int)position.y - 1;
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null))
 		{
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
@@ -366,6 +367,11 @@ public class Player {
 		else
 		{
 			DAMPING = 0.87f;
+		}
+			
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(x2, y2)) != null))
+		{
+			((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).setCell(x2, y2, null);
 		}
 	}	
 	
@@ -399,6 +405,22 @@ public class Player {
 			climbing = false;
 		}
 	}
+	
+//	public int checkPlayerAboveVanishingBlock()
+//	{
+//		int x2 = (int)position.x;
+//		int y2 = (int)position.y -1;
+//		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(x2, y2)) != null))
+//		{
+//			return x2 & y2;
+//		}
+//		return (Integer) null;
+//	}
+//	
+//	public void vansihBlocks(int x2 , int y2)
+//	{
+//		((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).setCell(x2, y2, null);
+//	}
 	
 	public void checkSliding()
 	{

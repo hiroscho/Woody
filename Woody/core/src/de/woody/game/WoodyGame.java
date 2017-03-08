@@ -20,7 +20,7 @@ public class WoodyGame extends Game {
 	public final int yTiles = 12;
 
 	/** names of the collision layers **/
-	public static final String[] collisionLayers = new String[]{"Collidable Tiles", "Destructable", "Damaging", "Slime","Ice"};
+	public static final String[] collisionLayers = new String[]{"Collidable Tiles", "Destructable", "Damaging", "Slime", "Ice", "Vanishing"};
 	
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;

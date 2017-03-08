@@ -345,7 +345,7 @@ public class Player {
 		
 	public void checkPlayerAboveBlock()
 	{
-		final int x2 = (int)position.x;
+		final int x2 = (int) ((int)position.x + WIDTH/2);
 		final int y2 = (int)position.y - 1;
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null))
 		{
@@ -377,11 +377,11 @@ public class Player {
 	
 	public void checkPlayerInBlock(/*Button pressedButton*/)				//button does not work
 	{
-		int x2 = (int)position.x;
+		int x2 = (int) ((int)position.x + WIDTH/2);
 		int y2 = (int)position.y;
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Foliage")).getCell(x2, y2)) != null))
 		{
-			MAX_VELOCITY = MAX_VELOCITY / 3;
+			MAX_VELOCITY = MAX_VELOCITY / 2;
 		}
 		
 		if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) /*|| pressedButton.getName().equals("Jump")*/

@@ -354,7 +354,7 @@ public class Player {
 		
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Slime")).getCell(x2, y2)) != null))
 		{
-			MAX_VELOCITY = MAX_VELOCITY / 5;
+			MAX_VELOCITY = 1.5f;
 		}
 		else
 			MAX_VELOCITY = standartMaxVelocity;
@@ -381,7 +381,7 @@ public class Player {
 		int y2 = (int)position.y;
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Foliage")).getCell(x2, y2)) != null))
 		{
-			MAX_VELOCITY = MAX_VELOCITY / 5;
+			MAX_VELOCITY = MAX_VELOCITY / 3;
 		}
 		
 		if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) /*|| pressedButton.getName().equals("Jump")*/
@@ -405,22 +405,6 @@ public class Player {
 			climbing = false;
 		}
 	}
-	
-//	public int checkPlayerAboveVanishingBlock()
-//	{
-//		int x2 = (int)position.x;
-//		int y2 = (int)position.y -1;
-//		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(x2, y2)) != null))
-//		{
-//			return x2 & y2;
-//		}
-//		return (Integer) null;
-//	}
-//	
-//	public void vansihBlocks(int x2 , int y2)
-//	{
-//		((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).setCell(x2, y2, null);
-//	}
 	
 	public void checkSliding()
 	{

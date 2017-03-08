@@ -31,7 +31,7 @@ public class Player {
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking, Falling, Dead
+		Standing, Walking, Jumping, Attacking, Falling, Dead, Climbing
 	}
 
 	/** player position in world coordinates **/
@@ -221,9 +221,12 @@ public class Player {
 			grounded = false;
 		}
 
-		if (!grounded && (velocity.y < 0) && !climbing) {
+		if ((!grounded && (velocity.y < 0)) && !climbing) {
 			state = State.Falling;
 		}
+		
+		if(climbing)
+			state = State.Climbing;
 
 		// scale to frame velocity
 		velocity.scl(delta);
@@ -381,6 +384,7 @@ public class Player {
 			climbing = true;
 			velocity.y = 5f;
 			velocity.x = 0;
+			state = State.Climbing;
 		}
 		else if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && !((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) /*|| pressedButton.getName().equals("Jump")*/
 				|| Gdx.input.isKeyPressed(Keys.W)))))			//if a ladder is in the background and the jumpkey is not pressed do...
@@ -388,6 +392,7 @@ public class Player {
 			climbing = true;
 			velocity.y = -2.5f;
 			velocity.x = 0;
+			state = State.Climbing;
 		}
 		else
 		{

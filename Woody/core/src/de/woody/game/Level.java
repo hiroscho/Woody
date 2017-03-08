@@ -160,7 +160,7 @@ public class Level {
 //	}
 
 	/**
-	 * Returns the name layer of map-
+	 * Returns the name layer of map TODO: HashMap(name, layer) für performance
 	 * 
 	 * @param map  map with layer
 	 * @param name  name of the layer

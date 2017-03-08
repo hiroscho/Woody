@@ -282,7 +282,6 @@ public class GameScreen implements Screen {
 				Lifesystem.life = Lifesystem.setLife(3);
 			
 			Lifesystem.setHearts(3);
-//			player.resetVanishedBlocks();
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.U))															//Disable Button UI
@@ -301,8 +300,5 @@ public class GameScreen implements Screen {
 					actor.setVisible(true);
 				}
 		}
-		
-//		if(Gdx.input.isKeyJustPressed(Keys.Z))
-//			player.saveVanishableBlocks();
 	}
 }

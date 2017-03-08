@@ -104,7 +104,7 @@ public class Animations{
 		
 		stateTime = currentState == previousState ? stateTime + Gdx.graphics.getDeltaTime() : 0;
 		previousState = currentState;
-		if (currentState == Player.state.Walking && (stateTime >= 1))
+		if ((currentState == Player.state.Walking || currentState == Player.state.Climbing) && (stateTime >= 1))
 			stateTime = 0;
 		return region;	
 	}	

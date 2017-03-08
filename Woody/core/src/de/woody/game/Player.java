@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 public class Player {
 	/** width of the player texture scaled to world coordinates **/
@@ -64,6 +65,8 @@ public class Player {
 	public boolean climbing = false;
 
 	public Texture texture;
+	
+//	ArrayList<Cell> vanishableBlockList = new ArrayList<Cell>();
 	
 	// easy access game instance
 	private WoodyGame game;
@@ -389,7 +392,34 @@ public class Player {
 			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(i, y2)) != null))
 				((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).setCell(i, y2, null);
 		}
-	}
+	}	
+	
+//	public void saveVanishableBlocks()
+//	{
+//		for(int i = 0; i <= 100; i++)
+//		{
+//			for(int j = 0; j <= 12; j++)
+//			{
+//				TiledMapTileLayer.Cell cell = ((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(i, j);
+//				vanishableBlockList.add(cell);
+//			}
+//		}
+//	}
+//	
+//	public void resetVanishedBlocks()
+//	{
+//		for(int i = 0; i <= 100; i++)
+//		{
+//			for(int j = 0; j <= 12; j++)
+//			{
+//				for(int o = 0; o < vanishableBlockList.size(); o++)
+//				{
+//					((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).setCell(i, j, vanishableBlockList.get(o));
+//					vanishableBlockList.remove(o);
+//				}
+//			}
+//		}
+//	}
 	
 	public void checkPlayerInBlock(/*Button pressedButton*/)				//button does not work
 	{

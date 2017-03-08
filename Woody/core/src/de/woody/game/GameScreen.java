@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -279,6 +280,9 @@ public class GameScreen implements Screen {
 				Lifesystem.life = Lifesystem.setLife(2);
 			else
 				Lifesystem.life = Lifesystem.setLife(3);
+			
+			Lifesystem.setHearts(3);
+//			player.resetVanishedBlocks();
 		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.U))															//Disable Button UI
@@ -297,5 +301,8 @@ public class GameScreen implements Screen {
 					actor.setVisible(true);
 				}
 		}
+		
+//		if(Gdx.input.isKeyJustPressed(Keys.Z))
+//			player.saveVanishableBlocks();
 	}
 }

@@ -17,7 +17,7 @@ public class MainMenueScreen implements Screen{
 	Texture PlayButton = new Texture("textures/Play_un.png");
 	Texture PlayButtonak = new Texture("textures/Play_ak.png");
 	Texture SettingsButton = new Texture("textures/Settings_un.png");
-	Texture SettingsButtonak = new Texture("textures/SETTINGS_ak.png");
+	Texture SettingsButtonak = new Texture("textures/Settings_ak.png");
 	Texture CloseButton = new Texture("textures/Exit_un.png");
 	Texture CloseButtonak = new Texture("textures/Exit_ak.png");
 	Texture Background = new Texture("textures/Mainscreenbackground3.png");

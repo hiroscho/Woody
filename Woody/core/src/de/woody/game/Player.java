@@ -22,8 +22,10 @@ public class Player {
 	public static float HEIGHT;
 
 	/** maximum velocity's (maybe add a maximum fall velocity?) **/
-	public static float MAX_VELOCITY = 10f;
-	public static float JUMP_VELOCITY = 15f;
+	public static float standartMaxVelocity = 10f;
+	public static float standartJumpVelocity = 15f;
+	public static float MAX_VELOCITY = standartMaxVelocity;
+	public static float JUMP_VELOCITY = standartJumpVelocity;
 
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;
@@ -57,6 +59,7 @@ public class Player {
 	public boolean sliding = false;
 	public boolean slidingLeft = false;
 	public boolean slidingRight = false;
+	public boolean climbing = false;
 
 	public Texture texture;
 	
@@ -97,7 +100,7 @@ public class Player {
 	public void setInputVelocity(Button button) {
 
 		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || button.getName().equals("Jump")
-				|| Gdx.input.isKeyPressed(Keys.W)) && grounded) {
+				|| Gdx.input.isKeyPressed(Keys.W)) && grounded && !climbing) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
@@ -123,7 +126,7 @@ public class Player {
 	 * input.
 	 */
 	public void setKeyboardVelocity() {
-		if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) && !climbing) {
 			if (grounded) {
 				velocity.y = JUMP_VELOCITY;
 				state = State.Jumping;
@@ -212,13 +215,13 @@ public class Player {
 				state = State.Standing;
 		}
 
-		// apply gravity if player isn't standing or grounded
-		if (!(state == State.Standing) || !grounded) {
+		// apply gravity if player isn't standing or grounded or climbing
+		if (!(state == State.Standing) || !grounded && !climbing) {
 			velocity.add(0, WoodyGame.GRAVITY);
 			grounded = false;
 		}
 
-		if (!grounded && (velocity.y < 0)) {
+		if (!grounded && (velocity.y < 0) && !climbing) {
 			state = State.Falling;
 		}
 
@@ -350,7 +353,7 @@ public class Player {
 			MAX_VELOCITY = MAX_VELOCITY / 5;
 		}
 		else
-			MAX_VELOCITY = 10f;
+			MAX_VELOCITY = standartMaxVelocity;
 		
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ice")).getCell(x2, y2)) != null))
 		{
@@ -359,18 +362,36 @@ public class Player {
 		}
 		else
 		{
-//			sliding = false;
 			DAMPING = 0.87f;
 		}
 	}	
 	
-	public void checkPlayerInBlock()
+	public void checkPlayerInBlock(/*Button pressedButton*/)				//button does not work
 	{
 		int x2 = (int)position.x;
 		int y2 = (int)position.y;
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Foliage")).getCell(x2, y2)) != null))
 		{
 			MAX_VELOCITY = MAX_VELOCITY / 5;
+		}
+		
+		if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) /*|| pressedButton.getName().equals("Jump")*/
+				|| Gdx.input.isKeyPressed(Keys.W)))))			//if a ladder is in the background and the jumpkey is pressed do...
+		{
+			climbing = true;
+			velocity.y = 5f;
+			velocity.x = 0;
+		}
+		else if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && !((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) /*|| pressedButton.getName().equals("Jump")*/
+				|| Gdx.input.isKeyPressed(Keys.W)))))			//if a ladder is in the background and the jumpkey is not pressed do...
+		{
+			climbing = true;
+			velocity.y = -2.5f;
+			velocity.x = 0;
+		}
+		else
+		{
+			climbing = false;
 		}
 	}
 	

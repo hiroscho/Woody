@@ -20,6 +20,7 @@ public class Animations{
 	public TextureRegion woodyStand;
 	public TextureRegion woodyJump;
 	public TextureRegion woodyFall;
+	public Animation woodyClimb;
 	public Texture sheetRun;
 	
 	public Texture sheetLife;
@@ -54,7 +55,12 @@ public class Animations{
 		
 		woodyStand = new TextureRegion(sheetRun, 0, 0, 64, 94);
 		
-		//From here on down will be all Textures used for the Lifesystem UI and be possibly replaced to the standart UI class once there is one (start already Zamy!!)
+		frames.clear();
+		for(int i = 5; i <= 6; i++)
+			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 94));
+		woodyClimb = new Animation(0.2f, frames);
+		
+		//From here on down will be all Textures used for the Lifesystem UI and be possibly replaced to the standart UI class once there is one
 		
 		sheetLife = new Texture(Gdx.files.internal("textures/sheetLife.png"));
 		heartsZero = new TextureRegion(sheetLife, 0, 0, 52, 16);
@@ -86,6 +92,10 @@ public class Animations{
 			
 		case Falling:
 			region = woodyFall;
+			break;
+			
+		case Climbing:
+			region = woodyClimb.getKeyFrame(stateTime);
 			break;
 			
 			default:

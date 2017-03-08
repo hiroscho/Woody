@@ -446,6 +446,8 @@ public class Player {
 			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
 		else if (!facesRight && (state == State.Falling))
 			batch.draw(pAH.getFrame(), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
+		else if (state == state.Climbing)
+			batch.draw(pAH.getFrame(), position.x, position.y, WIDTH, HEIGHT);
 		else
 			batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
 		batch.end();

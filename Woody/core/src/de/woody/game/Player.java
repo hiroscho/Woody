@@ -372,8 +372,18 @@ public class Player {
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(x2, y2)) != null))
 		{
 			((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).setCell(x2, y2, null);
+			checkNearbyBlocks(x2, y2);
 		}
 	}	
+	
+	public void checkNearbyBlocks(int x2, int y2)
+	{
+		for(int i = x2 -2; i <= x2 +2; i++)
+		{
+			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(i, y2)) != null))
+				((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).setCell(i, y2, null);
+		}
+	}
 	
 	public void checkPlayerInBlock(/*Button pressedButton*/)				//button does not work
 	{

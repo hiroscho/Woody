@@ -1,7 +1,7 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.XmlReader;
 
 public class WoodyGame extends Game {
 	public static WoodyGame game;
@@ -27,6 +27,9 @@ public class WoodyGame extends Game {
 
 	@Override
 	public void create() {
+		
+		XmlReader xml = new XmlReader();
+		xml.parse("/Woody-android/assets");
 		
 		this.setScreen(new GameScreen(this, 1));
 	}

@@ -396,7 +396,7 @@ public class Player {
 		}
 	}	
 	
-	public void checkPlayerInBlock(/*Button pressedButton*/)				//button does not work
+	public void checkPlayerInBlock(Button pressedButton)				//button does not work
 	{
 		int x2 = (int) ((int)position.x + WIDTH/2);
 		int y2 = (int)position.y;
@@ -405,7 +405,7 @@ public class Player {
 			MAX_VELOCITY = MAX_VELOCITY / 2;
 		}
 		
-		if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) /*|| pressedButton.getName().equals("Jump")*/
+		if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || pressedButton.getName().equals("Jump")
 				|| Gdx.input.isKeyPressed(Keys.W)))))			//if a ladder is in the background and the jumpkey is pressed do...
 		{
 			climbing = true;
@@ -413,7 +413,7 @@ public class Player {
 			velocity.x = 0;
 			state = State.Climbing;
 		}
-		else if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && !((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) /*|| pressedButton.getName().equals("Jump")*/
+		else if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && !((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || pressedButton.getName().equals("Jump")
 				|| Gdx.input.isKeyPressed(Keys.W)))))			//if a ladder is in the background and the jumpkey is not pressed do...
 		{
 			climbing = true;
@@ -489,6 +489,8 @@ public class Player {
 			slidingRight = false;
 		}
 	}
+	
+	
 	
 	 /* 
 	 * @param screen

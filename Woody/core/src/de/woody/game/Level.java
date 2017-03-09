@@ -1,5 +1,6 @@
 package de.woody.game;
 
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Rectangle;
@@ -104,4 +105,21 @@ public class Level {
 		}
 		return tiles;
 	}
+	
+	/** Kinda useless but it's more comfortable to use.
+	 * 
+	 * @param layer  in which is going to be checked
+	 * @param x  x-coordinate
+	 * @param y  y-coordinate
+	 * @return  the id of the specific tile
+	 */
+	public static int getTileId(TiledMapTileLayer layer, int x, int y) {
+		return layer.getCell(x, y).getTile().getId();
+	}
+	
+	public static String getTileName(int id) {
+		
+		return null;
+	}
+	
 }

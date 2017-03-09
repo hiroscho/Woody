@@ -1,5 +1,7 @@
 package de.woody.game;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -9,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -127,6 +130,7 @@ public class GameScreen implements Screen {
 
 			// get the touched/pressed button
 			Button pressedButton = controller.checkAllButtons();
+			System.out.println(Level.layers.get(0).getCell(0, 0).getTile().getId());
 
 			// checks input, sets velocity
 			if (pressedButton != null) {
@@ -161,7 +165,9 @@ public class GameScreen implements Screen {
 			controller.checkCorrectHeartsImage();
 			controller.checkCorrectLifeImage();
 			player.checkPlayerAboveBlock();
-			player.checkPlayerInBlock(/*pressedButton*/);
+			if (pressedButton != null) {
+				player.checkPlayerInBlock(pressedButton);
+			}
 			player.checkSliding();
 			
 			// render the player

@@ -433,6 +433,8 @@ public class Player {
 			if(!(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
 			{
 				velocity.y = -0.5f;
+				if(position.y-0.1 > y2)
+					velocity.y = 0.1f;
 			}
 		}
 		
@@ -446,6 +448,8 @@ public class Player {
 			if(!(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
 			{
 				velocity.y = -2.5f;
+				if(position.y-0.1 > y2)
+					velocity.y = 0.1f;
 			}
 		}
 	}

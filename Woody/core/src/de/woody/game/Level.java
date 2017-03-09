@@ -114,12 +114,13 @@ public class Level {
 	 * @return  the id of the specific tile
 	 */
 	public static int getTileId(TiledMapTileLayer layer, int x, int y) {
-		return layer.getCell(x, y).getTile().getId();
+		if(layer.getCell(x, y) != null) {
+			return layer.getCell(x, y).getTile().getId();
+		}
+		return 0;
 	}
 	
-	public static String getTileName(int id) {
-		
-		return null;
+	public static String getTileName(Integer id) {
+		return WoodyGame.idNames.get(id);
 	}
-	
 }

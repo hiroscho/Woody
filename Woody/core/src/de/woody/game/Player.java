@@ -350,7 +350,7 @@ public class Player {
 		
 	public void checkPlayerAboveBlock()
 	{
-		final int x2 = (int) ((int)position.x + WIDTH/2);
+		final int x2 = (int) (position.x + WIDTH/2);
 		final int y2 = (int) ((int)position.y - 1 + HEIGHT/2);
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null))
 		{
@@ -488,9 +488,7 @@ public class Player {
 			slidingLeft = false;
 			slidingRight = false;
 		}
-	}
-	
-	
+	}	
 	
 	 /* 
 	 * @param screen

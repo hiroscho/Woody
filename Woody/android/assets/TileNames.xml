@@ -1,3 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tile id="1" name ="grass"></tile>
-<tile id="2" name ="dirt1"></tile>
+<tiles>
+    <tile
+        id="1"
+        name="grass" >
+    </tile>
+
+    <tile
+        id="2"
+        name="dirt1" >
+    </tile>
+
+    <tile
+        id="3"
+        name="dirt2" >
+    </tile>
+    
+    <tile
+        id="4"
+        name="dirt2" >
+    </tile>
+    
+        <tile
+        id="20"
+        name="bush" >
+    </tile>
+
+</tiles>

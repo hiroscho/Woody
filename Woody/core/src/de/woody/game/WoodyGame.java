@@ -1,6 +1,12 @@
 package de.woody.game;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.XmlReader;
 
 public class WoodyGame extends Game {
@@ -20,27 +26,43 @@ public class WoodyGame extends Game {
 	public final int yTiles = 12;
 
 	/** names of the collision layers **/
-	public static final String[] collisionLayers = new String[]{"Collidable Tiles", "Destructable", "Damaging", "Slime", "Ice", "Vanishing"};
-	
+	public static final String[] collisionLayers = new String[] { "Collidable Tiles", "Destructable", "Damaging",
+			"Slime", "Ice", "Vanishing" };
+
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
+	
+	/** tile id and their corresponding name, change it in TileNames.xml **/
+	public static HashMap<Integer, String> idNames = new HashMap<Integer, String>();
 
 	@Override
 	public void create() {
-		
-		XmlReader xml = new XmlReader();
-		xml.parse("/Woody-android/assets");
-		
+		loadIdNames();
+
 		this.setScreen(new GameScreen(this, 1));
 	}
-	
+
+	private void loadIdNames() {
+		XmlReader xml = new XmlReader();
+		try {
+			FileHandle file = new FileHandle(new File("TileNames.xml"));
+			XmlReader.Element ele = xml.parse(file);
+
+			for (int i = 0; i < ele.getChildCount(); i++) {
+				idNames.put(ele.getChild(i).getIntAttribute("id"), ele.getChild(i).getAttribute("name"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Has to be used with care, forced typecast on screen
 	 * 
 	 * @return
 	 */
 	public GameScreen getGameScreen() {
-		return ((GameScreen)this.getScreen());
+		return ((GameScreen) this.getScreen());
 	}
 
 	@Override

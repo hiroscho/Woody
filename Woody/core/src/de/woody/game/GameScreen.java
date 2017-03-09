@@ -58,7 +58,6 @@ public class GameScreen implements Screen {
 
 		
 		// (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
-		
 
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
@@ -130,7 +129,6 @@ public class GameScreen implements Screen {
 
 			// get the touched/pressed button
 			Button pressedButton = controller.checkAllButtons();
-			System.out.println(Level.layers.get(0).getCell(0, 0).getTile().getId());
 
 			// checks input, sets velocity
 			if (pressedButton != null) {

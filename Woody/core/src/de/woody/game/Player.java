@@ -347,7 +347,7 @@ public class Player {
 	public void checkPlayerAboveBlock()
 	{
 		final int x2 = (int) ((int)position.x + WIDTH/2);
-		final int y2 = (int)position.y - 1;
+		final int y2 = (int) ((int)position.y - 1 + HEIGHT/2);
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null))
 		{
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
@@ -420,6 +420,33 @@ public class Player {
 		else
 		{
 			climbing = false;
+		}
+		
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Lava")).getCell(x2, y2)) != null))
+		{
+			Lifesystem.hearts = Lifesystem.damagePlayer(1);
+			MAX_VELOCITY = 1f;
+			if((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
+			{
+				velocity.y = 1.5f;
+			}
+			if(!(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
+			{
+				velocity.y = -0.5f;
+			}
+		}
+		
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Water")).getCell(x2, y2)) != null))
+		{
+			MAX_VELOCITY = 3f;
+			if((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
+			{
+				velocity.y = 3f;
+			}
+			if(!(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
+			{
+				velocity.y = -2.5f;
+			}
 		}
 	}
 	

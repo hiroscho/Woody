@@ -31,6 +31,7 @@ public class Lifesystem{
 	public static int life = 2;					//if life < 1 -> State.Dead and Woody starts at the start of the level
 	public int oldLife = life;					//used to check if Woody has lost a life (method isLifeLost() maybe necessary for respawn)
 	
+//	private static boolean invincible = true;
 	private static long lastDamage = 0;
 	public int getHearts(){
 		return hearts;
@@ -48,6 +49,8 @@ public class Lifesystem{
 	{
 		if((System.currentTimeMillis() - lastDamage) < 500)
 			return hearts;
+//		else if(invincible)
+//			return hearts;
 		else
 		{
 			lastDamage = System.currentTimeMillis();

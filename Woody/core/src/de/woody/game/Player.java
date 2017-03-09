@@ -34,7 +34,7 @@ public class Player {
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking, Falling, Dead, Climbing
+		Standing, Walking, Jumping, Attacking, Falling, Dead, Climbing, Swimming
 	}
 
 	/** player position in world coordinates **/
@@ -63,6 +63,7 @@ public class Player {
 	public boolean slidingLeft = false;
 	public boolean slidingRight = false;
 	public boolean climbing = false;
+	public boolean swimming = false;
 
 	public Texture texture;
 	
@@ -219,18 +220,21 @@ public class Player {
 		}
 
 		// apply gravity if player isn't standing or grounded or climbing
-		if (!(state == State.Standing) || !grounded && !climbing) {
+		if (!(state == State.Standing) || !grounded && !climbing && !swimming) {
 			velocity.add(0, WoodyGame.GRAVITY);
 			grounded = false;
 		}
 
-		if ((!grounded && (velocity.y < 0)) && !climbing) {
+		if ((!grounded && (velocity.y < 0)) && !climbing && !swimming) {
 			state = State.Falling;
 		}
 		
 		if(climbing)
 			state = State.Climbing;
 
+		if(swimming)
+			state = State.Swimming;
+			
 		// scale to frame velocity
 		velocity.scl(delta);
 
@@ -426,32 +430,43 @@ public class Player {
 		{
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
 			MAX_VELOCITY = 1f;
-			if((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
+			swimming = true;
+			state = State.Swimming;
+        	velocity.y = -0.5f;
+			if(position.y >= y2 && (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) && !checkSameBlockAbove(x2,y2,"Lava"))
 			{
-				velocity.y = 1.5f;
-			}
-			if(!(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
-			{
-				velocity.y = -0.5f;
-				if(position.y-0.1 > y2)
-					velocity.y = 0.1f;
+				velocity.y = 2.5f;
+				freeJump = true;
 			}
 		}
+		else
+			swimming = false;
 		
 		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Water")).getCell(x2, y2)) != null))
 		{
 			MAX_VELOCITY = 3f;
-			if((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
+			state = State.Swimming;
+			swimming = true;
+			velocity.y = -2.5f;
+
+			if(position.y >= y2 && (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) )
 			{
-				velocity.y = 3f;
-			}
-			if(!(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))
-			{
-				velocity.y = -2.5f;
-				if(position.y-0.1 > y2)
-					velocity.y = 0.1f;
+				velocity.y = 3.5f;
+				freeJump = true;
 			}
 		}
+		else
+			swimming = false;
+	}
+	
+	public boolean checkSameBlockAbove(int x2, int y2, String layerName)
+	{
+		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get(layerName)).getCell(x2, y2)) == ((((TiledMapTileLayer) GameScreen.map.getLayers().get(layerName)).getCell(x2, (int) (y2+1))))))
+		{
+			return true;
+		}
+		else 
+			return false;
 	}
 	
 	public void checkSliding()

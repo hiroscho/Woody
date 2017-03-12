@@ -75,7 +75,7 @@ public class Player {
 
 	public Player(final WoodyGame game, Texture tex, State state, Vector2 pos, float mVel, float mJump, float damp) {
 		texture = tex;
-		this.state = state;
+		Player.state = state;
 		position.set(pos);
 		MAX_VELOCITY = mVel;
 		JUMP_VELOCITY = mJump;
@@ -147,24 +147,22 @@ public class Player {
 					position.set(rec.getTeleportPoint());
 				}
 			}
-			
-			
-			
-			
+						
 			if ((axeCooldown + 200) < System.currentTimeMillis()) {
 
 				if (facesRight) {
 					int x2 = (int)position.x + 1;
 					int y2 = (int)position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2, null);
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
+
+					Level.getTileLayer(GameScreen.map, "Destructable").setCell(x2, y2, null);
+					Level.getTileLayer(GameScreen.map, "Destructable").setCell(x2, y2+1,null);
 					axeCooldown = System.currentTimeMillis();
 
 				} else {
 					int x2 = (int)position.x - 1;
 					int y2 = (int)position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2,null);
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
+					Level.getTileLayer(GameScreen.map, "Destructable").setCell(x2, y2,null);
+					Level.getTileLayer(GameScreen.map, "Destructable").setCell(x2, y2+1,null);
 					axeCooldown = System.currentTimeMillis();
 				}
 

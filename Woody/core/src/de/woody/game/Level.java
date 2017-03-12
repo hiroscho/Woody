@@ -29,7 +29,7 @@ public class Level {
 	};
 	private static Array<Rectangle> tiles = new Array<Rectangle>();
 	public static Array<TiledMapTileLayer> tileLayers = new Array<TiledMapTileLayer>();
-	private static HashMap<String, MapLayer> layers = new HashMap<String, MapLayer>();
+	private static HashMap<String, TiledMapTileLayer> layers = new HashMap<String, TiledMapTileLayer>();
 	
 
 	/**
@@ -64,7 +64,7 @@ public class Level {
 	 *            the map with the layers
 	 */
 	public static void addCollisionLayer(String name, TiledMap map) {
-		tileLayers.add((TiledMapTileLayer) getLayer(map, name));
+		tileLayers.add(getTileLayer(map, name));
 	}
 
 	/**
@@ -170,12 +170,12 @@ public class Level {
 	 * @param name  name of the layer
 	 * @return  the layer
 	 */
-	public static MapLayer getLayer(TiledMap map, String name) {
-		MapLayer temp;
+	public static TiledMapTileLayer getTileLayer(TiledMap map, String name) {
+		TiledMapTileLayer temp;
 		if(layers.get(name) != null) {
 			temp = layers.get(name);
 		} else {
-			temp = map.getLayers().get(name);
+			temp = (TiledMapTileLayer) map.getLayers().get(name);
 			layers.put(name, temp);
 		}
 		return temp;

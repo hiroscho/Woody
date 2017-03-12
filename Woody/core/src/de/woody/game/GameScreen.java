@@ -124,7 +124,7 @@ public class GameScreen implements Screen {
 		}
 
 		// create the doors and save them in an easy access array
-		doors = Level.createDoors(Level.filterObjects(Level.getLayer(map, "Doors").getObjects(), "door"));
+		doors = Level.createDoors(Level.filterObjects(map.getLayers().get("Doors").getObjects(), "door"));
 		
 		// fun with coins TODO: remove or rewrite
 		//Level.registerCoins(Level.getLayer(map, "Doors"), ar);

@@ -1,5 +1,7 @@
 package de.woody.game;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -27,6 +29,8 @@ public class Level {
 	};
 	private static Array<Rectangle> tiles = new Array<Rectangle>();
 	public static Array<TiledMapTileLayer> tileLayers = new Array<TiledMapTileLayer>();
+	private static HashMap<String, MapLayer> layers = new HashMap<String, MapLayer>();
+	
 
 	/**
 	 * Returns the current spawn for the level and number of reached
@@ -160,15 +164,24 @@ public class Level {
 //	}
 
 	/**
-	 * Returns the name layer of map TODO: HashMap(name, layer) für performance
+	 * Returns the name layer of map
 	 * 
 	 * @param map  map with layer
 	 * @param name  name of the layer
 	 * @return  the layer
 	 */
 	public static MapLayer getLayer(TiledMap map, String name) {
-		return map.getLayers().get(name);
+		MapLayer temp;
+		if(layers.get(name) != null) {
+			temp = layers.get(name);
+		} else {
+			temp = map.getLayers().get(name);
+			layers.put(name, temp);
+		}
+		return temp;
 	}
+	
+	
 
 	/**
 	 * Get a filtered Array of MapObject's

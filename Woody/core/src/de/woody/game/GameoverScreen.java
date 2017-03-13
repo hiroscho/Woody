@@ -61,26 +61,28 @@ public class GameoverScreen extends WoodyGame implements Screen {
 		batch.draw(gameOverBanner, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 		
 		//REPLAY
-		int x = Gdx.graphics.getWidth() / 2 - REPLAY_BUTTON_WIDTH / 2;
-		if(Gdx.input.getX() < x + REPLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Gdx.graphics.getHeight() - Gdx.input.getY() < 130 + REPLAY_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > 130){
-			batch.draw(ReplayButtonak, 170, 140, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
+		int y = Gdx.graphics.getWidth() / 2 - REPLAY_BUTTON_WIDTH / 2;
+		int x = (Gdx.graphics.getWidth() /2 - REPLAY_BUTTON_WIDTH/2);
+		if(Gdx.input.getX() < y + REPLAY_BUTTON_WIDTH && Gdx.input.getX() > y && Gdx.graphics.getHeight() - Gdx.input.getY() < 130 + REPLAY_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > 130){
+			batch.draw(ReplayButtonak, x, 140, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
 			if(Gdx.input.isTouched()){
 				this.dispose();
 				game.gamescreen();
 			}
 		}else{
-			batch.draw(ReplayButtonun, 170, 140, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
+			batch.draw(ReplayButtonun, x, 140, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
 		}
 		//MENU
 		int n = Gdx.graphics.getWidth() / 4 - MENU_BUTTON_WIDTH / 4;
+		int m = (Gdx.graphics.getWidth() /2 - MENU_BUTTON_WIDTH/2);
 		if(Gdx.input.getX() < n + MENU_BUTTON_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < -20 + MENU_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > -20){
-			batch.draw(MenuButtonak, 165, -10, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+			batch.draw(MenuButtonak, m, -10, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
 				game.menuscreen();
 			}
 		}else{
-			batch.draw(MenuButtonun, 165, -10, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+			batch.draw(MenuButtonun, m, -10, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 		}
 		
 		

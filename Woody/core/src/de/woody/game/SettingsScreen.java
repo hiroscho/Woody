@@ -44,17 +44,19 @@ public class SettingsScreen implements Screen{
 		batch.begin();
 		
 		batch.draw(Backgroundp, 0, 0, BACKGROUNDP_WIDTH, BACKGROUNDP_HEIGHT);
-		batch.draw(Background, 165, 350, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+		int l = (Gdx.graphics.getWidth() /2 - BACKGROUND_WIDTH/2);
+		batch.draw(Background, l, 350, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 		
-		int n = Gdx.graphics.getWidth() / 4 - BACK_WIDTH / 4;
+		int n = Gdx.graphics.getWidth() / 2 - BACK_WIDTH / 2;
+		int x = (Gdx.graphics.getWidth() /2 - BACK_WIDTH/2);
 		if(Gdx.input.getX() < n + BACK_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < -20 + BACK_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > -20){
-			batch.draw(Backak, 165, -10, BACK_WIDTH, BACK_HEIGHT);
+			batch.draw(Backak, x, -20, BACK_WIDTH, BACK_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
 				game.menuscreen();
 			}
 		}else{
-			batch.draw(Backun, 165, -10, BACK_WIDTH, BACK_HEIGHT);
+			batch.draw(Backun, x, -20, BACK_WIDTH, BACK_HEIGHT);
 		}
 		
 		batch.end();

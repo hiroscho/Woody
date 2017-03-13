@@ -10,9 +10,10 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch.Co
 
 public class MainMenueScreen implements Screen{
 	
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 480;
 	private Batch batch;
 	WoodyGame game;
-	
 	//Textures
 	Texture PlayButton = new Texture("textures/Play_un.png");
 	Texture PlayButtonak = new Texture("textures/Play_ak.png");
@@ -54,38 +55,43 @@ public class MainMenueScreen implements Screen{
 		
 		//Background
 		batch.draw(Background, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
-		
-		//PLAY
+		//PLAY 120/270/320
+		int v = (Gdx.graphics.getWidth() - PLAY_BUTTON_WIDTH)/2;
 		int x = Gdx.graphics.getWidth() / 2 - PLAY_BUTTON_WIDTH / 2;
-		if(Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Gdx.graphics.getHeight() - Gdx.input.getY() < 320 + PLAY_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > 320){
-			batch.draw(PlayButtonak, 120, 270, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
+		int y = Gdx.graphics.getHeight() / 2 + PLAY_BUTTON_HEIGHT /6;
+		if(Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Gdx.graphics.getHeight() - Gdx.input.getY() < y + PLAY_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > y){
+			batch.draw(PlayButtonak,  v, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
 				game.gamescreen();
 			}
 		}else{
-			batch.draw(PlayButton, 120, 270, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
+			batch.draw(PlayButton, v, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 		}
-		//SETTINGS (later add Settings-screen)
+		//SETTINGS 165/130/170
 		int z = Gdx.graphics.getWidth() / 2 - SETTINGS_BUTTON_WIDTH / 2;
-		if(Gdx.input.getX() < z + SETTINGS_BUTTON_WIDTH && Gdx.input.getX() > z && Gdx.graphics.getHeight() - Gdx.input.getY() < 170 + SETTINGS_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > 170){
-			batch.draw(SettingsButtonak, 165, 130, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
+		int u = Gdx.graphics.getHeight() /(4-(1/2)) + SETTINGS_BUTTON_HEIGHT/8;
+		int w = (Gdx.graphics.getWidth() /2 - SETTINGS_BUTTON_WIDTH/2);
+		if(Gdx.input.getX() < z + SETTINGS_BUTTON_WIDTH && Gdx.input.getX() > z && Gdx.graphics.getHeight() - Gdx.input.getY() < u + SETTINGS_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > u){
+			batch.draw(SettingsButtonak, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
 				game.settingscreen();
 			}
 		}else{
-			batch.draw(SettingsButton, 165, 130, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
+			batch.draw(SettingsButton, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
 		}
-		//EXIT
+		//EXIT	165/-10/0
 		int n = Gdx.graphics.getWidth() / 2 - CLOSE_BUTTON_WIDTH / 2;
-		if(Gdx.input.getX() < n + CLOSE_BUTTON_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < 0 + CLOSE_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > 0){
-			batch.draw(CloseButtonak, 165, -10, CLOSE_BUTTON_WIDTH, CLOSE_BUTTON_HEIGHT);
+		int m = Gdx.graphics.getHeight() /50 + CLOSE_BUTTON_HEIGHT/40;
+		int l = (Gdx.graphics.getWidth() /2 - CLOSE_BUTTON_WIDTH/2);
+		if(Gdx.input.getX() < n + CLOSE_BUTTON_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < m + CLOSE_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > m){
+			batch.draw(CloseButtonak, l, m, CLOSE_BUTTON_WIDTH, CLOSE_BUTTON_HEIGHT);
 			if(Gdx.input.justTouched()){
 				Gdx.app.exit();
 			}
 		}else{
-			batch.draw(CloseButton, 165, -10, CLOSE_BUTTON_WIDTH, CLOSE_BUTTON_HEIGHT);
+			batch.draw(CloseButton, l, m, CLOSE_BUTTON_WIDTH, CLOSE_BUTTON_HEIGHT);
 		}
 			
 		

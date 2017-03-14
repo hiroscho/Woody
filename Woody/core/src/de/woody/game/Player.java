@@ -219,7 +219,7 @@ public class Player {
 				state = State.Standing;
 		}
 
-		// apply gravity if player isn't standing or grounded or climbing
+		// apply gravity if player isn't standing or grounded or climbing or swimming
 		if (!(state == State.Standing) || !grounded && !climbing && !swimming) {
 			velocity.add(0, WoodyGame.GRAVITY);
 			grounded = false;
@@ -393,6 +393,11 @@ public class Player {
 		{
 			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(i, y2)) != null))
 				((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).setCell(i, y2, null);
+		}
+		if(velocity.y == 0)
+		{
+			velocity.add(0, WoodyGame.GRAVITY);
+			state = State.Falling;
 		}
 	}	
 	

@@ -187,6 +187,9 @@ public class GameScreen implements Screen {
 			// render debug rectangles
 			if (debug)
 				renderDebug();
+			
+			//check Player invulnerable
+			Lifesystem.checkPlayerInvulnerable();
 		}
 	}
 

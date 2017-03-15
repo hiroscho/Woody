@@ -29,7 +29,7 @@ public class Player {
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking, Falling, Dead
+		Standing, Walking, Jumping, Attacking, Falling, Dead,
 	}
 
 	/** player position in world coordinates **/

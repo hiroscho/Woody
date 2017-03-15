@@ -11,9 +11,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
+	
 /**
  * 
  * @author Sami, Otto, Stefan
@@ -25,10 +27,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  *				- if his life count gets below 1 => state.DEAD and he is always respawned at the start of the level
  */
 public class Lifesystem{
-	
+	public static boolean invulnerable;			//true for inv false for not
 	public static int hearts = 3;				//if health = 0 -> State.Dead and a life gets deducted. Furthermore Woody gets respawned and hearts refilled
 	public static int life = 2;					//if life < 1 -> State.Dead and Woody starts at the start of the level
-	public int oldLife = life;					//used to check if Woody has lost a life (method isLifeLost() maybe necessary for respawn)
+	public static int oldLife = life;			//used to check if Woody has lost a life (method isLifeLost() maybe necessary for respawn)
+	public static int currenthearts = hearts;
 	
 	public int getHearts(){
 		return hearts;
@@ -41,11 +44,48 @@ public class Lifesystem{
 	public static int changeHearts(int newHearts){				//used to change the number of hearts
 		return hearts = newHearts;
 	}
-	
-	public static int damagePlayer(int damage)					//used to decrease the number of hearts by a predefined number
-	{
-		return hearts -= damage;
+
+	public static boolean isLifeLost(){
+		if(currenthearts == hearts){
+			System.out.println("NOT HURT");
+			invulnerable = false;
+			return false;
+		}else{
+			System.out.println("hurt");
+			invulnerable = true;
+			return true;
+		}
 	}
+	
+	public static void checkPlayerInvulnerable()
+    {        
+           if (invulnerable == true)
+           {
+               System.out.println("TRUE");
+               Timer.schedule(new Task()
+               {
+                  public void run() 
+                  {
+                      System.out.println("FALSE");
+                	  invulnerable = false;
+                	  currenthearts = hearts;
+                  }
+ 
+               }, (float) 2.0);
+           }
+    }
+	
+	public void nodamage(){
+		
+	}
+	
+	public static int damagePlayer(int damage)
+    {
+        if(!invulnerable)
+            return hearts -= damage;
+        else
+            return hearts;
+       }
 	
 	public static int getLife()
 	{

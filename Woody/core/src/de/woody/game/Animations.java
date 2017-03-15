@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.Player.State;
 
-public class Animations{
+public class Animations extends Lifesystem{
 
 	public State currentState;
 	public State previousState;
@@ -21,6 +21,11 @@ public class Animations{
 	public TextureRegion woodyJump;
 	public TextureRegion woodyFall;
 	public Texture sheetRun;
+	
+	public Animation woodyRuninv;
+    public TextureRegion woodyStandinv;
+    public TextureRegion woodyJumpinv;
+    public TextureRegion woodyFallinv;
 	
 	public Texture sheetLife;
 	public TextureRegion heartsZero;
@@ -43,16 +48,23 @@ public class Animations{
 		sheetRun = new Texture(Gdx.files.internal("textures/loadingsheet.png"));
 		currentState = Player.state;
 		previousState = Player.state;
-		
+		//RUN not damaged
 		Array<TextureRegion> frames = new Array<TextureRegion>();
 		for(int i = 1; i < 5; i++)
-			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 94));
+			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 94));		
+		//Not damaged
 		woodyRun = new Animation(0.25f, frames);
-		
 		woodyJump = new TextureRegion(sheetRun, 5*64, 0, 64, 94);
 		woodyFall = new TextureRegion(sheetRun, 6*64, 0, 64, 94);
-		
 		woodyStand = new TextureRegion(sheetRun, 0, 0, 64, 94);
+		//damaged
+		frames.clear();
+		for(int j = 7; j < 11; j++)
+			frames.add(new TextureRegion(sheetRun,j * 64, 0, 64, 94));
+		woodyRuninv = new  Animation(0.25f, frames);
+	    woodyJumpinv = new TextureRegion(sheetRun,12*64, 0, 64, 94);
+	    woodyFallinv = new TextureRegion(sheetRun,13*64, 0, 64, 94);
+	    woodyStandinv = new TextureRegion(sheetRun,7*64, 0, 64, 94);
 		
 		//From here on down will be all Textures used for the Lifesystem UI and be possibly replaced to the standart UI class once there is one (start already Zamy!!)
 		
@@ -73,7 +85,7 @@ public class Animations{
 		
 		currentState = Player.state;
 		TextureRegion region;
-		
+	if(isLifeLost() == false){		
 		switch(currentState)
 		{
 		case Walking:
@@ -96,9 +108,33 @@ public class Animations{
 		previousState = currentState;
 		if (currentState == Player.state.Walking && (stateTime >= 1))
 			stateTime = 0;
-		return region;	
+		return region;
+	}else{
+		switch(currentState)
+		{
+		case Walking:
+			region = woodyRuninv.getKeyFrame(stateTime);
+			break;
+			
+		case Jumping:
+			region = woodyJumpinv;
+			break;
+			
+		case Falling:
+			region = woodyFallinv;
+			break;
+			
+			default:
+				region = woodyStandinv;
+		}
+		
+		stateTime = currentState == previousState ? stateTime + Gdx.graphics.getDeltaTime() : 0;
+		previousState = currentState;
+		if (currentState == Player.state.Walking && (stateTime >= 1))
+			stateTime = 0;
+		return region;
+	}
 	}	
-	
 	public void dispose()
 	{
 		sheetRun.dispose();

@@ -175,6 +175,8 @@ public class GameScreen implements Screen {
 
 			controller.checkCorrectHeartsImage();
 			controller.checkCorrectLifeImage();
+			
+
 
 			// render the player
 			player.render(this);
@@ -187,9 +189,9 @@ public class GameScreen implements Screen {
 			// render debug rectangles
 			if (debug)
 				renderDebug();
-			
 			//check Player invulnerable
 			Lifesystem.checkPlayerInvulnerable();
+
 		}
 	}
 
@@ -288,7 +290,7 @@ public class GameScreen implements Screen {
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debug = !debug;
 		if (Gdx.input.isKeyJustPressed(Keys.L))
-			Lifesystem.hearts = Lifesystem.changeHearts(Lifesystem.hearts - 1);
+			Lifesystem.damagePlayer(1);
 		if (Gdx.input.isKeyJustPressed(Keys.R)) {
 			if (Lifesystem.getLife() >= 1)
 				Lifesystem.life = Lifesystem.setLife(2);

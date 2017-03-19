@@ -14,19 +14,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameoverScreen extends WoodyGame implements Screen {
 
-//	private Viewport viewport;
-//	private Stage gameoverstate;
-	
-//	private game gameover;
 	WoodyGame game;
 	private Batch batch;
 
-//	private static final int GAMEOVER_BANNER_WIDTH = 170;
-//	private static final int GAMEOVER_BANNER_HEIGHT = 40;
-	private static final int REPLAY_BUTTON_WIDTH = 300;
-	private static final int REPLAY_BUTTON_HEIGHT = 150;
-	private static final int MENU_BUTTON_WIDTH = 300;
-	private static final int MENU_BUTTON_HEIGHT = 150;
+
+	private static final int REPLAY_BUTTON_WIDTH = Gdx.graphics.getWidth() / 3;
+	private static final int REPLAY_BUTTON_HEIGHT = Gdx.graphics.getHeight() /3;
+	private static final int MENU_BUTTON_WIDTH = Gdx.graphics.getWidth() / 3;
+	private static final int MENU_BUTTON_HEIGHT = Gdx.graphics.getHeight() / 3;
 	private static final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
 	private static final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
 	
@@ -61,28 +56,30 @@ public class GameoverScreen extends WoodyGame implements Screen {
 		batch.draw(gameOverBanner, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 		
 		//REPLAY
-		int y = Gdx.graphics.getWidth() / 2 - REPLAY_BUTTON_WIDTH / 2;
-		int x = (Gdx.graphics.getWidth() /2 - REPLAY_BUTTON_WIDTH/2);
-		if(Gdx.input.getX() < y + REPLAY_BUTTON_WIDTH && Gdx.input.getX() > y && Gdx.graphics.getHeight() - Gdx.input.getY() < 130 + REPLAY_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > 130){
-			batch.draw(ReplayButtonak, x, 140, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
+		int x = Gdx.graphics.getWidth() / 2 - REPLAY_BUTTON_WIDTH / 2;
+		int y = (Gdx.graphics.getHeight() /2 - REPLAY_BUTTON_HEIGHT/2);
+		int v = Gdx.graphics.getHeight() /(4-(1/2)) + REPLAY_BUTTON_HEIGHT/10;
+		if(Gdx.input.getX() < x + REPLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Gdx.graphics.getHeight() - Gdx.input.getY() < y + REPLAY_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > y){
+			batch.draw(ReplayButtonak, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
 			if(Gdx.input.isTouched()){
 				this.dispose();
 				game.gamescreen();
 			}
 		}else{
-			batch.draw(ReplayButtonun, x, 140, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
+			batch.draw(ReplayButtonun, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
 		}
 		//MENU
-		int n = Gdx.graphics.getWidth() / 4 - MENU_BUTTON_WIDTH / 4;
-		int m = (Gdx.graphics.getWidth() /2 - MENU_BUTTON_WIDTH/2);
-		if(Gdx.input.getX() < n + MENU_BUTTON_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < -20 + MENU_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > -20){
-			batch.draw(MenuButtonak, m, -10, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+		int a = Gdx.graphics.getWidth() / 2 - MENU_BUTTON_WIDTH / 2;
+		int b = (Gdx.graphics.getWidth() / 2 - MENU_BUTTON_WIDTH / 2);
+		int c = Gdx.graphics.getHeight() /100 - MENU_BUTTON_HEIGHT/8;
+		if(Gdx.input.getX() < a + MENU_BUTTON_WIDTH && Gdx.input.getX() > a && Gdx.graphics.getHeight() - Gdx.input.getY() < c + MENU_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > c){
+			batch.draw(MenuButtonak, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
 				game.menuscreen();
 			}
 		}else{
-			batch.draw(MenuButtonun, m, -10, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+			batch.draw(MenuButtonun, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 		}
 		
 		

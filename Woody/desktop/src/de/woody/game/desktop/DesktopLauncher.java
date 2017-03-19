@@ -9,9 +9,6 @@ import de.woody.game.WoodyGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = MainMenueScreen.WIDTH;
-		config.height = MainMenueScreen.HEIGHT;
-		config.resizable = true;
 		new LwjglApplication(new WoodyGame(), config);
 	}
 }

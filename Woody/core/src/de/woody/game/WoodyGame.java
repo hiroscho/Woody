@@ -1,7 +1,11 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class WoodyGame extends Game {
 	public static WoodyGame game;
@@ -24,10 +28,12 @@ public class WoodyGame extends Game {
 
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
-
+	
+	private Viewport viewport;
+	private Camera camera;
 	@Override
 	public void create() {
-		this.setScreen(new MainMenueScreen(this));
+		this.setScreen(new SettingsScreen(this));
 		//GameScreen(this, 1) für Plebs
 	}
 	public void gamescreen(){
@@ -37,6 +43,8 @@ public class WoodyGame extends Game {
 		this.setScreen(new GameoverScreen(this));
 	}
 	public void menuscreen(){
+		camera = new PerspectiveCamera();
+		viewport = new FitViewport(MainMenueScreen.WIDTH, MainMenueScreen.HEIGHT, camera);
 		this.setScreen(new MainMenueScreen(this));
 	}
 	public void settingscreen(){
@@ -50,4 +58,9 @@ public class WoodyGame extends Game {
 	@Override
 	public void dispose() {
 	}
+	public void resize(int width, int height){
+//		viewport.update(width, height);
+//		camera.update();
+	}
+	
 }

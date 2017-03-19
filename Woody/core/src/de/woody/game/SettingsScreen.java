@@ -20,8 +20,8 @@ public class SettingsScreen implements Screen{
 	
 	private static final int BACKGROUND_WIDTH = 300;
 	private static final int BACKGROUND_HEIGHT = 150;
-	private static final int BACK_WIDTH = 300;
-	private static final int BACK_HEIGHT = 150;
+	private static final int BACK_WIDTH = Gdx.graphics.getWidth() / 3;
+	private static final int BACK_HEIGHT = Gdx.graphics.getHeight() / 3;
 	private static final int BACKGROUNDP_WIDTH = Gdx.graphics.getWidth();
 	private static final int BACKGROUNDP_HEIGHT = Gdx.graphics.getHeight();
 	
@@ -49,14 +49,15 @@ public class SettingsScreen implements Screen{
 		
 		int n = Gdx.graphics.getWidth() / 2 - BACK_WIDTH / 2;
 		int x = (Gdx.graphics.getWidth() /2 - BACK_WIDTH/2);
-		if(Gdx.input.getX() < n + BACK_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < -20 + BACK_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > -20){
-			batch.draw(Backak, x, -20, BACK_WIDTH, BACK_HEIGHT);
+		int y = Gdx.graphics.getHeight() /100 - BACK_HEIGHT/8;
+		if(Gdx.input.getX() < n + BACK_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < y + BACK_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > y){
+			batch.draw(Backak, x, y, BACK_WIDTH, BACK_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
 				game.menuscreen();
 			}
 		}else{
-			batch.draw(Backun, x, -20, BACK_WIDTH, BACK_HEIGHT);
+			batch.draw(Backun, x, y, BACK_WIDTH, BACK_HEIGHT);
 		}
 		
 		batch.end();

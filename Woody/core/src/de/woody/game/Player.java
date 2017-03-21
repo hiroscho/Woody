@@ -23,6 +23,8 @@ public class Player {
 	public static float MAX_VELOCITY = 10f;
 	public static float JUMP_VELOCITY = 15f;
 
+
+
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;
 
@@ -41,9 +43,13 @@ public class Player {
 	/** time since last jump **/
 	public long lastJump = 0;
 
-	/** can player jump in the air **/
+	/** can player jump in the air again **/
 	public boolean freeJump;
+	
+	/** current coin score **/
+	private int coinAmount;
 
+	/** Cooldown for the axe **/
 	public long axeCooldown = System.currentTimeMillis();
 
 	/** is player touching the ground **/
@@ -86,6 +92,19 @@ public class Player {
 	 * @param button
 	 *            the detected pressedButton
 	 */
+	
+	public int getCoinAmount(){
+		return coinAmount;
+	}
+	
+	private void addCoinSD96$(){
+		coinAmount++;
+	}
+	
+	private void setCoinAmountSC96$(int x){
+		coinAmount = x; 
+	}
+	
 	public void setInputVelocity(Button button) {
 
 		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || button.getName().equals("Jump")
@@ -177,12 +196,6 @@ public class Player {
 			}
 		}
 
-		// fly function
-		// if (Gdx.input.isKeyPressed(Keys.SPACE) && !grounded) {
-		// velocity.y = JUMP_VELOCITY;
-		// state = State.Jumping;
-		// grounded = false;
-		// }
 
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D))
 
@@ -235,6 +248,8 @@ public class Player {
 		velocity.scl(delta);
 
 		position.add(checkTileCollision(delta));
+		
+		deleteNearbyCoinBlocks((int)position.x, (int)position.y);
 
 		// unscale velocity
 		velocity.scl(1 / delta);
@@ -250,7 +265,18 @@ public class Player {
 	 * @return the velocity of the player
 	 */
 	
-	// private  
+	
+	public void deleteNearbyCoinBlocks(int x2, int y2)
+    {
+        for(int i = x2 -1; i <= x2 +1; i++)
+       {
+            if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Coins")).getCell(i, y2)) != null)){
+                ((TiledMapTileLayer) GameScreen.map.getLayers().get("Coins")).setCell(i, y2, null);
+                addCoinSD96$();
+            System.out.println(getCoinAmount());
+            }
+        }
+    }
 	
 	
 	private Vector2 checkTileCollision(float delta) {
@@ -282,11 +308,15 @@ public class Player {
 			// if it does, handle the collision
 			playerRect.x += velocity.x;
 			for (Rectangle tile : Level.getTiles(startX, startY, endX, endY)) {
+				
+				
+				
 				if (playerRect.overlaps(tile)) {
 
 					// set the players position either directly left or right of
 					// the tile
 					if (velocity.x > 0) {
+						((TiledMapTileLayer) GameScreen.map.getLayers().get("Coins")).setCell(startX, startY, null);
 						position.x = startX - WIDTH;
 					} else {
 						position.x = startX + 1;
@@ -320,6 +350,7 @@ public class Player {
 			// if it does, handle the collision
 			playerRect.y += velocity.y;
 			for (Rectangle tile : Level.getTiles(startX, startY, endX, endY)) {
+			  //  ((TiledMapTileLayer) GameScreen.map.getLayers().get("Coins")).setCell(endX, endY, null);
 				if (playerRect.overlaps(tile)) {
 					// set the players position either directly above or below
 					// the tile

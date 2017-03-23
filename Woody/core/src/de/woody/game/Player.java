@@ -319,7 +319,7 @@ public class Player {
 			playerRect.x += velocity.x;
 			for (Rectangle tile : Level.getTiles(startX, startY, endX, endY)) {
 				if (playerRect.overlaps(tile)) {
-					//((TiledMapTileLayer) GameScreen.map.getLayers().get("Coins")).setCell(startX, startY, null);
+					
 					// set the players position either directly left or right of
 					// the tile
 					if (velocity.x > 0) {

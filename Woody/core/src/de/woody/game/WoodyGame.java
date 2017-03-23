@@ -1,7 +1,6 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.utils.Array;
 
 public class WoodyGame extends Game {
 	public static WoodyGame game;
@@ -24,20 +23,30 @@ public class WoodyGame extends Game {
 	
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
-
+	
 	@Override
 	public void create() {
-		
+		this.setScreen(new SettingsScreen(this));
+		//GameScreen(this, 1) für Plebs
+	}
+	public void gamescreen(){
 		this.setScreen(new GameScreen(this, 1));
 	}
-
+	public void deathscreen(){
+		this.setScreen(new GameoverScreen(this));
+	}
+	public void menuscreen(){
+		this.setScreen(new MainMenueScreen(this));
+	}
+	public void settingscreen(){
+		this.setScreen(new SettingsScreen(this));
+	}
 	@Override
 	public void render() {
 		super.render();
 	}
-
+	
 	@Override
 	public void dispose() {
-	}
-
+	}	
 }

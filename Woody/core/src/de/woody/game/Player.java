@@ -92,7 +92,7 @@ public class Player {
 	 *            the detected pressedButton
 	 */
 	public void setInputVelocity(Button button) {
-
+		
 		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || button.getName().equals("Jump")
 				|| Gdx.input.isKeyPressed(Keys.W)) && grounded) {
 			velocity.y = JUMP_VELOCITY;
@@ -113,8 +113,8 @@ public class Player {
 				state = State.Walking;
 			facesRight = false;
 		}
+	
 	}
-
 	/**
 	 * Intended for testing! Keyboard input only! Sets the velocity depending on
 	 * input.
@@ -193,6 +193,7 @@ public class Player {
 			facesRight = false;
 		}
 	}
+	
 
 	/**
 	 * Add gravity, move player, check for collisions.
@@ -201,6 +202,7 @@ public class Player {
 	 *            time since the last frame
 	 */
 	public void move(float delta) {
+	if(state != Player.State.Dead){					//not working man damn
 		if (delta > 0.1f)
 			delta = 0.1f;
 
@@ -235,7 +237,7 @@ public class Player {
 
 		velocity.x *= DAMPING;
 	}
-
+	}
 	/**
 	 * Check collision in both axis and return the resulting velocity vector.
 	 * 

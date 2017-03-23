@@ -1,16 +1,11 @@
 package de.woody.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameoverScreen extends WoodyGame implements Screen {
 
@@ -18,18 +13,18 @@ public class GameoverScreen extends WoodyGame implements Screen {
 	private Batch batch;
 
 
-	private static final int REPLAY_BUTTON_WIDTH = Gdx.graphics.getWidth() / 3;
-	private static final int REPLAY_BUTTON_HEIGHT = Gdx.graphics.getHeight() /3;
-	private static final int MENU_BUTTON_WIDTH = Gdx.graphics.getWidth() / 3;
-	private static final int MENU_BUTTON_HEIGHT = Gdx.graphics.getHeight() / 3;
-	private static final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
-	private static final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
+	private final int REPLAY_BUTTON_WIDTH = Gdx.graphics.getWidth() / 3;
+	private final int REPLAY_BUTTON_HEIGHT = Gdx.graphics.getHeight() /3;
+	private final int MENU_BUTTON_WIDTH = Gdx.graphics.getWidth() / 3;
+	private final int MENU_BUTTON_HEIGHT = Gdx.graphics.getHeight() / 3;
+	private final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
+	private final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
 	
-	Texture gameOverBanner = new Texture("textures/Gameoverscreen.png");
-	Texture ReplayButtonun = new Texture("textures/Replay_un.png");
-	Texture ReplayButtonak = new Texture("textures/Replay_ak.png");
-	Texture MenuButtonun = new Texture("textures/Menu_un.png");
-	Texture MenuButtonak = new Texture("textures/Menu_ak.png");
+	private Texture gameOverBanner = new Texture("textures/Gameoverscreen.png");
+	private Texture ReplayButtonun = new Texture("textures/Replay_un.png");
+	private Texture ReplayButtonak = new Texture("textures/Replay_ak.png");
+	private Texture MenuButtonun = new Texture("textures/Menu_un.png");
+	private Texture MenuButtonak = new Texture("textures/Menu_ak.png");
 
 	public GameoverScreen(WoodyGame game) {
 		this.game = game;
@@ -43,8 +38,6 @@ public class GameoverScreen extends WoodyGame implements Screen {
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -81,40 +74,28 @@ public class GameoverScreen extends WoodyGame implements Screen {
 		}else{
 			batch.draw(MenuButtonun, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 		}
-		
-		
 		batch.end();
 
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

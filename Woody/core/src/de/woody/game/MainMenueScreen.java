@@ -2,40 +2,35 @@ package de.woody.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch.Config;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MainMenueScreen implements Screen{
 	
-	public static final int WIDTH = 800;
-	public static final int HEIGHT = 480;
+	public final int WIDTH = 800;
+	public final int HEIGHT = 480;
 	private Batch batch;
 	WoodyGame game;
 	
 	//Textures
-	Texture PlayButton = new Texture("textures/Play_un.png");
-	Texture PlayButtonak = new Texture("textures/Play_ak.png");
-	Texture SettingsButton = new Texture("textures/Settings_un.png");
-	Texture SettingsButtonak = new Texture("textures/Settings_ak.png");
-	Texture CloseButton = new Texture("textures/Exit_un.png");
-	Texture CloseButtonak = new Texture("textures/Exit_ak.png");
-	Texture Background = new Texture("textures/Mainscreenbackground3.png");
+	private Texture PlayButton = new Texture("textures/Play_un.png");
+	private Texture PlayButtonak = new Texture("textures/Play_ak.png");
+	private Texture SettingsButton = new Texture("textures/Settings_un.png");
+	private Texture SettingsButtonak = new Texture("textures/Settings_ak.png");
+	private Texture CloseButton = new Texture("textures/Exit_un.png");
+	private Texture CloseButtonak = new Texture("textures/Exit_ak.png");
+	private Texture Background = new Texture("textures/Mainscreenbackground3.png");
 	//Textures sizes
-	private static final int PLAY_BUTTON_WIDTH = Gdx.graphics.getWidth()/2;
-	private static final int PLAY_BUTTON_HEIGHT = Gdx.graphics.getHeight()/3;
-	private static final int SETTINGS_BUTTON_WIDTH = Gdx.graphics.getWidth()/3;
-	private static final int SETTINGS_BUTTON_HEIGHT = Gdx.graphics.getHeight()/3;
-	private static final int CLOSE_BUTTON_WIDTH = Gdx.graphics.getWidth()/3;
-	private static final int CLOSE_BUTTON_HEIGHT = Gdx.graphics.getHeight()/3;
-	private static final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
-	private static final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
+	private final int PLAY_BUTTON_WIDTH = Gdx.graphics.getWidth()/2;
+	private final int PLAY_BUTTON_HEIGHT = Gdx.graphics.getHeight()/3;
+	private final int SETTINGS_BUTTON_WIDTH = Gdx.graphics.getWidth()/3;
+	private final int SETTINGS_BUTTON_HEIGHT = Gdx.graphics.getHeight()/3;
+	private final int CLOSE_BUTTON_WIDTH = Gdx.graphics.getWidth()/3;
+	private final int CLOSE_BUTTON_HEIGHT = Gdx.graphics.getHeight()/3;
+	private final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
+	private final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
 	
 	public MainMenueScreen(WoodyGame game){
 		this.game = game;

@@ -1,7 +1,5 @@
 package de.woody.game;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -9,24 +7,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
-
-import de.woody.game.Player.State;
 
 public class GameScreen implements Screen {
 
@@ -37,30 +28,29 @@ public class GameScreen implements Screen {
 	private final float scaleLives = 2;
 
 	// map and camera
-	public static TiledMap map;
+	private TiledMap map;
 	private final OrthographicCamera camera;
 	private final OrthogonalTiledMapRenderer renderer;
 
 	private final Player player;
-	private GameoverScreen gameoverscreen;
 
 	// nr of the level
 	private final int level;
-	//current checkpoint (could be changed to a vector and used directly)
+	// current checkpoint (could be changed to a vector and used directly)
 	private int checkpoint;
 
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
 
-	public final Buttons controller = new Buttons();
+	private final Buttons controller = new Buttons();
 
 	private Animations playerAnimationHandler;
-	
-	//Test sprites TODO: remove or rewrite
-	//private Array<Sprite> ar = new Array<Sprite>();
-	
+
+	// Test sprites TODO: remove or rewrite
+	// private Array<Sprite> ar = new Array<Sprite>();
+
 	// All doors in the current level
-	public static Array<Door> doors = new Array<Door>();
+	private Array<Door> doors = new Array<Door>();
 
 	public GameScreen(final WoodyGame game, final int level) {
 
@@ -75,8 +65,6 @@ public class GameScreen implements Screen {
 		// elements in world coordinates
 		Vector3 uiPos;
 
-		Button button;
-
 		// Create the buttons based on a texture, give them identifier names and
 		// set their screen position and size
 		uiPos = camera.project(new Vector3(18f, 0.25f, 0));
@@ -90,7 +78,7 @@ public class GameScreen implements Screen {
 
 		uiPos = camera.project(new Vector3(15f, 0.4f, 0));
 		controller.addButton(new Texture("textures/ButtonFight.png"), "Fight", uiPos.x, uiPos.y);
-		
+
 		// Start taking input from the ui
 		Gdx.input.setInputProcessor(controller.getStage());
 
@@ -98,23 +86,23 @@ public class GameScreen implements Screen {
 		playerAnimationHandler = new Animations();
 
 		uiPos = camera.project(new Vector3(16.75f, 11f, 0));
-		controller.addImage(playerAnimationHandler.heartsZero, "imageZeroHearts", uiPos.x, uiPos.y, 52, 16,
-				scaleHearts);
-		controller.addImage(playerAnimationHandler.heartsOne, "imageOneHeart", uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		controller.addImage(playerAnimationHandler.heartsTwo, "imageTwoHearts", uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		controller.addImage(playerAnimationHandler.heartsThree, "imageThreeHearts", uiPos.x, uiPos.y, 52, 16,
-				scaleHearts);
+		controller.addHeartsImage(playerAnimationHandler.heartsZero, 0, uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addHeartsImage(playerAnimationHandler.heartsOne, 1, uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addHeartsImage(playerAnimationHandler.heartsTwo, 2, uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addHeartsImage(playerAnimationHandler.heartsThree, 3, uiPos.x, uiPos.y, 52, 16, scaleHearts);
 
 		uiPos = camera.project(new Vector3(15f, 11f, 0));
-		controller.addImage(playerAnimationHandler.livesZero, "imageLifeZero", uiPos.x, uiPos.y, 18, 18, scaleLives);
-		controller.addImage(playerAnimationHandler.livesOne, "imageLifeOne", uiPos.x, uiPos.y, 18, 18, scaleLives);
-		controller.addImage(playerAnimationHandler.livesTwo, "imageLifeTwo", uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addLifeImage(playerAnimationHandler.livesZero, 0, uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addLifeImage(playerAnimationHandler.livesOne, 1, uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addLifeImage(playerAnimationHandler.livesTwo, 2, uiPos.x, uiPos.y, 18, 18, scaleLives);
 
 		this.game = game;
 		this.level = level;
 
 		// playable character
 		player = new Player(game, new Texture("textures/Woddy.png"), Level.getCurrentSpawn(level, checkpoint));
+		
+
 
 		// load the corresponding map, set the unit scale
 		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
@@ -126,9 +114,9 @@ public class GameScreen implements Screen {
 
 		// create the doors and save them in an easy access array
 		doors = Level.createDoors(Level.filterObjects(map.getLayers().get("Doors").getObjects(), "door"));
-		
+
 		// fun with coins TODO: remove or rewrite
-		//Level.registerCoins(Level.getLayer(map, "Doors"), ar);
+		// Level.registerCoins(Level.getLayer(map, "Doors"), ar);
 
 		debugRenderer = new ShapeRenderer();
 	}
@@ -146,8 +134,8 @@ public class GameScreen implements Screen {
 			Array<Button> pressedButtons = controller.checkAllButtons();
 
 			// checks input, sets velocity
-			if(pressedButtons.size != 0) {
-				for(Button but : pressedButtons) {
+			if (pressedButtons.size != 0) {
+				for (Button but : pressedButtons) {
 					player.setInputVelocity(but);
 				}
 			} else {
@@ -166,28 +154,30 @@ public class GameScreen implements Screen {
 			// set the renderer view based on what the camera sees and render it
 			renderer.setView(camera);
 			renderer.render();
-			
 
-			//fun with coins and sprites TODO: remove or rewrite
-//			checkCoinPickup();
-//			renderer.getBatch().begin();
-//			for(Sprite s : ar) {
-//				s.draw(renderer.getBatch());
-//			}
-//			renderer.getBatch().end();
+			// fun with coins and sprites TODO: remove or rewrite
+			// checkCoinPickup();
+			// renderer.getBatch().begin();
+			// for(Sprite s : ar) {
+			// s.draw(renderer.getBatch());
+			// }
+			// renderer.getBatch().end();
 
-			Lifesystem.checkAltitude(player);
-			Lifesystem.checkAlive();
-			if (Player.state == State.Dead) {
+			player.life.checkAltitude(player);
+			player.life.checkAlive();
+			if (!player.life.isAlive()) {
 				player.position.set(Level.getCurrentSpawn(level, checkpoint));
-				if (Lifesystem.getLife() >= 1)
-					Lifesystem.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
-				else
-					Lifesystem.setHearts(0);
+				if (player.life.getLife() >= 1) {
+					player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
+					player.life.setIsAlive(true);
+				} else {
+					this.dispose();
+					game.deathscreen();
+				}
 			}
 
-			controller.checkCorrectHeartsImage();
-			controller.checkCorrectLifeImage();
+			controller.checkCorrectHeartsImage(player);
+			controller.checkCorrectLifeImage(player);
 
 			// render the player
 			player.render(this);
@@ -196,17 +186,11 @@ public class GameScreen implements Screen {
 			controller.getStage().act(Gdx.graphics.getDeltaTime());
 			// Draw the ui
 			controller.getStage().draw();
-			
+
 			// render debug rectangles
-			if (debug)
+			if (debug) {
 				renderDebug();
-			// is player alive or not
-			//TODO: NEXT merge, fix
-			//player.isAliveorNot();
-			//if(player.isPlayerAlive() == false){
-				//this.dispose();
-				//game.deathscreen();
-			//}
+			}
 		}
 	}
 
@@ -254,6 +238,14 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		// clear the layers out of the hashmap (it will use old level data otherwise)
+		Level.getLayers().clear();
+		doors.clear();
+		controller.dispose();
+		debugRenderer.dispose();
+		map.dispose();
+		playerAnimationHandler.dispose();
+		renderer.dispose();
 	}
 
 	public TiledMap getMap() {
@@ -279,6 +271,10 @@ public class GameScreen implements Screen {
 	public Animations getPlayerAnimationHandler() {
 		return playerAnimationHandler;
 	}
+	
+	public Array<Door> getDoors() {
+		return doors;
+	}
 
 	private void renderDebug() {
 		debugRenderer.setProjectionMatrix(camera.combined);
@@ -288,7 +284,7 @@ public class GameScreen implements Screen {
 		debugRenderer.rect(player.position.x, player.position.y, Player.WIDTH, Player.HEIGHT);
 
 		debugRenderer.setColor(Color.YELLOW);
-		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(game.collisionLayers[0]);
+		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(WoodyGame.collisionLayers[0]);
 		for (int y = 0; y <= layer.getHeight(); y++) {
 			for (int x = 0; x <= layer.getWidth(); x++) {
 				Cell cell = layer.getCell(x, y);
@@ -305,25 +301,26 @@ public class GameScreen implements Screen {
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debug = !debug;
 		if (Gdx.input.isKeyJustPressed(Keys.L))
-			Lifesystem.hearts = Lifesystem.changeHearts(Lifesystem.hearts - 1);
+			player.life.damagePlayer(1);
 		if (Gdx.input.isKeyJustPressed(Keys.R)) {
-			if (Lifesystem.getLife() >= 1)
-				Lifesystem.life = Lifesystem.setLife(2);
+			if (player.life.getLife() >= 1)
+				player.life.setLife(2);
 			else
-				Lifesystem.life = Lifesystem.setLife(3);
+				player.life.setLife(3);
 		}
 	}
-	
-	//tested sprites TODO: remove or rewrite
-//	private boolean checkCoinPickup() {
-//		Rectangle playerRect = Level.rectPool.obtain();
-//		playerRect.set(player.position.x, player.position.y, Player.WIDTH-0.1f, Player.HEIGHT);
-//		for(Sprite s : ar) {
-//			if(playerRect.overlaps(s.getBoundingRectangle())) {
-//				ar.removeValue(s, false);
-//				return true;
-//			}	
-//		}		
-//		return false;
-//	}
+
+	// tested sprites TODO: remove or rewrite
+	// private boolean checkCoinPickup() {
+	// Rectangle playerRect = Level.rectPool.obtain();
+	// playerRect.set(player.position.x, player.position.y, Player.WIDTH-0.1f,
+	// Player.HEIGHT);
+	// for(Sprite s : ar) {
+	// if(playerRect.overlaps(s.getBoundingRectangle())) {
+	// ar.removeValue(s, false);
+	// return true;
+	// }
+	// }
+	// return false;
+	// }
 }

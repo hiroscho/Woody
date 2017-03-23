@@ -2,18 +2,15 @@ package de.woody.game;
 
 import java.util.Iterator;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public class Player {
 	/** width of the player texture scaled to world coordinates **/
@@ -29,7 +26,7 @@ public class Player {
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking, Falling, Dead
+		Standing, Walking, Jumping, Attacking, Falling
 	}
 
 	/** player position in world coordinates **/
@@ -60,6 +57,8 @@ public class Player {
 	public boolean facesRight = true;
 
 	public Texture texture;
+
+	public Lifesystem life = new Lifesystem(3, 2);
 
 	// easy access game instance
 	private WoodyGame game;
@@ -109,46 +108,71 @@ public class Player {
 	 */
 	public void setInputVelocity(Button button) {
 
-		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || button.getName().equals("Jump")
-				|| Gdx.input.isKeyPressed(Keys.W)) && grounded) {
-			velocity.y = JUMP_VELOCITY;
-			state = State.Jumping;
-			grounded = false;
+		if (button.getName().equals("Jump")) {
+			if (grounded) {
+				velocity.y = JUMP_VELOCITY;
+				state = State.Jumping;
+				grounded = false;
+				freeJump = true;
+			} else {
+				if (freeJump && velocity.y < 1) {
+					velocity.y = JUMP_VELOCITY;
+					state = State.Jumping;
+					grounded = false;
+					freeJump = false;
+				}
+			}
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || button.getName().equals("Right")) {
+		if (button.getName().equals("Right")) {
 			velocity.x = MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
 			facesRight = true;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || button.getName().equals("Left")) {
+		if (button.getName().equals("Left")) {
 			velocity.x = -MAX_VELOCITY;
 			if (grounded)
 				state = State.Walking;
 			facesRight = false;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded || button.getName().equals("Fight")) {
-			if ((axeCooldown + 200) < System.currentTimeMillis()) {
+		if (grounded) {
+			if (button.getName().equals("Fight")) {
 
-				if (facesRight) {
-					int x2 = (int) position.x + 1;
-					int y2 = (int) position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2, null);
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2 + 1, null);
-					axeCooldown = System.currentTimeMillis();
+				Rectangle playerRect = Level.rectPool.obtain();
+				playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
 
-				} else {
-					int x2 = (int) position.x - 1;
-					int y2 = (int) position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2, null);
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2 + 1, null);
-					axeCooldown = System.currentTimeMillis();
+				Iterator<Door> it = game.getGameScreen().getDoors().iterator();
+				while (it.hasNext()) {
+					Door rec = it.next();
+					if (playerRect.overlaps(rec)) {
+						position.set(rec.getTeleportPoint());
+					}
 				}
 
-				axeCooldown = System.currentTimeMillis();
+				if ((axeCooldown + 200) < System.currentTimeMillis()) {
+
+					TiledMap map = game.getGameScreen().getMap();
+
+					if (facesRight) {
+						int x2 = (int) position.x + 1;
+						int y2 = (int) position.y;
+						Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+						Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
+						axeCooldown = System.currentTimeMillis();
+
+					} else {
+						int x2 = (int) position.x - 1;
+						int y2 = (int) position.y;
+						Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+						Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
+						axeCooldown = System.currentTimeMillis();
+					}
+
+					axeCooldown = System.currentTimeMillis();
+				}
 			}
 		}
 
@@ -179,7 +203,7 @@ public class Player {
 			Rectangle playerRect = Level.rectPool.obtain();
 			playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
 
-			Iterator<Door> it = GameScreen.doors.iterator();
+			Iterator<Door> it = game.getGameScreen().getDoors().iterator();
 			while (it.hasNext()) {
 				Door rec = it.next();
 				if (playerRect.overlaps(rec)) {
@@ -189,19 +213,21 @@ public class Player {
 
 			if ((axeCooldown + 200) < System.currentTimeMillis()) {
 
+				TiledMap map = game.getGameScreen().getMap();
+
 				if (facesRight) {
 					int x2 = (int) position.x + 1;
 					int y2 = (int) position.y;
 
-					Level.getTileLayer(GameScreen.map, "Destructable").setCell(x2, y2, null);
-					Level.getTileLayer(GameScreen.map, "Destructable").setCell(x2, y2 + 1, null);
+					Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+					Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
 					axeCooldown = System.currentTimeMillis();
 
 				} else {
 					int x2 = (int) position.x - 1;
 					int y2 = (int) position.y;
-					Level.getTileLayer(GameScreen.map, "Destructable").setCell(x2, y2, null);
-					Level.getTileLayer(GameScreen.map, "Destructable").setCell(x2, y2 + 1, null);
+					Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+					Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
 					axeCooldown = System.currentTimeMillis();
 				}
 
@@ -233,51 +259,50 @@ public class Player {
 	 *            time since the last frame
 	 */
 	public void move(float delta) {
-		if (state != Player.State.Dead) { // not working man damn
-			if (delta > 0.1f)
-				delta = 0.1f;
+		if (delta > 0.1f)
+			delta = 0.1f;
 
-			// clamp velocity to max, x-axis only
-			velocity.x = MathUtils.clamp(velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
-			velocity.y = MathUtils.clamp(velocity.y, -JUMP_VELOCITY, JUMP_VELOCITY);
+		// clamp velocities to max
+		velocity.x = MathUtils.clamp(velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
+		velocity.y = MathUtils.clamp(velocity.y, -JUMP_VELOCITY, JUMP_VELOCITY);
 
-			// velocity is < 1, set it to 0
-			if (Math.abs(velocity.x) < 1) {
-				velocity.x = 0;
-				if (velocity.y == 0)
-					state = State.Standing;
-			}
-
-			// apply gravity if player isn't standing or grounded
-			if (!(state == State.Standing) || !grounded) {
-				velocity.add(0, WoodyGame.GRAVITY);
-				grounded = false;
-			}
-
-			if (!grounded && (velocity.y < 0)) {
-				state = State.Falling;
-			}
-
-			// scale to frame velocity
-			velocity.scl(delta);
-
-			position.add(checkTileCollision());
-
-			deleteNearbyCoinBlocks((int) position.x, (int) position.y);
-
-			// unscale velocity
-			velocity.scl(1 / delta);
-
-			velocity.x *= DAMPING;
+		// velocity is < 1, set it to 0
+		if (Math.abs(velocity.x) < 1) {
+			velocity.x = 0;
+			if (velocity.y == 0)
+				state = State.Standing;
 		}
+
+		// apply gravity if player isn't standing or grounded
+		if (!(state == State.Standing) || !grounded) {
+			velocity.add(0, WoodyGame.GRAVITY);
+			grounded = false;
+		}
+
+		if (!grounded && (velocity.y < 0)) {
+			state = State.Falling;
+		}
+
+		// scale to frame velocity
+		velocity.scl(delta);
+
+		position.add(checkTileCollision());
+
+		deleteNearbyCoinBlocks((int) position.x, (int) position.y);
+
+		// unscale velocity
+		velocity.scl(1 / delta);
+
+		velocity.x *= DAMPING;
+
 	}
 
 	public void deleteNearbyCoinBlocks(int x2, int y2) {
 		for (int i = x2 - 1; i <= x2 + 1; i++) {
-			if (((((TiledMapTileLayer) GameScreen.map.getLayers().get("Coins")).getCell(i, y2)) != null)) {
-				((TiledMapTileLayer) GameScreen.map.getLayers().get("Coins")).setCell(i, y2, null);
+			if (Level.getTileLayer(game.getGameScreen().getMap(), "Coins").getCell(i, y2) != null) {
+				Level.getTileLayer(game.getGameScreen().getMap(), "Coins").setCell(i, y2, null);
 				addCoin();
-				System.out.println(getCoinAmount());
+				// System.out.println(getCoinAmount());
 			}
 		}
 	}
@@ -319,7 +344,7 @@ public class Player {
 			playerRect.x += velocity.x;
 			for (Rectangle tile : Level.getTiles(startX, startY, endX, endY)) {
 				if (playerRect.overlaps(tile)) {
-					
+
 					// set the players position either directly left or right of
 					// the tile
 					if (velocity.x > 0) {

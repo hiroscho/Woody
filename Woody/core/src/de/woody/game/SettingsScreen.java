@@ -12,18 +12,18 @@ public class SettingsScreen implements Screen{
 	private Batch batch;
 	WoodyGame game;
 	
-	Texture Background = new Texture("textures/Settings_un.png");
-	Texture Backgroundp = new Texture("textures/SettingsBackground.png");
-	Texture Backun = new Texture("textures/Menu_un.png");
-	Texture Backak = new Texture("textures/Menu_ak.png");
+	private Texture Background = new Texture("textures/Settings_un.png");
+	private Texture Backgroundp = new Texture("textures/SettingsBackground.png");
+	private Texture Backun = new Texture("textures/Menu_un.png");
+	private Texture Backak = new Texture("textures/Menu_ak.png");
 	
 	
-	private static final int BACKGROUND_WIDTH = 300;
-	private static final int BACKGROUND_HEIGHT = 150;
-	private static final int BACK_WIDTH = Gdx.graphics.getWidth() / 3;
-	private static final int BACK_HEIGHT = Gdx.graphics.getHeight() / 3;
-	private static final int BACKGROUNDP_WIDTH = Gdx.graphics.getWidth();
-	private static final int BACKGROUNDP_HEIGHT = Gdx.graphics.getHeight();
+	private final int BACKGROUND_WIDTH = 300;
+	private final int BACKGROUND_HEIGHT = 150;
+	private final int BACK_WIDTH = Gdx.graphics.getWidth() / 3;
+	private final int BACK_HEIGHT = Gdx.graphics.getHeight() / 3;
+	private final int BACKGROUNDP_WIDTH = Gdx.graphics.getWidth();
+	private final int BACKGROUNDP_HEIGHT = Gdx.graphics.getHeight();
 	
 	public SettingsScreen(WoodyGame game){
 		this.game = game;
@@ -33,8 +33,6 @@ public class SettingsScreen implements Screen{
 	
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -66,32 +64,22 @@ public class SettingsScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

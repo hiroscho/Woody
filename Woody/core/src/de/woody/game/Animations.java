@@ -3,11 +3,8 @@ package de.woody.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.Player.State;
@@ -94,7 +91,7 @@ public class Animations{
 		
 		stateTime = currentState == previousState ? stateTime + Gdx.graphics.getDeltaTime() : 0;
 		previousState = currentState;
-		if (currentState == Player.state.Walking && (stateTime >= 1))
+		if (currentState == Player.State.Walking && (stateTime >= 1))
 			stateTime = 0;
 		return region;	
 	}	

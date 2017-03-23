@@ -1,22 +1,7 @@
 package de.woody.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-
 /**
- * 
- * @author Sami, Otto, Stefan
+ *
  *
  *Lifesystem: 	- if player falls down a cliff he looses ALL hearts
  *			   	- if player gets hit he looses ONE heart
@@ -26,57 +11,78 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public class Lifesystem{
 	
-	public static int hearts = 3;				//if health = 0 -> State.Dead and a life gets deducted. Furthermore Woody gets respawned and hearts refilled
-	public static int life = 2;					//if life < 1 -> State.Dead and Woody starts at the start of the level
-	public int oldLife = life;					//used to check if Woody has lost a life (method isLifeLost() maybe necessary for respawn)
+	private int hearts;				//if health = 0 -> State.Dead and a life gets deducted. Furthermore Woody gets respawned and hearts refilled
+	private int life;					//if life < 1 -> State.Dead and Woody starts at the start of the level
+	private boolean isAlive = true;
+	
+	public Lifesystem() {
+		this(1, 1);
+	}
+	
+	public Lifesystem(int hearts, int life) {
+		this.hearts = hearts;
+		this.life = life;
+	}
 	
 	public int getHearts(){
 		return hearts;
 	}
+	
+	public int getLife()
+	{
+		return life;
+	}
 
-	public static void setHearts(int newHearts){
+	public boolean isAlive() {
+		return isAlive;
+	}
+	
+	public void setHearts(int newHearts){
 		hearts = newHearts;
 	}
 	
-	public static int changeHearts(int newHearts){				//used to change the number of hearts
-		return hearts = newHearts;
+	public void setLife(int newLife)
+	{
+		life = newLife;
 	}
 	
-	public static int damagePlayer(int damage)					//used to decrease the number of hearts by a predefined number
+	public void setIsAlive(boolean bool) {
+		isAlive = bool;
+	}
+	
+	/**
+	 * Damage player by damage-amount.
+	 * 
+	 * @param damage  amount of damage done
+	 * @return  the amount of hearts the player has afterwards
+	 */
+	public int damagePlayer(int damage)
 	{
 		return hearts -= damage;
 	}
 	
-	public static int getLife()
-	{
-		return life;
-	}
-	
-	public static int setLife(int newLife)
-	{
-		life = newLife;
-		return life;
-	}
-	
-	private static void setStateDead()
-	{
-		Player.state = Player.State.Dead;
-	}
-	
-	public static void checkAltitude(Player player)
+	/**
+	 * Once the player is below the map he dies.
+	 * 
+	 * @param player
+	 */
+	public void checkAltitude(Player player)
 	{
 		if (player.position.y + Player.HEIGHT < 0)
 		{
-			hearts = hearts - 3;
+			hearts -= 3;
 		}
 	}
 	
-	public static void checkAlive()
+	/**
+	 * If the player doesn't have enough hearts he dies and loses a life.
+	 */
+	public void checkAlive()
 	{
 		if(hearts < 1)
 		{
-			setStateDead();
-			life = life - 1;
+			setIsAlive(false);
+			life -= 1;
 		}
 	}
 }

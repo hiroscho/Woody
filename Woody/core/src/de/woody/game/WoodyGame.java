@@ -26,8 +26,8 @@ public class WoodyGame extends Game {
 	
 	@Override
 	public void create() {
-		this.setScreen(new SettingsScreen(this));
-		//GameScreen(this, 1) für Plebs
+		this.setScreen(new MainMenueScreen(this));
+		//this.setScreen(new GameScreen(this, 1));
 	}
 	public void gamescreen(){
 		this.setScreen(new GameScreen(this, 1));
@@ -41,6 +41,19 @@ public class WoodyGame extends Game {
 	public void settingscreen(){
 		this.setScreen(new SettingsScreen(this));
 	}
+	
+	/**
+	 * Life hacks, don't use it if you don't know what you're doing ~Thomas
+	 * 
+	 * @return
+	 */
+	public GameScreen getGameScreen() {
+		if(this.getScreen() instanceof GameScreen) {
+			return (GameScreen) getScreen();
+		}
+		return null;
+	}
+	
 	@Override
 	public void render() {
 		super.render();

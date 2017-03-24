@@ -1,7 +1,5 @@
 package de.woody.game;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -216,6 +214,9 @@ public class GameScreen implements Screen {
 			if (debug) {
 				renderDebug();
 			}
+			
+			//check Player invulnerable
+			player.life.checkPlayerInvulnerable();
 		}
 	}
 

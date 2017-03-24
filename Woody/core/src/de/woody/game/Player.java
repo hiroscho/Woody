@@ -1,6 +1,7 @@
 package de.woody.game;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -140,34 +141,54 @@ public class Player {
 
 		if (grounded) {
 			if (button.getName().equals("Fight")) {
+				
+				GameScreen scr = game.getGameScreen();
 
+				//use doors
 				Rectangle playerRect = Level.rectPool.obtain();
 				playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
 
-				Iterator<Door> it = game.getGameScreen().getDoors().iterator();
+				Iterator<Door> it = scr.getDoors().iterator();
 				while (it.hasNext()) {
 					Door rec = it.next();
 					if (playerRect.overlaps(rec)) {
 						position.set(rec.getTeleportPoint());
 					}
 				}
+				Level.rectPool.free(playerRect);
 
+				
+				
 				if ((axeCooldown + 200) < System.currentTimeMillis()) {
-
-					TiledMap map = game.getGameScreen().getMap();
+					
+					//hit enemies
+					Rectangle area = Level.rectPool.obtain();
+					area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
+					
+					for(Enemy e : scr.getEnemies()) {
+						if(e.checkHit(area)) {
+							e.life.setHearts(e.life.getHearts() - 1);
+							if(e.life.getHearts() < 1) {
+								scr.getEnemies().removeValue(e, true);
+							}
+						}
+					}
+					
+					//destroy blocks
+					TiledMap map = scr.getMap();
 
 					if (facesRight) {
 						int x2 = (int) position.x + 1;
 						int y2 = (int) position.y;
-						Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-						Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
+						scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+						scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
 						axeCooldown = System.currentTimeMillis();
 
 					} else {
 						int x2 = (int) position.x - 1;
 						int y2 = (int) position.y;
-						Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-						Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
+						scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+						scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
 						axeCooldown = System.currentTimeMillis();
 					}
 
@@ -199,35 +220,55 @@ public class Player {
 			}
 		}
 		// attack function
-		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
+		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {		
+			
+			GameScreen scr = game.getGameScreen();
+			
+			//use doors
 			Rectangle playerRect = Level.rectPool.obtain();
 			playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
 
-			Iterator<Door> it = game.getGameScreen().getDoors().iterator();
+			Iterator<Door> it = scr.getDoors().iterator();
 			while (it.hasNext()) {
 				Door rec = it.next();
 				if (playerRect.overlaps(rec)) {
 					position.set(rec.getTeleportPoint());
 				}
 			}
+			Level.rectPool.free(playerRect);
 
+			
 			if ((axeCooldown + 200) < System.currentTimeMillis()) {
+				
+				//hit enemies
+				Rectangle area = Level.rectPool.obtain();
+				area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
+				
+				for(Enemy e : scr.getEnemies()) {
+					if(e.checkHit(area)) {
+						e.life.setHearts(e.life.getHearts() - 1);
+						if(e.life.getHearts() < 1) {
+							scr.getEnemies().removeValue(e, true);
+						}
+					}
+				}
 
-				TiledMap map = game.getGameScreen().getMap();
+				// destroy blocks
+				TiledMap map = scr.getMap();
 
 				if (facesRight) {
 					int x2 = (int) position.x + 1;
 					int y2 = (int) position.y;
 
-					Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-					Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
+					scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+					scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
 					axeCooldown = System.currentTimeMillis();
 
 				} else {
 					int x2 = (int) position.x - 1;
 					int y2 = (int) position.y;
-					Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-					Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
+					scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+					scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
 					axeCooldown = System.currentTimeMillis();
 				}
 
@@ -298,9 +339,11 @@ public class Player {
 	}
 
 	public void deleteNearbyCoinBlocks(int x2, int y2) {
+		GameScreen scr = game.getGameScreen();
+		
 		for (int i = x2 - 1; i <= x2 + 1; i++) {
-			if (Level.getTileLayer(game.getGameScreen().getMap(), "Coins").getCell(i, y2) != null) {
-				Level.getTileLayer(game.getGameScreen().getMap(), "Coins").setCell(i, y2, null);
+			if (scr.levelData.getTileLayer(scr.getMap(), "Coins").getCell(i, y2) != null) {
+				scr.levelData.getTileLayer(scr.getMap(), "Coins").setCell(i, y2, null);
 				addCoin();
 				// System.out.println(getCoinAmount());
 			}
@@ -315,6 +358,8 @@ public class Player {
 	 * @return the velocity of the player
 	 */
 	private Vector2 checkTileCollision() {
+		GameScreen scr = game.getGameScreen();
+		
 		// create the bounding box of the player
 		Rectangle playerRect = Level.rectPool.obtain();
 		playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
@@ -342,7 +387,7 @@ public class Player {
 			// move the playerRect and see if it overlaps with one of the tiles,
 			// if it does, handle the collision
 			playerRect.x += velocity.x;
-			for (Rectangle tile : Level.getTiles(startX, startY, endX, endY)) {
+			for (Rectangle tile : scr.levelData.getTiles(startX, startY, endX, endY)) {
 				if (playerRect.overlaps(tile)) {
 
 					// set the players position either directly left or right of
@@ -380,7 +425,7 @@ public class Player {
 			// move the playerRect and see if it overlaps with one of the tiles,
 			// if it does, handle the collision
 			playerRect.y += velocity.y;
-			for (Rectangle tile : Level.getTiles(startX, startY, endX, endY)) {
+			for (Rectangle tile : scr.levelData.getTiles(startX, startY, endX, endY)) {
 				if (playerRect.overlaps(tile)) {
 					// set the players position either directly above or below
 					// the tile

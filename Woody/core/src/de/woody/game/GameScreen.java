@@ -55,6 +55,8 @@ public class GameScreen implements Screen {
 	// All doors in the current level
 	private Array<Door> doors = new Array<Door>();
 	private Array<Enemy> enemies = new Array<Enemy>();
+	
+	public Level levelData = new Level();
 
 	public GameScreen(final WoodyGame game, final int level) {
 
@@ -104,18 +106,18 @@ public class GameScreen implements Screen {
 		this.level = level;
 
 		// playable character
-		player = new Player(game, new Texture("textures/Woddy.png"), Level.getCurrentSpawn(level, checkpoint));
+		player = new Player(game, new Texture("textures/Woddy.png"), levelData.getCurrentSpawn(level, checkpoint));
 
 		// load the corresponding map, set the unit scale
 		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
 		// register all layers that have collision
 		for (String name : WoodyGame.collisionLayers) {
-			Level.addCollisionLayer(name, map);
+			levelData.addCollisionLayer(name, map);
 		}
 
 		// create the doors and save them in an easy access array
-		doors = Level.createDoors(Level.filterObjects(map.getLayers().get("Doors").getObjects(), "door"));
+		doors = levelData.createDoors(Level.filterObjects(map.getLayers().get("Doors").getObjects(), "door"));
 
 		// fun with coins TODO: remove or rewrite
 		// Level.registerCoins(Level.getLayer(map, "Doors"), ar);
@@ -190,7 +192,7 @@ public class GameScreen implements Screen {
 			player.life.checkAltitude(player);
 			player.life.checkAlive();
 			if (!player.life.isAlive()) {
-				player.position.set(Level.getCurrentSpawn(level, checkpoint));
+				player.position.set(levelData.getCurrentSpawn(level, checkpoint));
 				if (player.life.getLife() >= 1) {
 					player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
 					player.life.setIsAlive(true);
@@ -267,13 +269,12 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		// clear the layers out of the hashmap (it will use old level data
 		// otherwise)
-		Level.getLayers().clear();
 		doors.clear();
-		controller.dispose();
 		debugRenderer.dispose();
 		map.dispose();
 		playerAnimationHandler.dispose();
 		renderer.dispose();
+		enemies.clear();
 	}
 
 	public TiledMap getMap() {
@@ -302,6 +303,10 @@ public class GameScreen implements Screen {
 
 	public Array<Door> getDoors() {
 		return doors;
+	}
+	
+	public Array<Enemy> getEnemies() {
+		return enemies;
 	}
 
 	private void renderDebug() {

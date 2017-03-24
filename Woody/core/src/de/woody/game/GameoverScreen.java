@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class GameoverScreen extends WoodyGame implements Screen {
+public class GameoverScreen implements Screen {
 
 	WoodyGame game;
 	private Batch batch;
@@ -32,11 +32,6 @@ public class GameoverScreen extends WoodyGame implements Screen {
 	}
 
 	@Override
-	public void create() {
-		this.setScreen(new GameoverScreen(this));
-	}
-
-	@Override
 	public void show() {
 	}
 
@@ -54,7 +49,7 @@ public class GameoverScreen extends WoodyGame implements Screen {
 		int v = Gdx.graphics.getHeight() /(4-(1/2)) + REPLAY_BUTTON_HEIGHT/10;
 		if(Gdx.input.getX() < x + REPLAY_BUTTON_WIDTH && Gdx.input.getX() > x && Gdx.graphics.getHeight() - Gdx.input.getY() < y + REPLAY_BUTTON_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > y){
 			batch.draw(ReplayButtonak, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
-			if(Gdx.input.isTouched()){
+			if(Gdx.input.justTouched()){
 				this.dispose();
 				game.gamescreen();
 			}
@@ -96,6 +91,12 @@ public class GameoverScreen extends WoodyGame implements Screen {
 
 	@Override
 	public void dispose() {
+		batch.dispose();
+		gameOverBanner.dispose();
+		MenuButtonak.dispose();
+		MenuButtonun.dispose();
+		ReplayButtonak.dispose();
+		ReplayButtonun.dispose();
 	}
 
 }

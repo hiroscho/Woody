@@ -26,19 +26,9 @@ public class Level {
 			return new Rectangle();
 		}
 	};
-	private static Array<Rectangle> tiles = new Array<Rectangle>();
-	public static Array<TiledMapTileLayer> collisionTileLayers = new Array<TiledMapTileLayer>();
-	private static HashMap<String, TiledMapTileLayer> layers = new HashMap<String, TiledMapTileLayer>();
-
-	/**
-	 * Should only be used for clearing the map, if you need a specific layer,
-	 * use Level.getTileLayer(..)
-	 * 
-	 * @return
-	 */
-	public static HashMap<String, TiledMapTileLayer> getLayers() {
-		return layers;
-	}
+	private Array<Rectangle> tiles = new Array<Rectangle>();
+	public Array<TiledMapTileLayer> collisionTileLayers = new Array<TiledMapTileLayer>();
+	private HashMap<String, TiledMapTileLayer> layers = new HashMap<String, TiledMapTileLayer>();
 
 	/**
 	 * Returns the current spawn for the level and number of reached
@@ -50,7 +40,7 @@ public class Level {
 	 *            last reached checkpoint
 	 * @return fitting spawnpoint
 	 */
-	public static Vector2 getCurrentSpawn(int level, int checkpoint) {
+	public Vector2 getCurrentSpawn(int level, int checkpoint) {
 		switch (level) {
 		case 1:
 			switch (checkpoint) {
@@ -71,7 +61,7 @@ public class Level {
 	 * @param map
 	 *            the map with the layers
 	 */
-	public static void addCollisionLayer(String name, TiledMap map) {
+	public void addCollisionLayer(String name, TiledMap map) {
 		collisionTileLayers.add(getTileLayer(map, name));
 	}
 
@@ -83,7 +73,7 @@ public class Level {
 	 *            objects from which properties are read to create the doors
 	 * @return an array with all the created doors
 	 */
-	public static Array<Door> createDoors(Array<MapObject> mapObjects) {
+	public Array<Door> createDoors(Array<MapObject> mapObjects) {
 		Array<Door> doors = new Array<Door>();
 
 		int tpX = 0;
@@ -128,7 +118,7 @@ public class Level {
 	 * @param endY
 	 *            y-coordinate of the second point
 	 */
-	public static Array<Rectangle> getTiles(int startX, int startY, int endX, int endY) {
+	public Array<Rectangle> getTiles(int startX, int startY, int endX, int endY) {
 		rectPool.freeAll(tiles);
 		tiles.clear();
 
@@ -187,7 +177,7 @@ public class Level {
 	 *            name of the layer
 	 * @return the layer
 	 */
-	public static TiledMapTileLayer getTileLayer(TiledMap map, String name) {
+	public TiledMapTileLayer getTileLayer(TiledMap map, String name) {
 		TiledMapTileLayer temp;
 		if (layers.get(name) != null) {
 			temp = layers.get(name);

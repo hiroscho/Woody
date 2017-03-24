@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Rectangle;
 public class Enemy {
 	public Lifesystem life;
 	private Sprite body;
-	private String name;
 	private final int ID;
 	private int restrX1, restrX2;
 	private boolean walkLeft = false;
@@ -19,10 +18,6 @@ public class Enemy {
 		ID = id;
 		body.setBounds(x, y, 1, 1);
 		setRestriction(x1, x2);
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public int getID() {
@@ -39,10 +34,6 @@ public class Enemy {
 
 	public int getRightRestriction() {
 		return restrX2;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public void setBody(Sprite sprite) {
@@ -84,15 +75,24 @@ public class Enemy {
 			}
 		}
 	}
-	
+
 	public boolean checkCollision(Player player) {
 		Rectangle playerRect = Level.rectPool.obtain();
 		playerRect.set(player.position.x, player.position.y, Player.WIDTH - 0.1f, Player.HEIGHT);
-		
+
 		return playerRect.overlaps(body.getBoundingRectangle());
 	}
 
 	public void render(Batch batch) {
 		body.draw(batch);
+	}
+
+	public boolean checkHit(Rectangle rect) {
+		if (rect.overlaps(body.getBoundingRectangle())) {
+			Level.rectPool.free(rect);
+			return true;
+		}
+		Level.rectPool.free(rect);
+		return false;
 	}
 }

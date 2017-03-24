@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class Buttons extends WoodyGame {
+public class Buttons {
 	private Stage stage;
 	private TextureRegion buttonTextureRegion;
 	private TextureRegionDrawable buttonTexRegionDrawable;

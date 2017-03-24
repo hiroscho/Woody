@@ -1,5 +1,7 @@
 package de.woody.game;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -9,6 +11,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -51,6 +55,7 @@ public class GameScreen implements Screen {
 
 	// All doors in the current level
 	private Array<Door> doors = new Array<Door>();
+	private Array<Enemy> enemies = new Array<Enemy>();
 
 	public GameScreen(final WoodyGame game, final int level) {
 
@@ -101,8 +106,6 @@ public class GameScreen implements Screen {
 
 		// playable character
 		player = new Player(game, new Texture("textures/Woddy.png"), Level.getCurrentSpawn(level, checkpoint));
-		
-
 
 		// load the corresponding map, set the unit scale
 		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
@@ -117,6 +120,18 @@ public class GameScreen implements Screen {
 
 		// fun with coins TODO: remove or rewrite
 		// Level.registerCoins(Level.getLayer(map, "Doors"), ar);
+
+		Array<MapObject> enemyObjects = Level.filterObjects(map.getLayers().get("Enemy").getObjects(), "Enemy");
+		for (MapObject obj : enemyObjects) {
+			MapProperties prop = obj.getProperties();
+			int id = Integer.parseInt(obj.getName().substring(obj.getName().indexOf(':') + 1));
+			int x1 = prop.get("leftRoom", Integer.class);
+			int x2 = prop.get("rightRoom", Integer.class);
+			int x = (int)(prop.get("x", Float.class) * WoodyGame.UNIT_SCALE);
+			int y = (int)(prop.get("y", Float.class) * WoodyGame.UNIT_SCALE);
+			Enemy e = new Enemy(1, new Texture("textures/Woddy.png"), id, x1, x2, x, y);
+			enemies.add(e);
+		}
 
 		debugRenderer = new ShapeRenderer();
 	}
@@ -162,6 +177,16 @@ public class GameScreen implements Screen {
 			// s.draw(renderer.getBatch());
 			// }
 			// renderer.getBatch().end();
+
+			renderer.getBatch().begin();
+			for (Enemy e : enemies) {
+				e.move();
+				e.render(renderer.getBatch());
+				if(e.checkCollision(player)) {
+					player.life.damagePlayer(1);
+				}
+			}
+			renderer.getBatch().end();
 
 			player.life.checkAltitude(player);
 			player.life.checkAlive();
@@ -238,7 +263,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// clear the layers out of the hashmap (it will use old level data otherwise)
+		// clear the layers out of the hashmap (it will use old level data
+		// otherwise)
 		Level.getLayers().clear();
 		doors.clear();
 		controller.dispose();
@@ -271,7 +297,7 @@ public class GameScreen implements Screen {
 	public Animations getPlayerAnimationHandler() {
 		return playerAnimationHandler;
 	}
-	
+
 	public Array<Door> getDoors() {
 		return doors;
 	}

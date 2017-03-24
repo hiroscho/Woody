@@ -52,7 +52,7 @@ public class SettingsScreen implements Screen{
 			batch.draw(Backak, x, y, BACK_WIDTH, BACK_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
-				game.menuscreen();
+				game.openMainMenuScreen();
 			}
 		}else{
 			batch.draw(Backun, x, y, BACK_WIDTH, BACK_HEIGHT);

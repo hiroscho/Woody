@@ -59,7 +59,7 @@ public class MainMenueScreen implements Screen {
 			batch.draw(PlayButtonak, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
 				this.dispose();
-				game.gamescreen();
+				game.openGameScreen(1);
 			}
 		} else {
 			batch.draw(PlayButton, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
@@ -74,7 +74,7 @@ public class MainMenueScreen implements Screen {
 			batch.draw(SettingsButtonak, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
 				this.dispose();
-				game.settingscreen();
+				game.openSettingsScreen();
 			}
 		} else {
 			batch.draw(SettingsButton, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);

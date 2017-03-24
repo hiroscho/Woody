@@ -1,6 +1,7 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.assets.AssetManager;
 
 public class WoodyGame extends Game {
 	public static WoodyGame game;
@@ -13,10 +14,10 @@ public class WoodyGame extends Game {
 	public static final float UNIT_SCALE = 1 / 64f;
 
 	/** number of shown tiles on the x-Axis **/
-	public final int xTiles = 20;
+	public static final int xTiles = 20;
 
 	/** number of shown tiles on the y-Axis **/
-	public final int yTiles = 12;
+	public static final int yTiles = 12;
 
 	/** names of the collision layers **/
 	public static final String[] collisionLayers = new String[]{"Collidable Tiles", "Destructable"};
@@ -24,21 +25,22 @@ public class WoodyGame extends Game {
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
 	
+	public AssetManager manager = new AssetManager();
+	
 	@Override
 	public void create() {
 		this.setScreen(new MainMenueScreen(this));
-		//this.setScreen(new GameScreen(this, 1));
 	}
-	public void gamescreen(){
-		this.setScreen(new GameScreen(this, 1));
+	public void openGameScreen(int level){
+		this.setScreen(new GameScreen(this, level));
 	}
-	public void deathscreen(){
-		this.setScreen(new GameoverScreen(this));
+	public void openGameoverScreen(int level){
+		this.setScreen(new GameoverScreen(this, level));
 	}
-	public void menuscreen(){
+	public void openMainMenuScreen(){
 		this.setScreen(new MainMenueScreen(this));
 	}
-	public void settingscreen(){
+	public void openSettingsScreen(){
 		this.setScreen(new SettingsScreen(this));
 	}
 	

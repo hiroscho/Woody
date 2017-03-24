@@ -11,6 +11,7 @@ public class GameoverScreen implements Screen {
 
 	WoodyGame game;
 	private Batch batch;
+	private int priorLevel;
 
 
 	private final int REPLAY_BUTTON_WIDTH = Gdx.graphics.getWidth() / 3;
@@ -26,8 +27,9 @@ public class GameoverScreen implements Screen {
 	private Texture MenuButtonun = new Texture("textures/Menu_un.png");
 	private Texture MenuButtonak = new Texture("textures/Menu_ak.png");
 
-	public GameoverScreen(WoodyGame game) {
+	public GameoverScreen(WoodyGame game, int level) {
 		this.game = game;
+		priorLevel = level;
 		batch = new SpriteBatch();
 	}
 
@@ -51,7 +53,7 @@ public class GameoverScreen implements Screen {
 			batch.draw(ReplayButtonak, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
-				game.gamescreen();
+				game.openGameScreen(priorLevel);
 			}
 		}else{
 			batch.draw(ReplayButtonun, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
@@ -64,7 +66,7 @@ public class GameoverScreen implements Screen {
 			batch.draw(MenuButtonak, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
-				game.menuscreen();
+				game.openMainMenuScreen();
 			}
 		}else{
 			batch.draw(MenuButtonun, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);

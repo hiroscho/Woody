@@ -64,7 +64,7 @@ public class GameScreen implements Screen {
 
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, game.xTiles, game.yTiles);
+		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
 		camera.update();
 
 		// kinda optional and kinda not, allows the setting of positions of UI
@@ -198,7 +198,7 @@ public class GameScreen implements Screen {
 					player.life.setIsAlive(true);
 				} else {
 					this.dispose();
-					game.deathscreen();
+					game.openGameoverScreen(level);
 				}
 			}
 
@@ -229,18 +229,18 @@ public class GameScreen implements Screen {
 		if (player.position.x < vec.x + 3)
 			camera.position.x += player.position.x - (vec.x + 3);
 
-		if (player.position.x > vec.x + game.xTiles / 2)
+		if (player.position.x > vec.x + WoodyGame.xTiles / 2)
 			camera.position.x = player.position.x;
 
 		// dont show the area left from the start
 		if (player.position.x < 3)
-			camera.position.x = game.xTiles / 2;
+			camera.position.x = WoodyGame.xTiles / 2;
 
 		return camera;
 	}
 
 	private Vector2 cameraBottomLeft() {
-		return new Vector2(camera.position.x - (game.xTiles / 2), camera.position.y - (game.yTiles / 2));
+		return new Vector2(camera.position.x - (WoodyGame.xTiles / 2), camera.position.y - (WoodyGame.yTiles / 2));
 	}
 
 	@Override

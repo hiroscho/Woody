@@ -24,8 +24,6 @@ import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen {
 
-	private final WoodyGame game;
-
 	// Variables to change the scale of the hearts / lives image conveniently
 	private final float scaleHearts = 2;
 	private final float scaleLives = 2;
@@ -49,16 +47,13 @@ public class GameScreen implements Screen {
 
 	private Animations playerAnimationHandler;
 
-	// Test sprites TODO: remove or rewrite
-	// private Array<Sprite> ar = new Array<Sprite>();
-
 	// All doors in the current level
 	private Array<Door> doors = new Array<Door>();
 	private Array<Enemy> enemies = new Array<Enemy>();
-	
+
 	public Level levelData = new Level();
 
-	public GameScreen(final WoodyGame game, final int level) {
+	public GameScreen(final int level) {
 
 		// (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
 
@@ -102,11 +97,10 @@ public class GameScreen implements Screen {
 		controller.addLifeImage(playerAnimationHandler.livesOne, 1, uiPos.x, uiPos.y, 18, 18, scaleLives);
 		controller.addLifeImage(playerAnimationHandler.livesTwo, 2, uiPos.x, uiPos.y, 18, 18, scaleLives);
 
-		this.game = game;
 		this.level = level;
 
 		// playable character
-		player = new Player(game, new Texture("textures/Woddy.png"), levelData.getCurrentSpawn(level, checkpoint));
+		player = new Player(new Texture("textures/Woddy.png"), levelData.getCurrentSpawn(level, checkpoint));
 
 		// load the corresponding map, set the unit scale
 		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
@@ -119,17 +113,15 @@ public class GameScreen implements Screen {
 		// create the doors and save them in an easy access array
 		doors = levelData.createDoors(Level.filterObjects(map.getLayers().get("Doors").getObjects(), "door"));
 
-		// fun with coins TODO: remove or rewrite
-		// Level.registerCoins(Level.getLayer(map, "Doors"), ar);
-
+		// Fun with enemies
 		Array<MapObject> enemyObjects = Level.filterObjects(map.getLayers().get("Enemy").getObjects(), "Enemy");
 		for (MapObject obj : enemyObjects) {
 			MapProperties prop = obj.getProperties();
 			int id = Integer.parseInt(obj.getName().substring(obj.getName().indexOf(':') + 1));
 			int x1 = prop.get("leftRoom", Integer.class);
 			int x2 = prop.get("rightRoom", Integer.class);
-			int x = (int)(prop.get("x", Float.class) * WoodyGame.UNIT_SCALE);
-			int y = (int)(prop.get("y", Float.class) * WoodyGame.UNIT_SCALE);
+			int x = (int) (prop.get("x", Float.class) * WoodyGame.UNIT_SCALE);
+			int y = (int) (prop.get("y", Float.class) * WoodyGame.UNIT_SCALE);
 			Enemy e = new Enemy(1, new Texture("textures/Woddy.png"), id, x1, x2, x, y);
 			enemies.add(e);
 		}
@@ -171,19 +163,12 @@ public class GameScreen implements Screen {
 			renderer.setView(camera);
 			renderer.render();
 
-			// fun with coins and sprites TODO: remove or rewrite
-			// checkCoinPickup();
-			// renderer.getBatch().begin();
-			// for(Sprite s : ar) {
-			// s.draw(renderer.getBatch());
-			// }
-			// renderer.getBatch().end();
-
+			// Render, move and check collision for enemies
 			renderer.getBatch().begin();
 			for (Enemy e : enemies) {
 				e.move();
 				e.render(renderer.getBatch());
-				if(e.checkCollision(player)) {
+				if (e.checkCollision(player)) {
 					player.life.damagePlayer(1);
 				}
 			}
@@ -198,7 +183,7 @@ public class GameScreen implements Screen {
 					player.life.setIsAlive(true);
 				} else {
 					this.dispose();
-					game.openGameoverScreen(level);
+					WoodyGame.getGame().setScreen(new GameoverScreen(level));
 				}
 			}
 
@@ -217,8 +202,8 @@ public class GameScreen implements Screen {
 			if (debug) {
 				renderDebug();
 			}
-			
-			//check Player invulnerable
+
+			// check Player invulnerable
 			player.life.checkPlayerInvulnerable();
 		}
 	}
@@ -281,10 +266,6 @@ public class GameScreen implements Screen {
 		return map;
 	}
 
-	public WoodyGame getGameInstance() {
-		return game;
-	}
-
 	public OrthogonalTiledMapRenderer getRenderer() {
 		return renderer;
 	}
@@ -304,7 +285,7 @@ public class GameScreen implements Screen {
 	public Array<Door> getDoors() {
 		return doors;
 	}
-	
+
 	public Array<Enemy> getEnemies() {
 		return enemies;
 	}
@@ -331,6 +312,7 @@ public class GameScreen implements Screen {
 	}
 
 	private int counterU;
+
 	private void checkGameInput() {
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debug = !debug;
@@ -342,35 +324,18 @@ public class GameScreen implements Screen {
 			else
 				player.life.setLife(3);
 		}
-		if(Gdx.input.isKeyJustPressed(Keys.U))															//Disable Button UI
-		{
+
+		// Disable Button UI
+		if (Gdx.input.isKeyJustPressed(Keys.U)) {
 			counterU++;
-			if(counterU%2 == 1)
-			{
-				for(Actor actor : controller.getStage().getActors())
-				{
+			if (counterU % 2 == 1) {
+				for (Actor actor : controller.getStage().getActors()) {
 					actor.setVisible(false);
 				}
-			}
-			else
-				for(Actor actor : controller.getStage().getActors())
-				{
+			} else
+				for (Actor actor : controller.getStage().getActors()) {
 					actor.setVisible(true);
 				}
 		}
 	}
-
-	// tested sprites TODO: remove or rewrite
-	// private boolean checkCoinPickup() {
-	// Rectangle playerRect = Level.rectPool.obtain();
-	// playerRect.set(player.position.x, player.position.y, Player.WIDTH-0.1f,
-	// Player.HEIGHT);
-	// for(Sprite s : ar) {
-	// if(playerRect.overlaps(s.getBoundingRectangle())) {
-	// ar.removeValue(s, false);
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
 }

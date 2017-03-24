@@ -61,23 +61,20 @@ public class Player {
 
 	public Lifesystem life = new Lifesystem(3, 2);
 
-	// easy access game instance
-	private WoodyGame game;
-
-	public Player(final WoodyGame game) {
-		this(game, null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
+	public Player() {
+		this(null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
 		System.err.println("Warning! No texture!");
 	}
 
-	public Player(final WoodyGame game, Texture tex, Vector2 pos) {
-		this(game, tex, State.Standing, pos, 10f, 15f, 0.87f);
+	public Player(Texture tex, Vector2 pos) {
+		this(tex, State.Standing, pos, 10f, 15f, 0.87f);
 	}
 
-	public Player(final WoodyGame game, Texture tex, State state, Vector2 pos) {
-		this(game, tex, state, pos, 10f, 15f, 0.87f);
+	public Player(Texture tex, State state, Vector2 pos) {
+		this(tex, state, pos, 10f, 15f, 0.87f);
 	}
 
-	public Player(final WoodyGame game, Texture tex, State state, Vector2 pos, float mVel, float mJump, float damp) {
+	public Player(Texture tex, State state, Vector2 pos, float mVel, float mJump, float damp) {
 		texture = tex;
 		Player.state = state;
 		position.set(pos);
@@ -86,7 +83,6 @@ public class Player {
 		DAMPING = damp;
 		WIDTH = WoodyGame.UNIT_SCALE * texture.getWidth();
 		HEIGHT = WoodyGame.UNIT_SCALE * texture.getHeight();
-		this.game = game;
 	}
 
 	public int getCoinAmount() {
@@ -142,7 +138,7 @@ public class Player {
 		if (grounded) {
 			if (button.getName().equals("Fight")) {
 				
-				GameScreen scr = game.getGameScreen();
+				GameScreen scr = WoodyGame.getGame().getGameScreen();
 
 				//use doors
 				Rectangle playerRect = Level.rectPool.obtain();
@@ -222,7 +218,7 @@ public class Player {
 		// attack function
 		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {		
 			
-			GameScreen scr = game.getGameScreen();
+			GameScreen scr = WoodyGame.getGame().getGameScreen();
 			
 			//use doors
 			Rectangle playerRect = Level.rectPool.obtain();
@@ -339,7 +335,7 @@ public class Player {
 	}
 
 	public void deleteNearbyCoinBlocks(int x2, int y2) {
-		GameScreen scr = game.getGameScreen();
+		GameScreen scr = WoodyGame.getGame().getGameScreen();
 		
 		for (int i = x2 - 1; i <= x2 + 1; i++) {
 			if (scr.levelData.getTileLayer(scr.getMap(), "Coins").getCell(i, y2) != null) {
@@ -358,7 +354,7 @@ public class Player {
 	 * @return the velocity of the player
 	 */
 	private Vector2 checkTileCollision() {
-		GameScreen scr = game.getGameScreen();
+		GameScreen scr = WoodyGame.getGame().getGameScreen();
 		
 		// create the bounding box of the player
 		Rectangle playerRect = Level.rectPool.obtain();

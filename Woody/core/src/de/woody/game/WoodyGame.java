@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 
 public class WoodyGame extends Game {
-	public static WoodyGame game;
+	private static final WoodyGame game = new WoodyGame();
 
 	/**
 	 * scale from px to tiles
@@ -20,48 +20,43 @@ public class WoodyGame extends Game {
 	public static final int yTiles = 12;
 
 	/** names of the collision layers **/
-	public static final String[] collisionLayers = new String[]{"Collidable Tiles", "Destructable"};
-	
+	public static final String[] collisionLayers = new String[] { "Collidable Tiles", "Destructable" };
+
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
-	
+
 	public AssetManager manager = new AssetManager();
-	
+
+	private WoodyGame() {
+	}
+
+	public static WoodyGame getGame() {
+		return game;
+	}
+
 	@Override
 	public void create() {
-		this.setScreen(new MainMenueScreen(this));
+		this.setScreen(new MainMenueScreen());
 	}
-	public void openGameScreen(int level){
-		this.setScreen(new GameScreen(this, level));
-	}
-	public void openGameoverScreen(int level){
-		this.setScreen(new GameoverScreen(this, level));
-	}
-	public void openMainMenuScreen(){
-		this.setScreen(new MainMenueScreen(this));
-	}
-	public void openSettingsScreen(){
-		this.setScreen(new SettingsScreen(this));
-	}
-	
+
 	/**
 	 * Life hacks, don't use it if you don't know what you're doing ~Thomas
 	 * 
 	 * @return
 	 */
 	public GameScreen getGameScreen() {
-		if(this.getScreen() instanceof GameScreen) {
+		if (this.getScreen() instanceof GameScreen) {
 			return (GameScreen) getScreen();
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void render() {
 		super.render();
 	}
-	
+
 	@Override
 	public void dispose() {
-	}	
+	}
 }

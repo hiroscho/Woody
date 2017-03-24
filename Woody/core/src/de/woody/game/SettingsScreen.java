@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class SettingsScreen implements Screen{
 	
 	private Batch batch;
-	WoodyGame game;
 	
 	private Texture Background = new Texture("textures/Settings_un.png");
 	private Texture Backgroundp = new Texture("textures/SettingsBackground.png");
@@ -25,8 +24,7 @@ public class SettingsScreen implements Screen{
 	private final int BACKGROUNDP_WIDTH = Gdx.graphics.getWidth();
 	private final int BACKGROUNDP_HEIGHT = Gdx.graphics.getHeight();
 	
-	public SettingsScreen(WoodyGame game){
-		this.game = game;
+	public SettingsScreen(){
 		batch = new SpriteBatch();
 	}
 	
@@ -52,7 +50,7 @@ public class SettingsScreen implements Screen{
 			batch.draw(Backak, x, y, BACK_WIDTH, BACK_HEIGHT);
 			if(Gdx.input.justTouched()){
 				this.dispose();
-				game.openMainMenuScreen();
+				WoodyGame.getGame().setScreen(new MainMenueScreen());
 			}
 		}else{
 			batch.draw(Backun, x, y, BACK_WIDTH, BACK_HEIGHT);

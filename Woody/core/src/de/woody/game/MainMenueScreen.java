@@ -12,7 +12,6 @@ public class MainMenueScreen implements Screen {
 	public final int WIDTH = 800;
 	public final int HEIGHT = 480;
 	private Batch batch;
-	WoodyGame game;
 
 	// Textures
 	private Texture PlayButton = new Texture("textures/Play_un.png");
@@ -32,8 +31,7 @@ public class MainMenueScreen implements Screen {
 	private final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
 	private final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
 
-	public MainMenueScreen(WoodyGame game) {
-		this.game = game;
+	public MainMenueScreen() {
 		batch = new SpriteBatch();
 	}
 
@@ -59,7 +57,7 @@ public class MainMenueScreen implements Screen {
 			batch.draw(PlayButtonak, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
 				this.dispose();
-				game.openGameScreen(1);
+				WoodyGame.getGame().setScreen(new GameScreen(1));
 			}
 		} else {
 			batch.draw(PlayButton, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
@@ -74,7 +72,7 @@ public class MainMenueScreen implements Screen {
 			batch.draw(SettingsButtonak, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
 				this.dispose();
-				game.openSettingsScreen();
+				WoodyGame.getGame().setScreen(new SettingsScreen());
 			}
 		} else {
 			batch.draw(SettingsButton, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);

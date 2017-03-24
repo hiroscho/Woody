@@ -113,9 +113,17 @@ public class Level {
 	 * @param y  y-coordinate
 	 * @return  the id of the specific tile
 	 */
-	public static int getTileId(TiledMapTileLayer layer, int x, int y) {
-		if(layer.getCell(x, y) != null) {
-			return layer.getCell(x, y).getTile().getId();
+	public static int getTileId(String location, TiledMapTileLayer layer, int x, int y) {
+		int offset = 0;
+		if(location == "above")
+			offset = 1;
+		else if(location == "below")
+			offset = -1;
+		else
+			offset = 0;
+		
+		if(layer.getCell(x, y + offset) != null) {
+			return layer.getCell(x, y + offset).getTile().getId();
 		}
 		return 0;
 	}

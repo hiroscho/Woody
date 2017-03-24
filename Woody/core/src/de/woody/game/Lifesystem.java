@@ -76,7 +76,7 @@ public class Lifesystem{
 	
 	public static void checkAltitude(Player player)
 	{
-		if (player.position.y + Player.HEIGHT < 0)
+		if (player.position.y + Player.HEIGHT < -1)
 		{
 			hearts = hearts - 3;
 		}

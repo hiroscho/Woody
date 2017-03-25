@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import de.woody.game.screens.WoodyGame;
+
 public class UI {
 	private Stage stage;
 	private TextureRegion buttonTextureRegion;

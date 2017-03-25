@@ -1,4 +1,4 @@
-package de.woody.game;
+package de.woody.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -12,8 +12,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -23,6 +21,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
+
+import de.woody.game.Animations;
+import de.woody.game.Level;
+import de.woody.game.Player;
+import de.woody.game.UI;
+import de.woody.game.enemies.Entity;
+import de.woody.game.enemies.Walker;
 
 public class GameScreen implements Screen {
 	
@@ -100,6 +105,12 @@ public class GameScreen implements Screen {
 
 		// Animations
 		asMa.load("textures/sheetRun.png", Texture.class);
+		
+		// Projectiletexture
+		asMa.load("textures/projectile.png", Texture.class);
+		
+		// Entitytextures
+		// Nothing here yet
 		
 		// Sound Test
 		asMa.load("audio/drop.wav", Sound.class);
@@ -202,8 +213,8 @@ public class GameScreen implements Screen {
 
 		// Render, move and check collision for enemies
 		renderer.getBatch().begin();
-		for (Enemy e : levelData.getEnemies()) {
-			e.move();
+		for (Entity e : levelData.getEnemies()) {
+			e.move(delta);
 			e.render(renderer.getBatch());
 			if (e.checkCollision(player)) {
 				player.life.damagePlayer(1);

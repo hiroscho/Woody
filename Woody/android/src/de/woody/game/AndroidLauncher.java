@@ -1,10 +1,10 @@
 package de.woody.game;
 
 import android.os.Bundle;
+import de.woody.game.screens.WoodyGame;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import de.woody.game.WoodyGame;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override

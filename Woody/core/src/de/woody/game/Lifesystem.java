@@ -4,6 +4,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
+import de.woody.game.screens.GameScreen;
+import de.woody.game.screens.WoodyGame;
+
 /**
  * Lifesystem:
  * <ul>
@@ -69,7 +72,7 @@ public class Lifesystem {
 	 *            amount of damage
 	 * @return remaining hearts
 	 */
-	public int damageEnemy(int damage) {
+	public int damageEntity(int damage) {
 		return hearts -= damage;
 	}
 

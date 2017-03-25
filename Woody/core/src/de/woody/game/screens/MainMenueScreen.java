@@ -1,4 +1,4 @@
-package de.woody.game;
+package de.woody.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;

@@ -12,6 +12,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
+import de.woody.game.enemies.Entity;
+import de.woody.game.enemies.Spitter;
+import de.woody.game.enemies.Walker;
+import de.woody.game.screens.GameScreen;
+import de.woody.game.screens.WoodyGame;
+
 /**
  * Contains level data such as enemies, doors, collisionTileLayers.
  * 
@@ -21,13 +27,13 @@ public class Level {
 	public Pool<Rectangle> rectPool;
 	private Array<Rectangle> tiles;
 	private Array<Door> doors;
-	private Array<Enemy> enemies;
+	private Array<Entity> enemies;
 	private Array<TiledMapTileLayer> collisionTileLayers;
 
 	public Level() {
 		tiles = new Array<Rectangle>();
 		doors = new Array<Door>();
-		enemies = new Array<Enemy>();
+		enemies = new Array<Entity>();
 		collisionTileLayers = new Array<TiledMapTileLayer>();
 		rectPool = new Pool<Rectangle>() {
 			@Override
@@ -37,11 +43,11 @@ public class Level {
 		};
 		init();
 	}
-	
-	public Array<Enemy> getEnemies() {
+
+	public Array<Entity> getEnemies() {
 		return enemies;
 	}
-	
+
 	public Array<Door> getDoors() {
 		return doors;
 	}
@@ -49,11 +55,13 @@ public class Level {
 	private void init() {
 		createDoors(
 				Level.filterObjects(GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects(), "door"));
-		createEnemies(Level.filterObjects(GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects(),
-				"Enemy"));
+		createWalkers(Level.filterObjects(GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects(),
+				"Walker"));
+		createSpitters(Level.filterObjects(GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects(),
+				"Spitter"));
 		createCollisionLayers();
 	}
-	
+
 	private void createCollisionLayers() {
 		for (String name : WoodyGame.collisionLayers) {
 			collisionTileLayers.add(getTileLayer(GameScreen.getInstance().getMap(), name));
@@ -114,16 +122,32 @@ public class Level {
 		}
 	}
 
-	private void createEnemies(Array<MapObject> objects) {
+	private void createWalkers(Array<MapObject> objects) {
 		for (MapObject obj : objects) {
 			MapProperties prop = obj.getProperties();
-			int id = Integer.parseInt(obj.getName().substring(obj.getName().indexOf(':') + 1));
+			int id = prop.get("id", Integer.class);
 			int x1 = prop.get("leftRoom", Integer.class);
 			int x2 = prop.get("rightRoom", Integer.class);
 			String texture = prop.get("texture", String.class);
 			Array<Float> basic = getBasicProperties(prop);
-			Enemy e = new Enemy(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, x1, x2, basic.get(0),
+			Walker e = new Walker(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, x1, x2, basic.get(0),
 					basic.get(1), basic.get(2), basic.get(3));
+			enemies.add(e);
+		}
+	}
+
+	// TODO: Add custom lifetime, velocity, projectiletexture properties and fix
+	// the weird walk bug (also optimize entity only updating when they are in
+	// view (gotta think about something for horizontal projectiles))
+	private void createSpitters(Array<MapObject> objects) {
+		for (MapObject obj : objects) {
+			MapProperties prop = obj.getProperties();
+			int id = prop.get("id", Integer.class);
+			String texture = prop.get("texture", String.class);
+			Array<Float> basic = getBasicProperties(prop);
+			Spitter e = new Spitter(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, basic.get(0),
+					basic.get(1), basic.get(2), basic.get(3));
+			e.setProjectileProperties(0.5F, 0.5F, new Vector2(0, 3), 3F);
 			enemies.add(e);
 		}
 	}
@@ -192,5 +216,4 @@ public class Level {
 		}
 		return filteredObjects;
 	}
-
 }

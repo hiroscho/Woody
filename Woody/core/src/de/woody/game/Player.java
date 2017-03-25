@@ -1,16 +1,20 @@
 package de.woody.game;
 
 import java.util.Iterator;
-import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+
+import de.woody.game.enemies.Entity;
+import de.woody.game.enemies.Walker;
+import de.woody.game.screens.GameScreen;
+import de.woody.game.screens.WoodyGame;
+
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public class Player {
@@ -176,8 +180,7 @@ public class Player {
 	private void handleFight() {
 
 		// use doors
-		Rectangle playerRect = GameScreen.getInstance().levelData.rectPool.obtain();
-		playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
+		Rectangle playerRect = getPlayerRec();
 
 		Iterator<Door> it = GameScreen.getInstance().levelData.getDoors().iterator();
 		while (it.hasNext()) {
@@ -194,13 +197,8 @@ public class Player {
 			Rectangle area = GameScreen.getInstance().levelData.rectPool.obtain();
 			area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
 
-			for (Enemy e : GameScreen.getInstance().levelData.getEnemies()) {
-				if (e.checkHit(area)) {
-					e.life.damageEnemy(1);
-					if (e.life.getHearts() < 1) {
-						GameScreen.getInstance().levelData.getEnemies().removeValue(e, true);
-					}
-				}
+			for (Entity e : GameScreen.getInstance().levelData.getEnemies()) {
+				e.checkHit(area);
 			}
 
 			// destroy blocks
@@ -290,8 +288,7 @@ public class Player {
 	 */
 	private Vector2 checkTileCollision() {
 		// create the bounding box of the player
-		Rectangle playerRect = GameScreen.getInstance().levelData.rectPool.obtain();
-		playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
+		Rectangle playerRect = getPlayerRec();
 
 		// the start-(startX, startY) and end-(endX, endY) point define an area
 		// the player can collide against
@@ -381,6 +378,12 @@ public class Player {
 		}
 		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 		return velocity;
+	}
+
+	public Rectangle getPlayerRec() {
+		Rectangle playerRect = GameScreen.getInstance().levelData.rectPool.obtain();
+		playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
+		return playerRect;
 	}
 
 	/**

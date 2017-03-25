@@ -2,7 +2,8 @@ package de.woody.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import de.woody.game.WoodyGame;
+
+import de.woody.game.screens.WoodyGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

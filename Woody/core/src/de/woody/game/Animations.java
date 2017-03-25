@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.Player.State;
+import de.woody.game.screens.WoodyGame;
 
 public class Animations {
 

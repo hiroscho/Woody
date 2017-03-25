@@ -56,8 +56,8 @@ public class MainMenueScreen implements Screen {
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > y) {
 			batch.draw(PlayButtonak, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
-				this.dispose();
-				WoodyGame.getGame().setScreen(new GameScreen(1));
+				WoodyGame.getGame().setScreen(new LoadingScreen(1));
+				return;
 			}
 		} else {
 			batch.draw(PlayButton, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
@@ -71,8 +71,8 @@ public class MainMenueScreen implements Screen {
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > u) {
 			batch.draw(SettingsButtonak, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
-				this.dispose();
 				WoodyGame.getGame().setScreen(new SettingsScreen());
+				return;
 			}
 		} else {
 			batch.draw(SettingsButton, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
@@ -109,6 +109,7 @@ public class MainMenueScreen implements Screen {
 
 	@Override
 	public void hide() {
+		this.dispose();
 	}
 
 	@Override

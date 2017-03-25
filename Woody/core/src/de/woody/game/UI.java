@@ -1,6 +1,7 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class Buttons {
+public class UI {
 	private Stage stage;
 	private TextureRegion buttonTextureRegion;
 	private TextureRegionDrawable buttonTexRegionDrawable;
@@ -23,13 +24,40 @@ public class Buttons {
 	public Image image;
 	private Array<Image> heartsImages = new Array<Image>();
 	private Array<Image> lifeImages = new Array<Image>();
+	
+	private Texture sheetHearts;
+	public TextureRegion heartsZero;
+	public TextureRegion heartsOne;
+	public TextureRegion heartsTwo;
+	public TextureRegion heartsThree;
 
-	public Buttons() {
+	private Texture sheetLives;
+	public TextureRegion livesZero;
+	public TextureRegion livesOne;
+	public TextureRegion livesTwo;
+
+	public UI() {
 		// create a new viewport for the ui
 		viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
 
 		// set up a stage for the ui
 		stage = new Stage(viewport);
+		
+		// From here on down will be all Textures used for the Lifesystem UI and
+		// be possibly replaced to the standart UI class once there is one
+
+		AssetManager asMa = WoodyGame.getGame().manager;
+		
+		sheetHearts = asMa.get("textures/sheetHearts.png", Texture.class);
+		heartsZero = new TextureRegion(sheetHearts, 0, 0, 52, 16);
+		heartsOne = new TextureRegion(sheetHearts, 52, 0, 52, 16);
+		heartsTwo = new TextureRegion(sheetHearts, 2 * 52, 0, 52, 16);
+		heartsThree = new TextureRegion(sheetHearts, 3 * 52, 0, 52, 16);
+
+		sheetLives = asMa.get("textures/sheetLives.png", Texture.class);
+		livesZero = new TextureRegion(sheetLives, 0, 0, 18, 18);
+		livesOne = new TextureRegion(sheetLives, 18, 0, 18, 18);
+		livesTwo = new TextureRegion(sheetLives, 36, 0, 18, 18);
 	}
 
 	public Button addButton(Texture tex, String name) {
@@ -101,32 +129,22 @@ public class Buttons {
 		return pressedButtons;
 	}
 
-	public void checkCorrectHeartsImage(Player player) {
-		// magic number 3...maxHearts may be interesting
-		for (int i = 0; i <= 3; i++) {
-			if (player.life.getHearts() == i) {
-				for (Image img : heartsImages) {
-					if (!img.getName().equals(i + "")) {
-						img.setVisible(false);
-					} else {
-						img.setVisible(true);
-					}
-				}
+	public void updateHeartsImage(int hearts) {
+		for (Image img : heartsImages) {
+			if (!img.getName().equals(hearts + "")) {
+				img.setVisible(false);
+			} else {
+				img.setVisible(true);
 			}
 		}
 	}
 
-	public void checkCorrectLifeImage(Player player) {
-		// magic number 2...maxLifes may be interesting
-		for (int i = 0; i <= 2; i++) {
-			if (player.life.getLife() == i) {
-				for (Image img : lifeImages) {
-					if (!img.getName().equals(i + "")) {
-						img.setVisible(false);
-					} else {
-						img.setVisible(true);
-					}
-				}
+	public void updateLifeImage(int life) {
+		for (Image img : lifeImages) {
+			if (!img.getName().equals(life + "")) {
+				img.setVisible(false);
+			} else {
+				img.setVisible(true);
 			}
 		}
 	}

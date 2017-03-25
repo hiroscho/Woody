@@ -13,7 +13,7 @@ public class Enemy {
 	private boolean walkLeft = false;
 
 	public Enemy(int hearts, Texture tex, int id, int x1, int x2, int x, int y) {
-		life = new Lifesystem(hearts, 1);
+		life = new Lifesystem(hearts);
 		body = new Sprite(tex);
 		ID = id;
 		body.setBounds(x, y, 1, 1);

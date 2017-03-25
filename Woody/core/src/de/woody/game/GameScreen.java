@@ -3,6 +3,7 @@ package de.woody.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -43,7 +44,7 @@ public class GameScreen implements Screen {
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
 
-	private final Buttons controller = new Buttons();
+	private final UI controller = new UI();
 
 	private Animations playerAnimationHandler;
 
@@ -61,6 +62,7 @@ public class GameScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
 		camera.update();
+		AssetManager asMa = WoodyGame.getGame().manager;
 
 		// kinda optional and kinda not, allows the setting of positions of UI
 		// elements in world coordinates
@@ -69,16 +71,16 @@ public class GameScreen implements Screen {
 		// Create the buttons based on a texture, give them identifier names and
 		// set their screen position and size
 		uiPos = camera.project(new Vector3(18f, 0.25f, 0));
-		controller.addButton(new Texture("textures/ButtonJump.png"), "Jump", uiPos.x, uiPos.y, 64, 64);
+		controller.addButton(asMa.get("textures/ButtonJump.png", Texture.class), "Jump", uiPos.x, uiPos.y, 64, 64);
 
 		uiPos = camera.project(new Vector3(0.1f, 0.25f, 0));
-		controller.addButton(new Texture("textures/ButtonLeft.png"), "Left", uiPos.x, uiPos.y);
+		controller.addButton(asMa.get("textures/ButtonLeft.png", Texture.class), "Left", uiPos.x, uiPos.y);
 
 		uiPos = camera.project(new Vector3(3f, 0.25f, 0));
-		controller.addButton(new Texture("textures/ButtonRight.png"), "Right", uiPos.x, uiPos.y);
+		controller.addButton(asMa.get("textures/ButtonRight.png", Texture.class), "Right", uiPos.x, uiPos.y);
 
 		uiPos = camera.project(new Vector3(15f, 0.4f, 0));
-		controller.addButton(new Texture("textures/ButtonFight.png"), "Fight", uiPos.x, uiPos.y);
+		controller.addButton(asMa.get("textures/ButtonFight.png", Texture.class), "Fight", uiPos.x, uiPos.y);
 
 		// Start taking input from the ui
 		Gdx.input.setInputProcessor(controller.getStage());
@@ -87,15 +89,15 @@ public class GameScreen implements Screen {
 		playerAnimationHandler = new Animations();
 
 		uiPos = camera.project(new Vector3(16.75f, 11f, 0));
-		controller.addHeartsImage(playerAnimationHandler.heartsZero, 0, uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		controller.addHeartsImage(playerAnimationHandler.heartsOne, 1, uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		controller.addHeartsImage(playerAnimationHandler.heartsTwo, 2, uiPos.x, uiPos.y, 52, 16, scaleHearts);
-		controller.addHeartsImage(playerAnimationHandler.heartsThree, 3, uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addHeartsImage(controller.heartsZero, 0, uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addHeartsImage(controller.heartsOne, 1, uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addHeartsImage(controller.heartsTwo, 2, uiPos.x, uiPos.y, 52, 16, scaleHearts);
+		controller.addHeartsImage(controller.heartsThree, 3, uiPos.x, uiPos.y, 52, 16, scaleHearts);
 
 		uiPos = camera.project(new Vector3(15f, 11f, 0));
-		controller.addLifeImage(playerAnimationHandler.livesZero, 0, uiPos.x, uiPos.y, 18, 18, scaleLives);
-		controller.addLifeImage(playerAnimationHandler.livesOne, 1, uiPos.x, uiPos.y, 18, 18, scaleLives);
-		controller.addLifeImage(playerAnimationHandler.livesTwo, 2, uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addLifeImage(controller.livesZero, 0, uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addLifeImage(controller.livesOne, 1, uiPos.x, uiPos.y, 18, 18, scaleLives);
+		controller.addLifeImage(controller.livesTwo, 2, uiPos.x, uiPos.y, 18, 18, scaleLives);
 
 		this.level = level;
 
@@ -127,84 +129,80 @@ public class GameScreen implements Screen {
 		}
 
 		debugRenderer = new ShapeRenderer();
+
+		// call once for correct init, lifesystem does the remaining calls
+		getUI().updateHeartsImage(player.life.getHearts());
+		getUI().updateLifeImage(player.life.getLife());
 	}
 
 	@Override
 	public void render(float delta) {
-		if (delta != 0) {
 
-			// background color
-			Gdx.gl.glClearColor(0.7f, 0.7f, 1, 1);
-			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		// background color
+		Gdx.gl.glClearColor(0.7f, 0.7f, 1, 1);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-			// get the touched/pressed button
-			Array<Button> pressedButtons = controller.checkAllButtons();
+		// get the touched/pressed button
+		Array<Button> pressedButtons = controller.checkAllButtons();
 
-			// checks input, sets velocity
-			if (pressedButtons.size != 0) {
-				for (Button but : pressedButtons) {
-					player.setInputVelocity(but);
-				}
+		// checks input, sets velocity
+		if (pressedButtons.size != 0) {
+			for (Button but : pressedButtons) {
+				player.setInputVelocity(but);
+			}
+		} else {
+			player.setKeyboardVelocity();
+		}
+
+		// checks collision then moves the player
+		player.move(delta);
+
+		// currently only for debug mode
+		checkGameInput();
+
+		// set the camera borders
+		setCamera().update();
+
+		// set the renderer view based on what the camera sees and render it
+		renderer.setView(camera);
+		renderer.render();
+
+		// Render, move and check collision for enemies
+		renderer.getBatch().begin();
+		for (Enemy e : enemies) {
+			e.move();
+			e.render(renderer.getBatch());
+			if (e.checkCollision(player)) {
+				player.life.damagePlayer(1);
+			}
+		}
+		renderer.getBatch().end();
+
+		player.life.checkAltitude(player);
+		player.life.checkAlive();
+		if (!player.life.isAlive()) {
+			player.position.set(levelData.getCurrentSpawn(level, checkpoint));
+			if (player.life.getLife() >= 0) {
+				player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
+				player.life.setIsAlive(true);
 			} else {
-				player.setKeyboardVelocity();
+				WoodyGame.getGame().setScreen(new GameoverScreen(level));
+				return;
 			}
+		}
 
-			// checks collision then moves the player
-			player.move(delta);
+		// render the player
+		player.render(this);
 
-			// currently only for debug mode
-			checkGameInput();
+		// Perform ui logic
+		controller.getStage().act(Gdx.graphics.getDeltaTime());
+		// Draw the ui
+		controller.getStage().draw();
 
-			// set the camera borders
-			setCamera().update();
-
-			// set the renderer view based on what the camera sees and render it
-			renderer.setView(camera);
-			renderer.render();
-
-			// Render, move and check collision for enemies
-			renderer.getBatch().begin();
-			for (Enemy e : enemies) {
-				e.move();
-				e.render(renderer.getBatch());
-				if (e.checkCollision(player)) {
-					player.life.damagePlayer(1);
-				}
-			}
-			renderer.getBatch().end();
-
-			player.life.checkAltitude(player);
-			player.life.checkAlive();
-			if (!player.life.isAlive()) {
-				player.position.set(levelData.getCurrentSpawn(level, checkpoint));
-				if (player.life.getLife() >= 1) {
-					player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
-					player.life.setIsAlive(true);
-				} else {
-					this.dispose();
-					WoodyGame.getGame().setScreen(new GameoverScreen(level));
-				}
-			}
-
-			controller.checkCorrectHeartsImage(player);
-			controller.checkCorrectLifeImage(player);
-
-			// render the player
-			player.render(this);
-
-			// Perform ui logic
-			controller.getStage().act(Gdx.graphics.getDeltaTime());
-			// Draw the ui
-			controller.getStage().draw();
-
-			// render debug rectangles
-			if (debug) {
-				renderDebug();
-			}
-
-			// check Player invulnerable
-			player.life.checkPlayerInvulnerable();
+		// render debug rectangles
+		if (debug) {
+			renderDebug();
 		}
 	}
 
@@ -262,6 +260,10 @@ public class GameScreen implements Screen {
 		enemies.clear();
 	}
 
+	public UI getUI() {
+		return controller;
+	}
+
 	public TiledMap getMap() {
 		return map;
 	}
@@ -288,6 +290,10 @@ public class GameScreen implements Screen {
 
 	public Array<Enemy> getEnemies() {
 		return enemies;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 
 	private void renderDebug() {

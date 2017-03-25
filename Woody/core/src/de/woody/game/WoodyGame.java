@@ -25,7 +25,7 @@ public class WoodyGame extends Game {
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
 
-	public AssetManager manager = new AssetManager();
+	public AssetManager manager;
 
 	private WoodyGame() {
 	}
@@ -36,6 +36,7 @@ public class WoodyGame extends Game {
 
 	@Override
 	public void create() {
+		manager = new AssetManager();
 		this.setScreen(new MainMenueScreen());
 	}
 

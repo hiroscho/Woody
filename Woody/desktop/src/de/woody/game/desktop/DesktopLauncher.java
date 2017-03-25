@@ -7,6 +7,10 @@ import de.woody.game.WoodyGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(WoodyGame.getGame(), config);
+		try {
+			new LwjglApplication(WoodyGame.getGame(), config);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

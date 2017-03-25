@@ -35,7 +35,7 @@ public class Player {
 
 	/** player velocity in world coordinates per second **/
 	public Vector2 velocity = new Vector2();
-	public static State state = State.Standing;
+	public State state = State.Standing;
 
 	/** time since last jump **/
 	public long lastJump = 0;
@@ -59,7 +59,7 @@ public class Player {
 
 	public Texture texture;
 
-	public Lifesystem life = new Lifesystem(3, 2);
+	public Lifesystem life;
 
 	public Player() {
 		this(null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
@@ -76,13 +76,14 @@ public class Player {
 
 	public Player(Texture tex, State state, Vector2 pos, float mVel, float mJump, float damp) {
 		texture = tex;
-		Player.state = state;
+		this.state = state;
 		position.set(pos);
 		MAX_VELOCITY = mVel;
 		JUMP_VELOCITY = mJump;
 		DAMPING = damp;
 		WIDTH = WoodyGame.UNIT_SCALE * texture.getWidth();
 		HEIGHT = WoodyGame.UNIT_SCALE * texture.getHeight();
+		life = new Lifesystem(3, 2);
 	}
 
 	public int getCoinAmount() {
@@ -163,7 +164,7 @@ public class Player {
 					
 					for(Enemy e : scr.getEnemies()) {
 						if(e.checkHit(area)) {
-							e.life.setHearts(e.life.getHearts() - 1);
+							e.life.damageEnemy(1);
 							if(e.life.getHearts() < 1) {
 								scr.getEnemies().removeValue(e, true);
 							}
@@ -242,7 +243,7 @@ public class Player {
 				
 				for(Enemy e : scr.getEnemies()) {
 					if(e.checkHit(area)) {
-						e.life.setHearts(e.life.getHearts() - 1);
+						e.life.damageEnemy(1);
 						if(e.life.getHearts() < 1) {
 							scr.getEnemies().removeValue(e, true);
 						}

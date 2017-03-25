@@ -4,26 +4,23 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 /**
- *
- *
- * Lifesystem: - if player falls down a cliff he looses ALL hearts - if player
- * gets hit he looses ONE heart - whenever woody looses all hearts he gets
- * respawned at a respawn position (or the start if there are none / he hasn't
- * passed one yet) AND he looses ONE life (hearts need to be refilled) - if his
- * life count gets below 1 => state.DEAD and he is always respawned at the start
- * of the level
+ * Lifesystem:
+ * <ul>
+ * <li> if player falls down a cliff he looses ALL hearts
+ * <li> if player gets hit he looses ONE heart
+ * <li> whenever woody looses all hearts he gets respawned at a respawn position (or the start if he hasn't passed one yet) AND he looses ONE life (hearts are currently being refilled in GameScreen)
+ * <li> if his life count gets below 1 he is respawned at the start of the level (or go to levelselect?)
+ * </ul>
  */
 public class Lifesystem {
 
 	private boolean invulnerable;
-	private int hearts; // if health = 0 -> State.Dead and a life gets deducted.
-						// Furthermore Woody gets respawned and hearts refilled
-	private int life; // if life < 1 -> State.Dead and Woody starts at the start
-						// of the level
+	private int hearts;
+	private int life;
 	private boolean isAlive = true;
 
-	public Lifesystem() {
-		this(1, 1);
+	public Lifesystem(int hearts) {
+		this(hearts, 0);
 	}
 
 	public Lifesystem(int hearts, int life) {
@@ -42,17 +39,20 @@ public class Lifesystem {
 	public boolean isAlive() {
 		return isAlive;
 	}
-	
+
 	public boolean isInvulnerable() {
 		return invulnerable;
 	}
 
-	public void setHearts(int newHearts) {
-		hearts = newHearts;
-	}
-
 	public void setLife(int newLife) {
 		life = newLife;
+		WoodyGame.getGame().getGameScreen().getUI().updateLifeImage(life);
+	}
+
+	// TODO: temp, waiting for respawn
+	public void setHearts(int newHearts) {
+		hearts = newHearts;
+		WoodyGame.getGame().getGameScreen().getUI().updateHeartsImage(hearts);
 	}
 
 	public void setIsAlive(boolean bool) {
@@ -60,7 +60,18 @@ public class Lifesystem {
 	}
 
 	/**
-	 * Damage player by damage-amount.
+	 * DO NOT use for player.
+	 * 
+	 * @param damage
+	 *            amount of damage
+	 * @return remaining hearts
+	 */
+	public int damageEnemy(int damage) {
+		return hearts -= damage;
+	}
+
+	/**
+	 * Damage player by damage-amount, also make him temporarily invulnerable.
 	 * 
 	 * @param damage
 	 *            amount of damage done
@@ -70,25 +81,22 @@ public class Lifesystem {
 		if (!invulnerable) {
 			if (hearts != 1) {
 				invulnerable = true;
+				startCooldown();
 			}
-			return hearts -= damage;
-		} else {
-			return hearts;
+			hearts -= damage;
+			WoodyGame.getGame().getGameScreen().getUI().updateHeartsImage(hearts);
 		}
+		return hearts;
 	}
 
-	public void checkPlayerInvulnerable() {
-		if (invulnerable) {
-			Timer.schedule(new Task() {
-				@Override
-				public void run() {
-					System.out.println(System.currentTimeMillis());
-					invulnerable = false;
-					Timer.instance().clear();
-				}
+	public void startCooldown() {
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				invulnerable = false;
+			}
 
-			}, 2.0F);
-		}
+		}, 2.0F);
 	}
 
 	/**
@@ -98,7 +106,8 @@ public class Lifesystem {
 	 */
 	public void checkAltitude(Player player) {
 		if (player.position.y + Player.HEIGHT < 0) {
-			hearts -= 3;
+			hearts = 0;
+			WoodyGame.getGame().getGameScreen().getUI().updateHeartsImage(hearts);
 		}
 	}
 
@@ -109,6 +118,7 @@ public class Lifesystem {
 		if (hearts < 1) {
 			setIsAlive(false);
 			life -= 1;
+			WoodyGame.getGame().getGameScreen().getUI().updateLifeImage(life);
 		}
 	}
 }

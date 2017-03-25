@@ -1,7 +1,13 @@
 package de.woody.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 public class WoodyGame extends Game {
 	private static final WoodyGame game = new WoodyGame();
@@ -28,6 +34,10 @@ public class WoodyGame extends Game {
 	public AssetManager manager;
 
 	private WoodyGame() {
+		manager = new AssetManager();
+		
+		// Create a loader for maps
+		manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 	}
 
 	public static WoodyGame getGame() {
@@ -36,7 +46,13 @@ public class WoodyGame extends Game {
 
 	@Override
 	public void create() {
-		manager = new AssetManager();
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				System.out.println(Gdx.app.getJavaHeap() + "   " + Gdx.app.getNativeHeap());
+			}
+
+		}, 2.0F, 2.0F);
 		this.setScreen(new MainMenueScreen());
 	}
 

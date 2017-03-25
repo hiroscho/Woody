@@ -49,8 +49,8 @@ public class SettingsScreen implements Screen{
 		if(Gdx.input.getX() < n + BACK_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < y + BACK_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > y){
 			batch.draw(Backak, x, y, BACK_WIDTH, BACK_HEIGHT);
 			if(Gdx.input.justTouched()){
-				this.dispose();
 				WoodyGame.getGame().setScreen(new MainMenueScreen());
+				return;
 			}
 		}else{
 			batch.draw(Backun, x, y, BACK_WIDTH, BACK_HEIGHT);
@@ -74,6 +74,7 @@ public class SettingsScreen implements Screen{
 
 	@Override
 	public void hide() {
+		this.dispose();
 	}
 
 	@Override

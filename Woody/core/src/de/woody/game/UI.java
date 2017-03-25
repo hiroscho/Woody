@@ -39,7 +39,7 @@ public class UI {
 	public UI() {
 		// create a new viewport for the ui
 		viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
-
+		
 		// set up a stage for the ui
 		stage = new Stage(viewport);
 		

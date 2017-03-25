@@ -25,7 +25,7 @@ public class Animations {
 	public TextureRegion woodyFallinv;
 
 	public float stateTime = 0;
-	
+
 	private AssetManager asMa = WoodyGame.getGame().manager;
 
 	public Animations() {
@@ -104,8 +104,5 @@ public class Animations {
 			return region;
 		}
 
-	}
-
-	public void dispose() {
 	}
 }

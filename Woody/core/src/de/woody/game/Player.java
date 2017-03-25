@@ -57,32 +57,29 @@ public class Player {
 	/** is player facing right **/
 	public boolean facesRight = true;
 
-	public Texture texture;
-
 	public Lifesystem life;
 
 	public Player() {
-		this(null, State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
+		this(State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
 		System.err.println("Warning! No texture!");
 	}
 
-	public Player(Texture tex, Vector2 pos) {
-		this(tex, State.Standing, pos, 10f, 15f, 0.87f);
+	public Player(Vector2 pos) {
+		this(State.Standing, pos, 10f, 15f, 0.87f);
 	}
 
-	public Player(Texture tex, State state, Vector2 pos) {
-		this(tex, state, pos, 10f, 15f, 0.87f);
+	public Player(State state, Vector2 pos) {
+		this(state, pos, 10f, 15f, 0.87f);
 	}
 
-	public Player(Texture tex, State state, Vector2 pos, float mVel, float mJump, float damp) {
-		texture = tex;
+	public Player(State state, Vector2 pos, float mVel, float mJump, float damp) {
 		this.state = state;
 		position.set(pos);
 		MAX_VELOCITY = mVel;
 		JUMP_VELOCITY = mJump;
 		DAMPING = damp;
-		WIDTH = WoodyGame.UNIT_SCALE * texture.getWidth();
-		HEIGHT = WoodyGame.UNIT_SCALE * texture.getHeight();
+		WIDTH = 1.0F;
+		HEIGHT = 1.46875F;
 		life = new Lifesystem(3, 2);
 	}
 
@@ -107,91 +104,19 @@ public class Player {
 	public void setInputVelocity(Button button) {
 
 		if (button.getName().equals("Jump")) {
-			if (grounded) {
-				velocity.y = JUMP_VELOCITY;
-				state = State.Jumping;
-				grounded = false;
-				freeJump = true;
-			} else {
-				if (freeJump && velocity.y < 1) {
-					velocity.y = JUMP_VELOCITY;
-					state = State.Jumping;
-					grounded = false;
-					freeJump = false;
-				}
-			}
+			handleJump();
 		}
 
 		if (button.getName().equals("Right")) {
-			velocity.x = MAX_VELOCITY;
-			if (grounded)
-				state = State.Walking;
-			facesRight = true;
+			handleRight();
 		}
 
 		if (button.getName().equals("Left")) {
-			velocity.x = -MAX_VELOCITY;
-			if (grounded)
-				state = State.Walking;
-			facesRight = false;
+			handleLeft();
 		}
-
-		if (grounded) {
-			if (button.getName().equals("Fight")) {
-				
-				GameScreen scr = WoodyGame.getGame().getGameScreen();
-
-				//use doors
-				Rectangle playerRect = Level.rectPool.obtain();
-				playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
-
-				Iterator<Door> it = scr.getDoors().iterator();
-				while (it.hasNext()) {
-					Door rec = it.next();
-					if (playerRect.overlaps(rec)) {
-						position.set(rec.getTeleportPoint());
-					}
-				}
-				Level.rectPool.free(playerRect);
-
-				
-				
-				if ((axeCooldown + 200) < System.currentTimeMillis()) {
-					
-					//hit enemies
-					Rectangle area = Level.rectPool.obtain();
-					area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
-					
-					for(Enemy e : scr.getEnemies()) {
-						if(e.checkHit(area)) {
-							e.life.damageEnemy(1);
-							if(e.life.getHearts() < 1) {
-								scr.getEnemies().removeValue(e, true);
-							}
-						}
-					}
-					
-					//destroy blocks
-					TiledMap map = scr.getMap();
-
-					if (facesRight) {
-						int x2 = (int) position.x + 1;
-						int y2 = (int) position.y;
-						scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-						scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
-						axeCooldown = System.currentTimeMillis();
-
-					} else {
-						int x2 = (int) position.x - 1;
-						int y2 = (int) position.y;
-						scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-						scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
-						axeCooldown = System.currentTimeMillis();
-					}
-
-					axeCooldown = System.currentTimeMillis();
-				}
-			}
+		// do we need to be grounded for use of this stuff?
+		if (button.getName().equals("Fight") && grounded) {
+			handleFight();
 		}
 
 	}
@@ -202,91 +127,101 @@ public class Player {
 	 */
 	public void setKeyboardVelocity() {
 		if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
-			if (grounded) {
-				velocity.y = JUMP_VELOCITY;
-				state = State.Jumping;
-				grounded = false;
-				freeJump = true;
-			} else {
-				if (freeJump && velocity.y < 1) {
-					velocity.y = JUMP_VELOCITY;
-					state = State.Jumping;
-					grounded = false;
-					freeJump = false;
-				}
-			}
-		}
-		// attack function
-		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {		
-			
-			GameScreen scr = WoodyGame.getGame().getGameScreen();
-			
-			//use doors
-			Rectangle playerRect = Level.rectPool.obtain();
-			playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
-
-			Iterator<Door> it = scr.getDoors().iterator();
-			while (it.hasNext()) {
-				Door rec = it.next();
-				if (playerRect.overlaps(rec)) {
-					position.set(rec.getTeleportPoint());
-				}
-			}
-			Level.rectPool.free(playerRect);
-
-			
-			if ((axeCooldown + 200) < System.currentTimeMillis()) {
-				
-				//hit enemies
-				Rectangle area = Level.rectPool.obtain();
-				area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
-				
-				for(Enemy e : scr.getEnemies()) {
-					if(e.checkHit(area)) {
-						e.life.damageEnemy(1);
-						if(e.life.getHearts() < 1) {
-							scr.getEnemies().removeValue(e, true);
-						}
-					}
-				}
-
-				// destroy blocks
-				TiledMap map = scr.getMap();
-
-				if (facesRight) {
-					int x2 = (int) position.x + 1;
-					int y2 = (int) position.y;
-
-					scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-					scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
-					axeCooldown = System.currentTimeMillis();
-
-				} else {
-					int x2 = (int) position.x - 1;
-					int y2 = (int) position.y;
-					scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-					scr.levelData.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
-					axeCooldown = System.currentTimeMillis();
-				}
-
-				axeCooldown = System.currentTimeMillis();
-			}
+			handleJump();
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D))
-
-		{
-			velocity.x = MAX_VELOCITY;
-			if (grounded)
-				state = State.Walking;
-			facesRight = true;
+		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
+			handleRight();
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
-			velocity.x = -MAX_VELOCITY;
-			if (grounded)
-				state = State.Walking;
-			facesRight = false;
+			handleLeft();
+		}
+
+		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
+			handleFight();
+		}
+	}
+
+	private void handleJump() {
+		if (grounded) {
+			velocity.y = JUMP_VELOCITY;
+			state = State.Jumping;
+			grounded = false;
+			freeJump = true;
+		} else {
+			if (freeJump && velocity.y < 1) {
+				velocity.y = JUMP_VELOCITY;
+				state = State.Jumping;
+				grounded = false;
+				freeJump = false;
+			}
+		}
+	}
+
+	private void handleRight() {
+		velocity.x = MAX_VELOCITY;
+		if (grounded)
+			state = State.Walking;
+		facesRight = true;
+	}
+
+	private void handleLeft() {
+		velocity.x = -MAX_VELOCITY;
+		if (grounded)
+			state = State.Walking;
+		facesRight = false;
+	}
+
+	private void handleFight() {
+
+		// use doors
+		Rectangle playerRect = WoodyGame.getGame().getGameScreen().levelData.rectPool.obtain();
+		playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
+
+		Iterator<Door> it = WoodyGame.getGame().getGameScreen().getDoors().iterator();
+		while (it.hasNext()) {
+			Door rec = it.next();
+			if (playerRect.overlaps(rec)) {
+				position.set(rec.getTeleportPoint());
+			}
+		}
+		WoodyGame.getGame().getGameScreen().levelData.rectPool.free(playerRect);
+
+		if ((axeCooldown + 200) < System.currentTimeMillis()) {
+
+			// hit enemies
+			Rectangle area = WoodyGame.getGame().getGameScreen().levelData.rectPool.obtain();
+			area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
+
+			for (Enemy e : WoodyGame.getGame().getGameScreen().getEnemies()) {
+				if (e.checkHit(area)) {
+					e.life.damageEnemy(1);
+					if (e.life.getHearts() < 1) {
+						WoodyGame.getGame().getGameScreen().getEnemies().removeValue(e, true);
+					}
+				}
+			}
+
+			// destroy blocks
+			TiledMap map = WoodyGame.getGame().getGameScreen().getMap();
+
+			if (facesRight) {
+				int x2 = (int) position.x + 1;
+				int y2 = (int) position.y;
+				Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+				Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
+				axeCooldown = System.currentTimeMillis();
+
+			} else {
+				int x2 = (int) position.x - 1;
+				int y2 = (int) position.y;
+				Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
+				Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
+				axeCooldown = System.currentTimeMillis();
+			}
+
+			axeCooldown = System.currentTimeMillis();
 		}
 	}
 
@@ -336,11 +271,10 @@ public class Player {
 	}
 
 	public void deleteNearbyCoinBlocks(int x2, int y2) {
-		GameScreen scr = WoodyGame.getGame().getGameScreen();
-		
+
 		for (int i = x2 - 1; i <= x2 + 1; i++) {
-			if (scr.levelData.getTileLayer(scr.getMap(), "Coins").getCell(i, y2) != null) {
-				scr.levelData.getTileLayer(scr.getMap(), "Coins").setCell(i, y2, null);
+			if (Level.getTileLayer(WoodyGame.getGame().getGameScreen().getMap(), "Coins").getCell(i, y2) != null) {
+				Level.getTileLayer(WoodyGame.getGame().getGameScreen().getMap(), "Coins").setCell(i, y2, null);
 				addCoin();
 				// System.out.println(getCoinAmount());
 			}
@@ -356,9 +290,9 @@ public class Player {
 	 */
 	private Vector2 checkTileCollision() {
 		GameScreen scr = WoodyGame.getGame().getGameScreen();
-		
+
 		// create the bounding box of the player
-		Rectangle playerRect = Level.rectPool.obtain();
+		Rectangle playerRect = WoodyGame.getGame().getGameScreen().levelData.rectPool.obtain();
 		playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
 
 		// the start-(startX, startY) and end-(endX, endY) point define an area
@@ -447,56 +381,22 @@ public class Player {
 				}
 			}
 		}
-		Level.rectPool.free(playerRect);
+		WoodyGame.getGame().getGameScreen().levelData.rectPool.free(playerRect);
 		return velocity;
 	}
 
 	/**
 	 * Render the player depending on state.
 	 * 
-	 * @param screen
-	 *            the active GameScreen
 	 */
-	public void render(final GameScreen screen) {
-		Batch batch = screen.getRenderer().getBatch();
-		Animations pAH = screen.getPlayerAnimationHandler();
+	public void render() {
+		Batch batch = WoodyGame.getGame().getGameScreen().getRenderer().getBatch();
+		Animations pAH = WoodyGame.getGame().getGameScreen().getPlayerAnimationHandler();
 
-		batch.begin();
 		if (facesRight) {
-			switch (state) {
-			case Standing:
-				batch.draw(pAH.getPlayerFrame(this), position.x, position.y, WIDTH, HEIGHT);
-				break;
-			case Walking:
-				batch.draw(pAH.getPlayerFrame(this), position.x, position.y, WIDTH, HEIGHT);
-				break;
-			case Jumping:
-				batch.draw(pAH.getPlayerFrame(this), position.x, position.y, WIDTH, HEIGHT);
-				break;
-			case Falling:
-				batch.draw(pAH.getPlayerFrame(this), position.x, position.y, WIDTH, HEIGHT);
-				break;
-			default:
-				batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
-			}
+			batch.draw(pAH.getPlayerFrame(this), position.x, position.y, WIDTH, HEIGHT);
 		} else { // faces left
-			switch (state) {
-			case Standing:
-				batch.draw(pAH.getPlayerFrame(this), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-				break;
-			case Walking:
-				batch.draw(pAH.getPlayerFrame(this), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-				break;
-			case Jumping:
-				batch.draw(pAH.getPlayerFrame(this), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-				break;
-			case Falling:
-				batch.draw(pAH.getPlayerFrame(this), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
-				break;
-			default:
-				batch.draw(texture, position.x, position.y, WIDTH, HEIGHT);
-			}
+			batch.draw(pAH.getPlayerFrame(this), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
 		}
-		batch.end();
 	}
 }

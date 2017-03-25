@@ -77,10 +77,14 @@ public class Enemy {
 	}
 
 	public boolean checkCollision(Player player) {
-		Rectangle playerRect = Level.rectPool.obtain();
+		Rectangle playerRect = WoodyGame.getGame().getGameScreen().levelData.rectPool.obtain();
 		playerRect.set(player.position.x, player.position.y, Player.WIDTH - 0.1f, Player.HEIGHT);
-
-		return playerRect.overlaps(body.getBoundingRectangle());
+		if(playerRect.overlaps(body.getBoundingRectangle())) {
+			WoodyGame.getGame().getGameScreen().levelData.rectPool.free(playerRect);
+			return true;
+		}
+		WoodyGame.getGame().getGameScreen().levelData.rectPool.free(playerRect);
+		return false;
 	}
 
 	public void render(Batch batch) {
@@ -89,10 +93,10 @@ public class Enemy {
 
 	public boolean checkHit(Rectangle rect) {
 		if (rect.overlaps(body.getBoundingRectangle())) {
-			Level.rectPool.free(rect);
+			WoodyGame.getGame().getGameScreen().levelData.rectPool.free(rect);
 			return true;
 		}
-		Level.rectPool.free(rect);
+		WoodyGame.getGame().getGameScreen().levelData.rectPool.free(rect);
 		return false;
 	}
 }

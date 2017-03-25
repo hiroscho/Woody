@@ -2,12 +2,15 @@ package de.woody.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameoverScreen implements Screen {
+	
+	private static final GameoverScreen gameoverScreen = new GameoverScreen();
 
 	private Batch batch;
 	private int priorLevel;
@@ -19,24 +22,44 @@ public class GameoverScreen implements Screen {
 	private final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
 	private final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
 
-	private Texture gameOverBanner = new Texture("textures/Gameoverscreen.png");
-	private Texture ReplayButtonun = new Texture("textures/Replay_un.png");
-	private Texture ReplayButtonak = new Texture("textures/Replay_ak.png");
-	private Texture MenuButtonun = new Texture("textures/Menu_un.png");
-	private Texture MenuButtonak = new Texture("textures/Menu_ak.png");
+	private AssetManager asMa = WoodyGame.getGame().manager;
 
-	public GameoverScreen(int level) {
-		priorLevel = level;
-		batch = new SpriteBatch();
+	private Texture gameOverBanner;
+	private Texture replayButtonun;
+	private Texture replayButtonak;
+	private Texture menuButtonun;
+	private Texture menuButtonak;
+	
+	private GameoverScreen() {}
+
+	public static GameoverScreen getSingleton(int level) {
+		gameoverScreen.priorLevel = level;
+		gameoverScreen.batch = new SpriteBatch();
+		return gameoverScreen;
 	}
 
 	@Override
 	public void show() {
+		asMa.load("textures/Gameoverscreen.png", Texture.class);
+		asMa.load("textures/Replay_un.png", Texture.class);
+		asMa.load("textures/Replay_ak.png", Texture.class);
+		asMa.load("textures/Menu_un.png", Texture.class);
+		asMa.load("textures/Menu_ak.png", Texture.class);
+		
+		while(!asMa.update()) {
+			asMa.update();
+		}
+
+		gameOverBanner = asMa.get("textures/Gameoverscreen.png", Texture.class);
+		replayButtonun = asMa.get("textures/Replay_un.png", Texture.class);
+		replayButtonak = asMa.get("textures/Replay_ak.png", Texture.class);
+		menuButtonun = asMa.get("textures/Menu_un.png", Texture.class);
+		menuButtonak = asMa.get("textures/Menu_ak.png", Texture.class);
 	}
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0.5F, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		// Background
@@ -49,13 +72,13 @@ public class GameoverScreen implements Screen {
 		if (Gdx.input.getX() < x + REPLAY_BUTTON_WIDTH && Gdx.input.getX() > x
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() < y + REPLAY_BUTTON_HEIGHT
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > y) {
-			batch.draw(ReplayButtonak, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
+			batch.draw(replayButtonak, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
-				this.dispose();
 				WoodyGame.getGame().setScreen(new GameScreen(priorLevel));
+				return;
 			}
 		} else {
-			batch.draw(ReplayButtonun, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
+			batch.draw(replayButtonun, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
 		}
 		// MENU
 		int a = Gdx.graphics.getWidth() / 2 - MENU_BUTTON_WIDTH / 2;
@@ -64,13 +87,13 @@ public class GameoverScreen implements Screen {
 		if (Gdx.input.getX() < a + MENU_BUTTON_WIDTH && Gdx.input.getX() > a
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() < c + MENU_BUTTON_HEIGHT
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > c) {
-			batch.draw(MenuButtonak, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+			batch.draw(menuButtonak, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
-				this.dispose();
 				WoodyGame.getGame().setScreen(new MainMenueScreen());
+				return;
 			}
 		} else {
-			batch.draw(MenuButtonun, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+			batch.draw(menuButtonun, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 		}
 		batch.end();
 
@@ -90,16 +113,13 @@ public class GameoverScreen implements Screen {
 
 	@Override
 	public void hide() {
+		asMa.clear();
+		dispose();
 	}
 
 	@Override
 	public void dispose() {
 		batch.dispose();
-		gameOverBanner.dispose();
-		MenuButtonak.dispose();
-		MenuButtonun.dispose();
-		ReplayButtonak.dispose();
-		ReplayButtonun.dispose();
 	}
 
 }

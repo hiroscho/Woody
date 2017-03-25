@@ -1,7 +1,5 @@
 package de.woody.game;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
@@ -20,7 +18,7 @@ import com.badlogic.gdx.utils.Pool;
  */
 public class Level {
 
-	public static Pool<Rectangle> rectPool = new Pool<Rectangle>() {
+	public Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 		@Override
 		protected Rectangle newObject() {
 			return new Rectangle();
@@ -28,9 +26,8 @@ public class Level {
 	};
 	private Array<Rectangle> tiles = new Array<Rectangle>();
 	public Array<TiledMapTileLayer> collisionTileLayers = new Array<TiledMapTileLayer>();
-	private HashMap<String, TiledMapTileLayer> layers = new HashMap<String, TiledMapTileLayer>();
 
-	/**
+	/**TODO: SPAWNSYSTEM
 	 * Returns the current spawn for the level and number of reached
 	 * checkpoints.
 	 * 
@@ -137,39 +134,8 @@ public class Level {
 		return tiles;
 	}
 
-	// fun with coins and sprites TODO: Remove or rewrite
-	// public static Array<Sprite> registerCoins(MapLayer objectLayer,
-	// Array<Sprite> toBeFilled) {
-	// MapObjects objects = objectLayer.getObjects();
-	//
-	// Texture test = new Texture(Gdx.files.internal("textures/test.png"));
-	// TextureRegion coinTest = new TextureRegion(test, 0, 0, 64, 64);
-	// Iterator<MapObject> it = objects.iterator();
-	//
-	// while (it.hasNext()) {
-	// MapObject object = it.next();
-	// System.out.println(object.getName());
-	// if (object.getName().startsWith("coin")) {
-	// MapProperties properties = object.getProperties();
-	// float x = properties.get("x", Float.class) * WoodyGame.UNIT_SCALE;
-	// float y = properties.get("y", Float.class) * WoodyGame.UNIT_SCALE;
-	// float width = properties.get("width", Float.class) *
-	// WoodyGame.UNIT_SCALE;
-	// float height = properties.get("height", Float.class) *
-	// WoodyGame.UNIT_SCALE;
-	//
-	// Sprite coin = new Sprite(coinTest);
-	// coin.setBounds(x, y, width, height);
-	// toBeFilled.add(coin);
-	//
-	// }
-	// }
-	// return toBeFilled;
-	// }
-
 	/**
-	 * Returns the name layer of map. Works with an internal HashMap which
-	 * should increase performance AND allows saving of layer states.
+	 * Returns the name layer of map.
 	 * 
 	 * @param map
 	 *            map with layer
@@ -177,15 +143,8 @@ public class Level {
 	 *            name of the layer
 	 * @return the layer
 	 */
-	public TiledMapTileLayer getTileLayer(TiledMap map, String name) {
-		TiledMapTileLayer temp;
-		if (layers.get(name) != null) {
-			temp = layers.get(name);
-		} else {
-			temp = (TiledMapTileLayer) map.getLayers().get(name);
-			layers.put(name, temp);
-		}
-		return temp;
+	public static TiledMapTileLayer getTileLayer(TiledMap map, String name) {
+		return (TiledMapTileLayer) map.getLayers().get(name);
 	}
 
 	/**

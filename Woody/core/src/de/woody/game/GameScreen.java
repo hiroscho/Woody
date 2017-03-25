@@ -15,7 +15,6 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -32,9 +31,9 @@ public class GameScreen implements Screen {
 	// map and camera
 	private TiledMap map;
 	private final OrthographicCamera camera;
-	private final OrthogonalTiledMapRenderer renderer;
+	private OrthogonalTiledMapRenderer renderer;
 
-	private final Player player;
+	private Player player;
 
 	// nr of the level
 	private final int level;
@@ -44,7 +43,7 @@ public class GameScreen implements Screen {
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
 
-	private final UI controller = new UI();
+	private UI controller;
 
 	private Animations playerAnimationHandler;
 
@@ -54,16 +53,42 @@ public class GameScreen implements Screen {
 
 	public Level levelData = new Level();
 
-	public GameScreen(final int level) {
+	private AssetManager asMa = WoodyGame.getGame().manager;
 
-		// (TiledMapTileLayer) map.getLayers().get(game.collisionLayer);
+	public GameScreen(final int level) {
 
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
 		camera.update();
-		AssetManager asMa = WoodyGame.getGame().manager;
+		
+		this.level = level;
 
+		debugRenderer = new ShapeRenderer();
+	}
+
+	@Override
+	public void show() {
+		// UI
+		asMa.load("textures/ButtonJump.png", Texture.class);
+		asMa.load("textures/ButtonLeft.png", Texture.class);
+		asMa.load("textures/ButtonRight.png", Texture.class);
+		asMa.load("textures/ButtonFight.png", Texture.class);
+		asMa.load("textures/sheetHearts.png", Texture.class);
+		asMa.load("textures/sheetLives.png", Texture.class);
+
+		// Playertexture
+		asMa.load("textures/Woddy.png", Texture.class);
+
+		// Animations
+		asMa.load("textures/sheetRun.png", Texture.class);
+
+		while (!asMa.update()) {
+			asMa.update();
+		}
+
+		controller = new UI();
+		
 		// kinda optional and kinda not, allows the setting of positions of UI
 		// elements in world coordinates
 		Vector3 uiPos;
@@ -99,13 +124,15 @@ public class GameScreen implements Screen {
 		controller.addLifeImage(controller.livesOne, 1, uiPos.x, uiPos.y, 18, 18, scaleLives);
 		controller.addLifeImage(controller.livesTwo, 2, uiPos.x, uiPos.y, 18, 18, scaleLives);
 
-		this.level = level;
-
 		// playable character
-		player = new Player(new Texture("textures/Woddy.png"), levelData.getCurrentSpawn(level, checkpoint));
+		player = new Player(levelData.getCurrentSpawn(level, checkpoint));
 
 		// load the corresponding map, set the unit scale
-		map = new TmxMapLoader().load("maps/level" + level + ".tmx");
+		asMa.load("maps/level" + level + ".tmx", TiledMap.class);
+		while (!asMa.isLoaded("maps/level" + level + ".tmx")) {
+			asMa.update();
+		}
+		map = asMa.get("maps/level" + level + ".tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
 		// register all layers that have collision
 		for (String name : WoodyGame.collisionLayers) {
@@ -124,11 +151,9 @@ public class GameScreen implements Screen {
 			int x2 = prop.get("rightRoom", Integer.class);
 			int x = (int) (prop.get("x", Float.class) * WoodyGame.UNIT_SCALE);
 			int y = (int) (prop.get("y", Float.class) * WoodyGame.UNIT_SCALE);
-			Enemy e = new Enemy(1, new Texture("textures/Woddy.png"), id, x1, x2, x, y);
+			Enemy e = new Enemy(1, asMa.get("textures/Woddy.png", Texture.class), id, x1, x2, x, y);
 			enemies.add(e);
 		}
-
-		debugRenderer = new ShapeRenderer();
 
 		// call once for correct init, lifesystem does the remaining calls
 		getUI().updateHeartsImage(player.life.getHearts());
@@ -177,6 +202,10 @@ public class GameScreen implements Screen {
 				player.life.damagePlayer(1);
 			}
 		}
+
+		// render the player
+		player.render();
+
 		renderer.getBatch().end();
 
 		player.life.checkAltitude(player);
@@ -187,13 +216,10 @@ public class GameScreen implements Screen {
 				player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
 				player.life.setIsAlive(true);
 			} else {
-				WoodyGame.getGame().setScreen(new GameoverScreen(level));
+				WoodyGame.getGame().setScreen(GameoverScreen.getSingleton(level));
 				return;
 			}
 		}
-
-		// render the player
-		player.render(this);
 
 		// Perform ui logic
 		controller.getStage().act(Gdx.graphics.getDeltaTime());
@@ -232,12 +258,9 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void show() {
-		// when the screen is shown
-	}
-
-	@Override
 	public void hide() {
+		asMa.clear();
+		dispose();
 	}
 
 	@Override
@@ -250,14 +273,10 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// clear the layers out of the hashmap (it will use old level data
-		// otherwise)
-		doors.clear();
 		debugRenderer.dispose();
-		map.dispose();
-		playerAnimationHandler.dispose();
 		renderer.dispose();
-		enemies.clear();
+		controller.getStage().dispose();
+		WoodyGame.getGame().getGameScreen().levelData.rectPool.clear();
 	}
 
 	public UI getUI() {

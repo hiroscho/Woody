@@ -12,11 +12,11 @@ public class Enemy {
 	private int restrX1, restrX2;
 	private boolean walkLeft = false;
 
-	public Enemy(int hearts, Texture tex, int id, int x1, int x2, int x, int y) {
+	public Enemy(int hearts, Texture tex, int id, int x1, int x2, float x, float y, float width, float height) {
 		life = new Lifesystem(hearts);
 		body = new Sprite(tex);
 		ID = id;
-		body.setBounds(x, y, 1, 1);
+		body.setBounds(x, y, width, height);
 		setRestriction(x1, x2);
 	}
 
@@ -77,13 +77,13 @@ public class Enemy {
 	}
 
 	public boolean checkCollision(Player player) {
-		Rectangle playerRect = WoodyGame.getGame().getGameScreen().levelData.rectPool.obtain();
+		Rectangle playerRect = GameScreen.getInstance().levelData.rectPool.obtain();
 		playerRect.set(player.position.x, player.position.y, Player.WIDTH - 0.1f, Player.HEIGHT);
 		if(playerRect.overlaps(body.getBoundingRectangle())) {
-			WoodyGame.getGame().getGameScreen().levelData.rectPool.free(playerRect);
+			GameScreen.getInstance().levelData.rectPool.free(playerRect);
 			return true;
 		}
-		WoodyGame.getGame().getGameScreen().levelData.rectPool.free(playerRect);
+		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 		return false;
 	}
 
@@ -93,10 +93,10 @@ public class Enemy {
 
 	public boolean checkHit(Rectangle rect) {
 		if (rect.overlaps(body.getBoundingRectangle())) {
-			WoodyGame.getGame().getGameScreen().levelData.rectPool.free(rect);
+			GameScreen.getInstance().levelData.rectPool.free(rect);
 			return true;
 		}
-		WoodyGame.getGame().getGameScreen().levelData.rectPool.free(rect);
+		GameScreen.getInstance().levelData.rectPool.free(rect);
 		return false;
 	}
 }

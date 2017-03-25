@@ -176,35 +176,35 @@ public class Player {
 	private void handleFight() {
 
 		// use doors
-		Rectangle playerRect = WoodyGame.getGame().getGameScreen().levelData.rectPool.obtain();
+		Rectangle playerRect = GameScreen.getInstance().levelData.rectPool.obtain();
 		playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
 
-		Iterator<Door> it = WoodyGame.getGame().getGameScreen().getDoors().iterator();
+		Iterator<Door> it = GameScreen.getInstance().levelData.getDoors().iterator();
 		while (it.hasNext()) {
 			Door rec = it.next();
 			if (playerRect.overlaps(rec)) {
 				position.set(rec.getTeleportPoint());
 			}
 		}
-		WoodyGame.getGame().getGameScreen().levelData.rectPool.free(playerRect);
+		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 
 		if ((axeCooldown + 200) < System.currentTimeMillis()) {
 
 			// hit enemies
-			Rectangle area = WoodyGame.getGame().getGameScreen().levelData.rectPool.obtain();
+			Rectangle area = GameScreen.getInstance().levelData.rectPool.obtain();
 			area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
 
-			for (Enemy e : WoodyGame.getGame().getGameScreen().getEnemies()) {
+			for (Enemy e : GameScreen.getInstance().levelData.getEnemies()) {
 				if (e.checkHit(area)) {
 					e.life.damageEnemy(1);
 					if (e.life.getHearts() < 1) {
-						WoodyGame.getGame().getGameScreen().getEnemies().removeValue(e, true);
+						GameScreen.getInstance().levelData.getEnemies().removeValue(e, true);
 					}
 				}
 			}
 
 			// destroy blocks
-			TiledMap map = WoodyGame.getGame().getGameScreen().getMap();
+			TiledMap map = GameScreen.getInstance().getMap();
 
 			if (facesRight) {
 				int x2 = (int) position.x + 1;
@@ -273,8 +273,8 @@ public class Player {
 	public void deleteNearbyCoinBlocks(int x2, int y2) {
 
 		for (int i = x2 - 1; i <= x2 + 1; i++) {
-			if (Level.getTileLayer(WoodyGame.getGame().getGameScreen().getMap(), "Coins").getCell(i, y2) != null) {
-				Level.getTileLayer(WoodyGame.getGame().getGameScreen().getMap(), "Coins").setCell(i, y2, null);
+			if (Level.getTileLayer(GameScreen.getInstance().getMap(), "Coins").getCell(i, y2) != null) {
+				Level.getTileLayer(GameScreen.getInstance().getMap(), "Coins").setCell(i, y2, null);
 				addCoin();
 				// System.out.println(getCoinAmount());
 			}
@@ -289,10 +289,8 @@ public class Player {
 	 * @return the velocity of the player
 	 */
 	private Vector2 checkTileCollision() {
-		GameScreen scr = WoodyGame.getGame().getGameScreen();
-
 		// create the bounding box of the player
-		Rectangle playerRect = WoodyGame.getGame().getGameScreen().levelData.rectPool.obtain();
+		Rectangle playerRect = GameScreen.getInstance().levelData.rectPool.obtain();
 		playerRect.set(position.x, position.y, WIDTH - 0.1f, HEIGHT);
 
 		// the start-(startX, startY) and end-(endX, endY) point define an area
@@ -318,7 +316,7 @@ public class Player {
 			// move the playerRect and see if it overlaps with one of the tiles,
 			// if it does, handle the collision
 			playerRect.x += velocity.x;
-			for (Rectangle tile : scr.levelData.getTiles(startX, startY, endX, endY)) {
+			for (Rectangle tile : GameScreen.getInstance().levelData.getTiles(startX, startY, endX, endY)) {
 				if (playerRect.overlaps(tile)) {
 
 					// set the players position either directly left or right of
@@ -356,7 +354,7 @@ public class Player {
 			// move the playerRect and see if it overlaps with one of the tiles,
 			// if it does, handle the collision
 			playerRect.y += velocity.y;
-			for (Rectangle tile : scr.levelData.getTiles(startX, startY, endX, endY)) {
+			for (Rectangle tile : GameScreen.getInstance().levelData.getTiles(startX, startY, endX, endY)) {
 				if (playerRect.overlaps(tile)) {
 					// set the players position either directly above or below
 					// the tile
@@ -381,7 +379,7 @@ public class Player {
 				}
 			}
 		}
-		WoodyGame.getGame().getGameScreen().levelData.rectPool.free(playerRect);
+		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 		return velocity;
 	}
 
@@ -390,8 +388,8 @@ public class Player {
 	 * 
 	 */
 	public void render() {
-		Batch batch = WoodyGame.getGame().getGameScreen().getRenderer().getBatch();
-		Animations pAH = WoodyGame.getGame().getGameScreen().getPlayerAnimationHandler();
+		Batch batch = GameScreen.getInstance().getRenderer().getBatch();
+		Animations pAH = GameScreen.getInstance().getPlayerAnimationHandler();
 
 		if (facesRight) {
 			batch.draw(pAH.getPlayerFrame(this), position.x, position.y, WIDTH, HEIGHT);

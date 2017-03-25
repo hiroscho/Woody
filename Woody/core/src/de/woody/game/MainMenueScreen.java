@@ -2,25 +2,20 @@ package de.woody.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MainMenueScreen implements Screen {
+	
+	private static final MainMenueScreen mainMenueScreen = new MainMenueScreen();
 
-	public final int WIDTH = 800;
-	public final int HEIGHT = 480;
+//	public final int WIDTH = 800;
+//	public final int HEIGHT = 480;
 	private Batch batch;
 
-	// Textures
-	private Texture PlayButton = new Texture("textures/Play_un.png");
-	private Texture PlayButtonak = new Texture("textures/Play_ak.png");
-	private Texture SettingsButton = new Texture("textures/Settings_un.png");
-	private Texture SettingsButtonak = new Texture("textures/Settings_ak.png");
-	private Texture CloseButton = new Texture("textures/Exit_un.png");
-	private Texture CloseButtonak = new Texture("textures/Exit_ak.png");
-	private Texture Background = new Texture("textures/Mainscreenbackground3.png");
 	// Textures sizes
 	private final int PLAY_BUTTON_WIDTH = Gdx.graphics.getWidth() / 2;
 	private final int PLAY_BUTTON_HEIGHT = Gdx.graphics.getHeight() / 3;
@@ -30,13 +25,46 @@ public class MainMenueScreen implements Screen {
 	private final int CLOSE_BUTTON_HEIGHT = Gdx.graphics.getHeight() / 3;
 	private final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
 	private final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
+	
+	// Textures
+	private Texture playButton;
+	private Texture playButtonak;
+	private Texture settingsButton;
+	private Texture settingsButtonak;
+	private Texture closeButton;
+	private Texture closeButtonak;
+	private Texture background;
+	
+	private AssetManager asMa = WoodyGame.getGame().manager;
 
-	public MainMenueScreen() {
-		batch = new SpriteBatch();
+	private MainMenueScreen() {}
+	
+	public static MainMenueScreen getInstance() {
+		mainMenueScreen.batch = new SpriteBatch();
+		return mainMenueScreen;
 	}
 
 	@Override
 	public void show() {
+		asMa.load("textures/Play_un.png", Texture.class);
+		asMa.load("textures/Play_ak.png", Texture.class);
+		asMa.load("textures/Settings_un.png", Texture.class);
+		asMa.load("textures/Settings_ak.png", Texture.class);
+		asMa.load("textures/Exit_un.png", Texture.class);
+		asMa.load("textures/Exit_ak.png", Texture.class);
+		asMa.load("textures/Mainscreenbackground3.png", Texture.class);
+		
+		while(!asMa.update()) {
+			asMa.update();
+		}
+
+		playButton = asMa.get("textures/Play_un.png", Texture.class);
+		playButtonak = asMa.get("textures/Play_ak.png", Texture.class);
+		settingsButton = asMa.get("textures/Settings_un.png", Texture.class);
+		settingsButtonak = asMa.get("textures/Settings_ak.png", Texture.class);
+		closeButton = asMa.get("textures/Exit_un.png", Texture.class);
+		closeButtonak = asMa.get("textures/Exit_ak.png", Texture.class);
+		background = asMa.get("textures/Mainscreenbackground3.png", Texture.class);
 	}
 
 	@Override
@@ -46,7 +74,7 @@ public class MainMenueScreen implements Screen {
 		batch.begin();
 
 		// Background
-		batch.draw(Background, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+		batch.draw(background, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 		// PLAY 120/270/320
 		int x = (Gdx.graphics.getWidth() - PLAY_BUTTON_WIDTH) / 2;
 		int v = Gdx.graphics.getWidth() / 2 - PLAY_BUTTON_WIDTH / 2;
@@ -54,13 +82,13 @@ public class MainMenueScreen implements Screen {
 		if (Gdx.input.getX() < v + PLAY_BUTTON_WIDTH && Gdx.input.getX() > v
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() < y + PLAY_BUTTON_HEIGHT
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > y) {
-			batch.draw(PlayButtonak, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
+			batch.draw(playButtonak, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
-				WoodyGame.getGame().setScreen(new GameScreen(1));
+				WoodyGame.getGame().setScreen(GameScreen.getInstance(1));
 				return;
 			}
 		} else {
-			batch.draw(PlayButton, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
+			batch.draw(playButton, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 		}
 		// SETTINGS 165/130/170
 		int z = Gdx.graphics.getWidth() / 2 - SETTINGS_BUTTON_WIDTH / 2;
@@ -69,13 +97,13 @@ public class MainMenueScreen implements Screen {
 		if (Gdx.input.getX() < z + SETTINGS_BUTTON_WIDTH && Gdx.input.getX() > z
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() < u + SETTINGS_BUTTON_HEIGHT
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > u) {
-			batch.draw(SettingsButtonak, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
+			batch.draw(settingsButtonak, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
-				WoodyGame.getGame().setScreen(new SettingsScreen());
+				WoodyGame.getGame().setScreen(SettingsScreen.getInstance());
 				return;
 			}
 		} else {
-			batch.draw(SettingsButton, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
+			batch.draw(settingsButton, w, u, SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
 		}
 		// EXIT 165/-10/0
 		int n = Gdx.graphics.getWidth() / 2 - CLOSE_BUTTON_WIDTH / 2;
@@ -84,12 +112,12 @@ public class MainMenueScreen implements Screen {
 		if (Gdx.input.getX() < n + CLOSE_BUTTON_WIDTH && Gdx.input.getX() > n
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() < m + CLOSE_BUTTON_HEIGHT
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > m) {
-			batch.draw(CloseButtonak, l, m, CLOSE_BUTTON_WIDTH, CLOSE_BUTTON_HEIGHT);
+			batch.draw(closeButtonak, l, m, CLOSE_BUTTON_WIDTH, CLOSE_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
 				Gdx.app.exit();
 			}
 		} else {
-			batch.draw(CloseButton, l, m, CLOSE_BUTTON_WIDTH, CLOSE_BUTTON_HEIGHT);
+			batch.draw(closeButton, l, m, CLOSE_BUTTON_WIDTH, CLOSE_BUTTON_HEIGHT);
 		}
 
 		batch.end();
@@ -109,19 +137,13 @@ public class MainMenueScreen implements Screen {
 
 	@Override
 	public void hide() {
-		this.dispose();
+		asMa.clear();
+		dispose();
 	}
 
 	@Override
 	public void dispose() {
 		batch.dispose();
-		Background.dispose();
-		CloseButton.dispose();
-		CloseButtonak.dispose();
-		PlayButton.dispose();
-		PlayButtonak.dispose();
-		SettingsButton.dispose();
-		SettingsButtonak.dispose();
 	}
 
 }

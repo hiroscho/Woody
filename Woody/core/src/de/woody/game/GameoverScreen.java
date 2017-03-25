@@ -32,7 +32,7 @@ public class GameoverScreen implements Screen {
 	
 	private GameoverScreen() {}
 
-	public static GameoverScreen getSingleton(int level) {
+	public static GameoverScreen getInstance(int level) {
 		gameoverScreen.priorLevel = level;
 		gameoverScreen.batch = new SpriteBatch();
 		return gameoverScreen;
@@ -74,7 +74,8 @@ public class GameoverScreen implements Screen {
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > y) {
 			batch.draw(replayButtonak, x, v, REPLAY_BUTTON_WIDTH, REPLAY_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
-				WoodyGame.getGame().setScreen(new GameScreen(priorLevel));
+				System.gc();
+				WoodyGame.getGame().setScreen(GameScreen.getInstance(priorLevel));
 				return;
 			}
 		} else {
@@ -89,7 +90,8 @@ public class GameoverScreen implements Screen {
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > c) {
 			batch.draw(menuButtonak, b, c, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
-				WoodyGame.getGame().setScreen(new MainMenueScreen());
+				System.gc();
+				WoodyGame.getGame().setScreen(MainMenueScreen.getInstance());
 				return;
 			}
 		} else {

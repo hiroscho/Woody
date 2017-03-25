@@ -2,19 +2,21 @@ package de.woody.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SettingsScreen implements Screen{
+	private static final SettingsScreen settingsScreen = new SettingsScreen();
 	
 	private Batch batch;
 	
-	private Texture Background = new Texture("textures/Settings_un.png");
-	private Texture Backgroundp = new Texture("textures/SettingsBackground.png");
-	private Texture Backun = new Texture("textures/Menu_un.png");
-	private Texture Backak = new Texture("textures/Menu_ak.png");
+	private Texture background;
+	private Texture backgroundp;
+	private Texture menuun;
+	private Texture menuak;
 	
 	
 	private final int BACKGROUND_WIDTH = 300;
@@ -24,13 +26,31 @@ public class SettingsScreen implements Screen{
 	private final int BACKGROUNDP_WIDTH = Gdx.graphics.getWidth();
 	private final int BACKGROUNDP_HEIGHT = Gdx.graphics.getHeight();
 	
-	public SettingsScreen(){
-		batch = new SpriteBatch();
+	private AssetManager asMa = WoodyGame.getGame().manager;
+	
+	private SettingsScreen(){}
+	
+	public static SettingsScreen getInstance() {
+		settingsScreen.batch = new SpriteBatch();
+		return settingsScreen;
 	}
 	
 	
 	@Override
 	public void show() {
+		asMa.load("textures/Settings_un.png", Texture.class);
+		asMa.load("textures/SettingsBackground.png", Texture.class);
+		asMa.load("textures/Menu_un.png", Texture.class);
+		asMa.load("textures/Menu_ak.png", Texture.class);
+		
+		while(!asMa.update()) {
+			asMa.update();
+		}
+		
+		background = asMa.get("textures/Settings_un.png", Texture.class);
+		backgroundp = asMa.get("textures/SettingsBackground.png", Texture.class);
+		menuun = asMa.get("textures/Menu_un.png", Texture.class);
+		menuak = asMa.get("textures/Menu_ak.png", Texture.class);
 	}
 
 	@Override
@@ -39,25 +59,24 @@ public class SettingsScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		
-		batch.draw(Backgroundp, 0, 0, BACKGROUNDP_WIDTH, BACKGROUNDP_HEIGHT);
+		batch.draw(backgroundp, 0, 0, BACKGROUNDP_WIDTH, BACKGROUNDP_HEIGHT);
 		int l = (Gdx.graphics.getWidth() /2 - BACKGROUND_WIDTH/2);
-		batch.draw(Background, l, 350, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+		batch.draw(background, l, 350, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 		
 		int n = Gdx.graphics.getWidth() / 2 - BACK_WIDTH / 2;
 		int x = (Gdx.graphics.getWidth() /2 - BACK_WIDTH/2);
 		int y = Gdx.graphics.getHeight() /100 - BACK_HEIGHT/8;
 		if(Gdx.input.getX() < n + BACK_WIDTH && Gdx.input.getX() > n && Gdx.graphics.getHeight() - Gdx.input.getY() < y + BACK_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > y){
-			batch.draw(Backak, x, y, BACK_WIDTH, BACK_HEIGHT);
+			batch.draw(menuak, x, y, BACK_WIDTH, BACK_HEIGHT);
 			if(Gdx.input.justTouched()){
-				WoodyGame.getGame().setScreen(new MainMenueScreen());
+				WoodyGame.getGame().setScreen(MainMenueScreen.getInstance());
 				return;
 			}
 		}else{
-			batch.draw(Backun, x, y, BACK_WIDTH, BACK_HEIGHT);
+			batch.draw(menuun, x, y, BACK_WIDTH, BACK_HEIGHT);
 		}
 		
 		batch.end();
-		
 	}
 
 	@Override
@@ -74,17 +93,13 @@ public class SettingsScreen implements Screen{
 
 	@Override
 	public void hide() {
-		this.dispose();
+		asMa.clear();
+		dispose();
 	}
 
 	@Override
 	public void dispose() {
-		batch.dispose();
-		Background.dispose();
-		Backgroundp.dispose();
-		Backun.dispose();
-		Backak.dispose();
-		
+		batch.dispose();		
 	}
 
 }

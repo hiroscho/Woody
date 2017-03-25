@@ -53,19 +53,7 @@ public class WoodyGame extends Game {
 			}
 
 		}, 2.0F, 2.0F);
-		this.setScreen(new MainMenueScreen());
-	}
-
-	/**
-	 * Life hacks, don't use it if you don't know what you're doing ~Thomas
-	 * 
-	 * @return
-	 */
-	public GameScreen getGameScreen() {
-		if (this.getScreen() instanceof GameScreen) {
-			return (GameScreen) getScreen();
-		}
-		return null;
+		this.setScreen(MainMenueScreen.getInstance());
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package de.woody.game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -18,6 +19,7 @@ public class Lifesystem {
 	private int hearts;
 	private int life;
 	private boolean isAlive = true;
+	private Sound dropSound;
 
 	public Lifesystem(int hearts) {
 		this(hearts, 0);
@@ -26,6 +28,7 @@ public class Lifesystem {
 	public Lifesystem(int hearts, int life) {
 		this.hearts = hearts;
 		this.life = life;
+		dropSound = WoodyGame.getGame().manager.get("audio/drop.wav", Sound.class);
 	}
 
 	public int getHearts() {
@@ -46,13 +49,13 @@ public class Lifesystem {
 
 	public void setLife(int newLife) {
 		life = newLife;
-		WoodyGame.getGame().getGameScreen().getUI().updateLifeImage(life);
+		GameScreen.getInstance().getUI().updateLifeImage(life);
 	}
 
 	// TODO: temp, waiting for respawn
 	public void setHearts(int newHearts) {
 		hearts = newHearts;
-		WoodyGame.getGame().getGameScreen().getUI().updateHeartsImage(hearts);
+		GameScreen.getInstance().getUI().updateHeartsImage(hearts);
 	}
 
 	public void setIsAlive(boolean bool) {
@@ -84,7 +87,8 @@ public class Lifesystem {
 				startCooldown();
 			}
 			hearts -= damage;
-			WoodyGame.getGame().getGameScreen().getUI().updateHeartsImage(hearts);
+			GameScreen.getInstance().getUI().updateHeartsImage(hearts);
+			dropSound.play();
 		}
 		return hearts;
 	}
@@ -95,7 +99,6 @@ public class Lifesystem {
 			public void run() {
 				invulnerable = false;
 			}
-
 		}, 2.0F);
 	}
 
@@ -107,7 +110,7 @@ public class Lifesystem {
 	public void checkAltitude(Player player) {
 		if (player.position.y + Player.HEIGHT < 0) {
 			hearts = 0;
-			WoodyGame.getGame().getGameScreen().getUI().updateHeartsImage(hearts);
+			GameScreen.getInstance().getUI().updateHeartsImage(hearts);
 		}
 	}
 
@@ -118,7 +121,7 @@ public class Lifesystem {
 		if (hearts < 1) {
 			setIsAlive(false);
 			life -= 1;
-			WoodyGame.getGame().getGameScreen().getUI().updateLifeImage(life);
+			GameScreen.getInstance().getUI().updateLifeImage(life);
 		}
 	}
 }

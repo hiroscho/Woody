@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,48 +25,64 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen {
+	
+	private static final GameScreen gameScreen = new GameScreen();
 
 	// Variables to change the scale of the hearts / lives image conveniently
-	private final float scaleHearts = 2;
-	private final float scaleLives = 2;
+	private float scaleHearts = 2;
+	private float scaleLives = 2;
 
 	// map and camera
 	private TiledMap map;
 	private final OrthographicCamera camera;
 	private OrthogonalTiledMapRenderer renderer;
 
+	// player
 	private Player player;
+	private Animations playerAnimationHandler;
 
 	// nr of the level
-	private final int level;
+	private int level;
 	// current checkpoint (could be changed to a vector and used directly)
 	private int checkpoint;
+	
+	// UI
+	private UI controller;
+
+
+
+	// level Data TODO: Put all of it into Level
+	public Level levelData;
+
+	private AssetManager asMa = WoodyGame.getGame().manager;
 
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
 
-	private UI controller;
 
-	private Animations playerAnimationHandler;
-
-	// All doors in the current level
-	private Array<Door> doors = new Array<Door>();
-	private Array<Enemy> enemies = new Array<Enemy>();
-
-	public Level levelData = new Level();
-
-	private AssetManager asMa = WoodyGame.getGame().manager;
-
-	public GameScreen(final int level) {
-
+	
+	private Music rainMusic;
+	
+	private GameScreen() {
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
 		camera.update();
-		
-		this.level = level;
+	}
+	
+	public static GameScreen getInstance() {
+		return gameScreen;
+	}
 
-		debugRenderer = new ShapeRenderer();
+	/**
+	 * Get the instance of GameScreen, changing the level.
+	 * @param level
+	 * @return
+	 */
+	public static GameScreen getInstance(int level) {
+		gameScreen.level = level;
+		gameScreen.debugRenderer = new ShapeRenderer();
+		return gameScreen;
 	}
 
 	@Override
@@ -82,6 +100,10 @@ public class GameScreen implements Screen {
 
 		// Animations
 		asMa.load("textures/sheetRun.png", Texture.class);
+		
+		// Sound Test
+		asMa.load("audio/drop.wav", Sound.class);
+		asMa.load("audio/rain.mp3", Music.class);
 
 		while (!asMa.update()) {
 			asMa.update();
@@ -110,9 +132,6 @@ public class GameScreen implements Screen {
 		// Start taking input from the ui
 		Gdx.input.setInputProcessor(controller.getStage());
 
-		// load the textures for animations
-		playerAnimationHandler = new Animations();
-
 		uiPos = camera.project(new Vector3(16.75f, 11f, 0));
 		controller.addHeartsImage(controller.heartsZero, 0, uiPos.x, uiPos.y, 52, 16, scaleHearts);
 		controller.addHeartsImage(controller.heartsOne, 1, uiPos.x, uiPos.y, 52, 16, scaleHearts);
@@ -124,9 +143,6 @@ public class GameScreen implements Screen {
 		controller.addLifeImage(controller.livesOne, 1, uiPos.x, uiPos.y, 18, 18, scaleLives);
 		controller.addLifeImage(controller.livesTwo, 2, uiPos.x, uiPos.y, 18, 18, scaleLives);
 
-		// playable character
-		player = new Player(levelData.getCurrentSpawn(level, checkpoint));
-
 		// load the corresponding map, set the unit scale
 		asMa.load("maps/level" + level + ".tmx", TiledMap.class);
 		while (!asMa.isLoaded("maps/level" + level + ".tmx")) {
@@ -134,26 +150,17 @@ public class GameScreen implements Screen {
 		}
 		map = asMa.get("maps/level" + level + ".tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
-		// register all layers that have collision
-		for (String name : WoodyGame.collisionLayers) {
-			levelData.addCollisionLayer(name, map);
-		}
-
-		// create the doors and save them in an easy access array
-		doors = levelData.createDoors(Level.filterObjects(map.getLayers().get("Doors").getObjects(), "door"));
-
-		// Fun with enemies
-		Array<MapObject> enemyObjects = Level.filterObjects(map.getLayers().get("Enemy").getObjects(), "Enemy");
-		for (MapObject obj : enemyObjects) {
-			MapProperties prop = obj.getProperties();
-			int id = Integer.parseInt(obj.getName().substring(obj.getName().indexOf(':') + 1));
-			int x1 = prop.get("leftRoom", Integer.class);
-			int x2 = prop.get("rightRoom", Integer.class);
-			int x = (int) (prop.get("x", Float.class) * WoodyGame.UNIT_SCALE);
-			int y = (int) (prop.get("y", Float.class) * WoodyGame.UNIT_SCALE);
-			Enemy e = new Enemy(1, asMa.get("textures/Woddy.png", Texture.class), id, x1, x2, x, y);
-			enemies.add(e);
-		}
+		levelData = new Level();
+		
+		// playable character
+		player = new Player(levelData.getCurrentSpawn());
+		// load the textureRegions for animations
+		playerAnimationHandler = new Animations();
+		
+		rainMusic = asMa.get("audio/rain.mp3", Music.class);
+		
+		rainMusic.setLooping(true);
+		rainMusic.play();
 
 		// call once for correct init, lifesystem does the remaining calls
 		getUI().updateHeartsImage(player.life.getHearts());
@@ -195,7 +202,7 @@ public class GameScreen implements Screen {
 
 		// Render, move and check collision for enemies
 		renderer.getBatch().begin();
-		for (Enemy e : enemies) {
+		for (Enemy e : levelData.getEnemies()) {
 			e.move();
 			e.render(renderer.getBatch());
 			if (e.checkCollision(player)) {
@@ -211,12 +218,12 @@ public class GameScreen implements Screen {
 		player.life.checkAltitude(player);
 		player.life.checkAlive();
 		if (!player.life.isAlive()) {
-			player.position.set(levelData.getCurrentSpawn(level, checkpoint));
+			player.position.set(levelData.getCurrentSpawn());
 			if (player.life.getLife() >= 0) {
 				player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
 				player.life.setIsAlive(true);
 			} else {
-				WoodyGame.getGame().setScreen(GameoverScreen.getSingleton(level));
+				WoodyGame.getGame().setScreen(GameoverScreen.getInstance(level));
 				return;
 			}
 		}
@@ -276,7 +283,7 @@ public class GameScreen implements Screen {
 		debugRenderer.dispose();
 		renderer.dispose();
 		controller.getStage().dispose();
-		WoodyGame.getGame().getGameScreen().levelData.rectPool.clear();
+		GameScreen.getInstance().levelData.rectPool.clear();
 	}
 
 	public UI getUI() {
@@ -301,14 +308,6 @@ public class GameScreen implements Screen {
 
 	public Animations getPlayerAnimationHandler() {
 		return playerAnimationHandler;
-	}
-
-	public Array<Door> getDoors() {
-		return doors;
-	}
-
-	public Array<Enemy> getEnemies() {
-		return enemies;
 	}
 
 	public Player getPlayer() {

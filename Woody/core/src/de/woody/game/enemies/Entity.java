@@ -1,5 +1,6 @@
 package de.woody.game.enemies;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,12 +12,14 @@ import de.woody.game.Lifesystem;
 import de.woody.game.Player;
 import de.woody.game.Projectile;
 import de.woody.game.screens.GameScreen;
+import de.woody.game.screens.WoodyGame;
 
 public abstract class Entity {
 	private Array<Projectile> projectiles;
-	private float projWidth, projHeight, projLifetime;
+	private float projWidth, projHeight, projLifetime, projFrequency;
 	private Vector2 projVelocity;
-	
+	private Texture projTexture;
+	private AssetManager asMa = WoodyGame.getGame().manager;
 	private Lifesystem life;
 	private Sprite body;
 	private final int ID;
@@ -57,8 +60,16 @@ public abstract class Entity {
 		return projVelocity;
 	}
 	
+	public Texture getProjectileTexture() {
+		return projTexture;
+	}
+	
 	public Array<Projectile> getProjectiles() {
 		return projectiles;
+	}
+	
+	public float getProjectileFrequency() {
+		return projFrequency;
 	}
 
 	public void setBody(Sprite sprite) {
@@ -69,11 +80,13 @@ public abstract class Entity {
 		body.setTexture(tex);
 	}
 	
-	public void setProjectileProperties(float width, float height, Vector2 velocity, float lifetime) {
+	public void setProjectileProperties(float width, float height, Vector2 velocity, float lifetime, String texture, float frequency) {
 		projWidth = width;
 		projHeight = height;
 		projVelocity = velocity;
 		projLifetime = lifetime;
+		projTexture = asMa.get(texture, Texture.class);
+		projFrequency = frequency;
 	}
 
 	public int damageEntity(int dmg) {

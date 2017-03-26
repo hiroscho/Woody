@@ -1,11 +1,11 @@
 package de.woody.game;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -18,13 +18,13 @@ public class Projectile {
 
 	private Vector2 velocity;
 	private Sprite body;
-	private AssetManager asMa = WoodyGame.getGame().manager;
 	private Entity owner;
 	private final int id;
+	private Array<Rectangle> priorTiles;
 
-	public Projectile(Entity owner, float x, float y, float width, float height, Vector2 velocity, float lifetime) {
+	public Projectile(Entity owner, Texture tex, float x, float y, float width, float height, Vector2 velocity, float lifetime) {
 		this.owner = owner;
-		body = new Sprite(asMa.get("textures/projectile.png", Texture.class));
+		body = new Sprite(tex);
 		body.setBounds(x, y, width, height);
 		this.velocity = velocity;
 		id = projIdGen++;
@@ -80,8 +80,10 @@ public class Projectile {
 
 			startY = (int) (body.getY() + 0.1F);
 			endY = (int) (body.getY() + body.getHeight() - 0.1F);
+			
+			priorTiles = GameScreen.getInstance().levelData.getTiles(priorTiles, startX, startY, endX, endY);
 
-			for (Rectangle tile : GameScreen.getInstance().levelData.getTiles(startX, startY, endX, endY)) {
+			for (Rectangle tile : priorTiles) {
 				if (body.getBoundingRectangle().overlaps(tile)) {
 					owner.getProjectiles().removeValue(this, false);
 					return;
@@ -104,7 +106,9 @@ public class Projectile {
 				return;
 			}
 
-			for (Rectangle tile : GameScreen.getInstance().levelData.getTiles(startX, startY, endX, endY)) {
+			priorTiles = GameScreen.getInstance().levelData.getTiles(priorTiles, startX, startY, endX, endY);
+			
+			for (Rectangle tile : priorTiles) {
 				if (body.getBoundingRectangle().overlaps(tile)) {
 					owner.getProjectiles().removeValue(this, false);
 					return;

@@ -200,6 +200,13 @@ public class GameScreen implements Screen {
 
 		// checks collision then moves the player
 		player.move(delta);
+		
+		for (Entity e : levelData.getEnemies()) {
+			e.move(delta);
+			if (e.checkCollision(player)) {
+				player.life.damagePlayer(1);
+			}
+		}
 
 		// currently only for debug mode
 		checkGameInput();
@@ -214,13 +221,8 @@ public class GameScreen implements Screen {
 		// Render, move and check collision for enemies
 		renderer.getBatch().begin();
 		for (Entity e : levelData.getEnemies()) {
-			e.move(delta);
 			e.render(renderer.getBatch());
-			if (e.checkCollision(player)) {
-				player.life.damagePlayer(1);
-			}
 		}
-
 		// render the player
 		player.render();
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="12" tilewidth="64" tileheight="64" nextobjectid="41">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="12" tilewidth="64" tileheight="64" nextobjectid="43">
  <tileset firstgid="1" name="Basic" tilewidth="64" tileheight="64" spacing="2" margin="2" tilecount="8" columns="8">
   <image source="../textures/test.png" width="528" height="66"/>
  </tileset>
@@ -71,27 +71,34 @@
 </data>
  </layer>
  <objectgroup name="Objects">
-  <object id="29" name="door_to_spawn" x="1472" y="448" width="64" height="128">
+  <object id="29" name="door_to_spawn" type="Door" x="1472" y="448" width="64" height="128">
    <properties>
     <property name="tpX" type="int" value="10"/>
     <property name="tpY" type="int" value="1"/>
    </properties>
   </object>
-  <object id="38" name="Walker" x="960" y="640" width="64" height="64">
+  <object id="38" name="Walker" type="Walker" x="960" y="640" width="64" height="64">
    <properties>
     <property name="leftRoom" type="int" value="1"/>
     <property name="rightRoom" type="int" value="2"/>
     <property name="texture" value="textures/Woddy.png"/>
    </properties>
   </object>
-  <object id="39" name="Spitter" x="1344" y="448" width="64" height="64">
+  <object id="41" name="Spitter" type="Spitter" x="1344" y="448" width="64" height="64">
    <properties>
+    <property name="projLifetime" type="float" value="2"/>
+    <property name="projTexture" value="textures/projectile.png"/>
     <property name="texture" value="textures/Woddy.png"/>
+    <property name="xVelocity" type="float" value="0"/>
+    <property name="yVelocity" type="float" value="2"/>
    </properties>
   </object>
-  <object id="40" name="Spitter" x="1280" y="448" width="64" height="64">
+  <object id="42" name="Spitter" type="Spitter" x="1280" y="448" width="64" height="64">
    <properties>
-    <property name="texture" value="textures/Woddy.png"/>
+    <property name="projFrequency" type="float" value="0.5"/>
+    <property name="projLifetime" type="float" value="2"/>
+    <property name="xVelocity" type="float" value="-2"/>
+    <property name="yVelocity" type="float" value="2"/>
    </properties>
   </object>
  </objectgroup>

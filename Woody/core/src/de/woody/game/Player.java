@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.enemies.Entity;
 import de.woody.game.enemies.Walker;
@@ -62,6 +63,9 @@ public class Player {
 	public boolean facesRight = true;
 
 	public Lifesystem life;
+	
+	/** Required for freeing the rectangles **/
+	private Array<Rectangle> priorTiles;
 
 	public Player() {
 		this(State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
@@ -313,7 +317,8 @@ public class Player {
 			// move the playerRect and see if it overlaps with one of the tiles,
 			// if it does, handle the collision
 			playerRect.x += velocity.x;
-			for (Rectangle tile : GameScreen.getInstance().levelData.getTiles(startX, startY, endX, endY)) {
+			priorTiles = GameScreen.getInstance().levelData.getTiles(priorTiles, startX, startY, endX, endY);
+			for (Rectangle tile : priorTiles) {
 				if (playerRect.overlaps(tile)) {
 
 					// set the players position either directly left or right of
@@ -351,7 +356,8 @@ public class Player {
 			// move the playerRect and see if it overlaps with one of the tiles,
 			// if it does, handle the collision
 			playerRect.y += velocity.y;
-			for (Rectangle tile : GameScreen.getInstance().levelData.getTiles(startX, startY, endX, endY)) {
+			priorTiles = GameScreen.getInstance().levelData.getTiles(priorTiles, startX, startY, endX, endY);
+			for (Rectangle tile : priorTiles) {
 				if (playerRect.overlaps(tile)) {
 					// set the players position either directly above or below
 					// the tile

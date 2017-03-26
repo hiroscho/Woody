@@ -25,13 +25,11 @@ import de.woody.game.screens.WoodyGame;
 public class Level {
 
 	public Pool<Rectangle> rectPool;
-	private Array<Rectangle> tiles;
 	private Array<Door> doors;
 	private Array<Entity> enemies;
 	private Array<TiledMapTileLayer> collisionTileLayers;
 
 	public Level() {
-		tiles = new Array<Rectangle>();
 		doors = new Array<Door>();
 		enemies = new Array<Entity>();
 		collisionTileLayers = new Array<TiledMapTileLayer>();
@@ -102,9 +100,6 @@ public class Level {
 	 * @return an array with all the created doors
 	 */
 	private void createDoors(Array<MapObject> objects) {
-		int tpX = 0;
-		int tpY = 0;
-
 		for (MapObject object : objects) {
 
 			// get the properties of the object and save some of them in
@@ -113,8 +108,8 @@ public class Level {
 			Array<Float> basic = getBasicProperties(properties);
 
 			// get the custom properties tpX/tpY
-			tpX = properties.get("tpX", Integer.class);
-			tpY = properties.get("tpY", Integer.class);
+			int tpX = properties.get("tpX", 0, Integer.class);
+			int tpY = properties.get("tpY", 0, Integer.class);
 
 			// create the door and add it to the array
 			Door door = new Door(basic.get(0), basic.get(1), basic.get(2), basic.get(3), tpX, tpY);
@@ -126,9 +121,9 @@ public class Level {
 		for (MapObject obj : objects) {
 			MapProperties prop = obj.getProperties();
 			int id = prop.get("id", Integer.class);
-			int x1 = prop.get("leftRoom", Integer.class);
-			int x2 = prop.get("rightRoom", Integer.class);
-			String texture = prop.get("texture", String.class);
+			int x1 = prop.get("leftRoom", 0, Integer.class);
+			int x2 = prop.get("rightRoom", 0, Integer.class);
+			String texture = prop.get("texture", "textures/Woddy.png", String.class);
 			Array<Float> basic = getBasicProperties(prop);
 			Walker e = new Walker(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, x1, x2, basic.get(0),
 					basic.get(1), basic.get(2), basic.get(3));
@@ -136,18 +131,25 @@ public class Level {
 		}
 	}
 
-	// TODO: Add custom lifetime, velocity, projectiletexture properties and fix
-	// the weird walk bug (also optimize entity only updating when they are in
-	// view (gotta think about something for horizontal projectiles))
+	// TODO: optimize entity only updating when they are in view (gotta think
+	// about something for horizontal projectiles)
 	private void createSpitters(Array<MapObject> objects) {
 		for (MapObject obj : objects) {
 			MapProperties prop = obj.getProperties();
 			int id = prop.get("id", Integer.class);
-			String texture = prop.get("texture", String.class);
+			String texture = prop.get("texture", "textures/Woddy.png", String.class);
 			Array<Float> basic = getBasicProperties(prop);
 			Spitter e = new Spitter(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, basic.get(0),
 					basic.get(1), basic.get(2), basic.get(3));
-			e.setProjectileProperties(0.5F, 0.5F, new Vector2(0, 3), 3F);
+
+			texture = prop.get("projTexture", "textures/projectile.png", String.class);
+			float xVel = prop.get("xVelocity", 0F, Float.class);
+			float yVel = prop.get("yVelocity", 0F, Float.class);
+			float lifetime = prop.get("projLifetime", 0F, Float.class);
+			float projWidth = prop.get("projWidth", 0.5F, Float.class);
+			float projHeight = prop.get("projHeight", 0.5F, Float.class);
+			float projFrequency = prop.get("projFrequency", 2.0F, Float.class);
+			e.setProjectileProperties(projWidth, projHeight, new Vector2(xVel, yVel), lifetime, texture, projFrequency);
 			enemies.add(e);
 		}
 	}
@@ -165,7 +167,10 @@ public class Level {
 	 * @param endY
 	 *            y-coordinate of the second point
 	 */
-	public Array<Rectangle> getTiles(int startX, int startY, int endX, int endY) {
+	public Array<Rectangle> getTiles(Array<Rectangle> tiles, int startX, int startY, int endX, int endY) {
+		if (tiles == null) {
+			tiles = new Array<Rectangle>();
+		}
 		rectPool.freeAll(tiles);
 		tiles.clear();
 

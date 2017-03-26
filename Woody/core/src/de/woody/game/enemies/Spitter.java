@@ -1,5 +1,6 @@
 package de.woody.game.enemies;
 
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Timer;
@@ -24,11 +25,12 @@ public class Spitter extends Entity {
 		float playerX = GameScreen.getInstance().getPlayer().position.x;
 		if ((playerX + 4) > (getBody().getX() + getBody().getWidth()) || (playerX - 4) < getBody().getX()) {
 			if (cooldown) {
-				Projectile p = new Projectile(this, getBody().getX() + getBody().getWidth() / 2,
-						getBody().getY() + getBody().getHeight() / 2, getProjectileWidth(), getProjectileHeight(),
+				float x = getBody().getX() + getBody().getWidth() / 2 - getProjectileWidth() / 2;
+				float y = getBody().getY() + getBody().getHeight() / 2 - getProjectileHeight() / 2;
+				Projectile p = new Projectile(this, getProjectileTexture(), x, y, getProjectileWidth(), getProjectileHeight(),
 						getProjectileVelocity(), getProjectileLifetime());
 				getProjectiles().add(p);
-				cooldown(2F);
+				cooldown(getProjectileFrequency());
 			}
 			for (Projectile p : getProjectiles()) {
 				p.move(delta);

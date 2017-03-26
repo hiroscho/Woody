@@ -348,23 +348,25 @@ public class Player {
 		return velocity;
 	}
 	
-	private void checkBlock()
+	public void checkBlock()
 	{		
 		final int x2 = (int) (position.x + WIDTH/2);
 		final int y2 = (int) ((int)position.y);
 		
 		//Damaging
-		if(Level.getTileId("above", null, x2, y2) == 1)
+		if(Level.getTileId("above", "Collidable Tiles", x2, y2) == 21)
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
+//		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 21 && ((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).getCell(x2, y2).getRotation() == 180)
+//			Lifesystem.hearts = Lifesystem.damagePlayer(1);
 		
 		//Slime
-		if(Level.getTileId("above", null, x2, y2) == 2)
+		if(Level.getTileId("above", "Collidable Tiles", x2, y2) == 23)
 			MAX_VELOCITY = 1.5f;
 		else
 			MAX_VELOCITY = standartMaxVelocity;
 		
 		//Ice
-		if(Level.getTileId("above", null, x2, y2) == 3)
+		if(Level.getTileId("above", "Collidable Tiles", x2, y2) == 22)
 		{
 			DAMPING = 0.975f;
 			sliding = true;
@@ -373,7 +375,7 @@ public class Player {
 			DAMPING = 0.87f;
 		
 		//Vanishing
-		if(Level.getTileId("above", null, x2, y2) == 4)
+		if(Level.getTileName(Level.getTileId("above", "Collidable Tiles", x2, y2)) == "vanishing")
 		{
 			Timer.schedule(new Task() {
 
@@ -386,20 +388,20 @@ public class Player {
 		}
 		
 		//Foliage
-		if(Level.getTileId("inside", null, x2, y2) == 5)
+		if(Level.getTileId("inside", "non Collidable", x2, y2) == 24)
 		{
 			MAX_VELOCITY = MAX_VELOCITY / 2;
 		}
 		
 		//Ladder
-		if(((Level.getTileId("inside", null, x2, y2) == 6) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))			//if a ladder is in the background and the jumpkey is pressed do...
+		if(((Level.getTileId("inside", "non Collidable", x2, y2) == 29) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))
 		{
 			climbing = true;
 			velocity.y = 5f;
 			velocity.x = 0;
 			state = State.Climbing;
 		}
-		else if(((Level.getTileId("inside", null, x2, y2) == 6) && !((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))			//if a ladder is in the background and the jumpkey is not pressed do...
+		else if(((Level.getTileId("inside", "non Collidable", x2, y2) == 29) && !((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))
 		{
 			climbing = true;
 			velocity.y = -2.5f;
@@ -412,7 +414,7 @@ public class Player {
 		}
 		
 		//Lava
-		if(Level.getTileId("inside", null, x2, y2) == 7)
+		if(Level.getTileName(Level.getTileId("inside", "non Collidable", x2, y2)).equals("lava"))
 		{
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
 			MAX_VELOCITY = 1f;
@@ -429,7 +431,7 @@ public class Player {
 			swimming = false;
 		
 		//Water
-		if(Level.getTileId("inside", null, x2, y2) == 8)
+		if(Level.getTileName(Level.getTileId("inside", "non Collidable", x2, y2)).equals("water"))
 		{
 			MAX_VELOCITY = 3f;
 			state = State.Swimming;
@@ -445,52 +447,13 @@ public class Player {
 		else
 			swimming = false;
 	}
-	
-	public void checkPlayerAboveBlock()
-	{
-		final int x2 = (int) (position.x + WIDTH/2);
-		final int y2 = (int) ((int)position.y - 1 + HEIGHT/2);
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Damaging")).getCell(x2, y2)) != null))
-		{
-			Lifesystem.hearts = Lifesystem.damagePlayer(1);
-		}
-		
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Slime")).getCell(x2, y2)) != null))
-		{
-			MAX_VELOCITY = 1.5f;
-		}
-		else
-			MAX_VELOCITY = standartMaxVelocity;
-		
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ice")).getCell(x2, y2)) != null))
-		{
-			DAMPING = 0.975f;
-			sliding = true;
-		}
-		else
-		{
-			DAMPING = 0.87f;
-		}
-			
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(x2, y2)) != null))
-		{
-			Timer.schedule(new Task() {
 
-				@Override
-				public void run() {
-		            	deleteNearbyVanishingBlocks(x2, y2);
-				}
-
-	         }, (float) 0.5);
-		}
-	}	
-	
 	public void deleteNearbyVanishingBlocks(int x2, int y2)
 	{
 		for(int i = x2 -1; i <= x2 +1; i++)
 		{
-			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).getCell(i, y2)) != null))
-				((TiledMapTileLayer) GameScreen.map.getLayers().get("Vanishing")).setCell(i, y2, null);
+			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).getCell(i, y2)) != null) && (Level.getTileName(Level.getTileId("above", "Collidable Tiles", x2, y2))) == "vanishing")
+				((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(i, y2, null);
 		}
 		if(velocity.y == 0)
 		{
@@ -499,70 +462,9 @@ public class Player {
 		}
 	}	
 	
-	public void checkPlayerInBlock()				//button does not work
-	{
-		int x2 = (int) ((int)position.x + WIDTH/2);
-		int y2 = (int)position.y;
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Foliage")).getCell(x2, y2)) != null))
-		{
-			MAX_VELOCITY = MAX_VELOCITY / 2;
-		}
-		
-		if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))			//if a ladder is in the background and the jumpkey is pressed do...
-		{
-			climbing = true;
-			velocity.y = 5f;
-			velocity.x = 0;
-			state = State.Climbing;
-		}
-		else if((((((TiledMapTileLayer) GameScreen.map.getLayers().get("Ladder")).getCell(x2, y2)) != null) && !((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))			//if a ladder is in the background and the jumpkey is not pressed do...
-		{
-			climbing = true;
-			velocity.y = -2.5f;
-			velocity.x = 0;
-			state = State.Climbing;
-		}
-		else
-		{
-			climbing = false;
-		}
-		
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Lava")).getCell(x2, y2)) != null))
-		{
-			Lifesystem.hearts = Lifesystem.damagePlayer(1);
-			MAX_VELOCITY = 1f;
-			swimming = true;
-			state = State.Swimming;
-        	velocity.y = -0.5f;
-			if(position.y >= y2 && (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) && !checkSameBlockAbove(x2,y2))
-			{
-				velocity.y = 2.5f;
-				freeJump = true;
-			}
-		}
-		else
-			swimming = false;
-		
-		if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Water")).getCell(x2, y2)) != null))
-		{
-			MAX_VELOCITY = 3f;
-			state = State.Swimming;
-			swimming = true;
-			velocity.y = -2.5f;
-
-			if(position.y >= y2 && (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) )
-			{
-				velocity.y = 3.5f;
-				freeJump = true;
-			}
-		}
-		else
-			swimming = false;
-	}
-	
 	public boolean checkSameBlockAbove(int x2, int y2)
 	{
-		if(Level.getTileId(null, null, x2, y2) == Level.getTileId(null, null, x2, y2 + 1))
+		if(Level.getTileId("above", "non Collidable", x2, y2) == Level.getTileId("inside", "non Collidable", x2, y2))
 		{
 			return true;
 		}

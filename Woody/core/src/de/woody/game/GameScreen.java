@@ -162,8 +162,7 @@ public class GameScreen implements Screen {
 			
 			controller.checkCorrectHeartsImage();
 			controller.checkCorrectLifeImage();
-			player.checkPlayerAboveBlock();
-			player.checkPlayerInBlock();
+			player.checkBlock();
 			player.checkSliding();
 			
 			// render the player

@@ -1,28 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tiles>
-    <tile
+
+    <tile
+        id="0"
+        name="null">
+    </tile>
+        <tile
         id="1"
         name="grass" >
     </tile>
 
     <tile
-        id="2"
-        name="dirt1" >
+        id="2, 3, 4, 5"
+        name="wood" >
+    </tile>
+    
+    <tile
+        id="6, 7, 8"
+        name="dirt" >
     </tile>
 
     <tile
-        id="3"
-        name="dirt2" >
+        id="9"
+        name="" >
     </tile>
     
     <tile
-        id="4"
-        name="dirt3" >
+        id="10"
+        name="" >
     </tile>
     
-        <tile
-        id="20"
+    <tile
+        id="11"
+        name="" >
+    </tile>
+    
+    <tile
+        id="12"
+        name="" >
+    </tile>
+    
+    <tile
+        id="13"
+        name="" >
+    </tile>
+    
+    <tile
+        id="14"
+        name="" >
+    </tile>
+    
+    <tile
+        id="15"
+        name="" >
+    </tile>
+    
+    <tile
+        id="16"
+        name="" >
+    </tile>
+    
+    <tile
+        id="17"
+        name="" >
+    </tile>
+    
+    <tile
+        id="18"
+        name="" >
+    </tile>
+    
+    <tile
+        id="19, 20"
+        name="lava" >
+    </tile>
+    
+    <tile
+        id="21"
+        name="iceSpikes" >
+    </tile>
+    
+    <tile
+        id="22"
+        name="iceLayer" >
+    </tile>
+    
+    <tile
+        id="23"
+        name="slimeLayer" >
+    </tile>
+    
+    <tile
+        id="24"
         name="bush" >
+    </tile>
+    
+    <tile
+        id="25, 26"
+        name="water" >
+    </tile>
+    
+    <tile
+        id="27, 28"
+        name="vanishing" >
+    </tile>
+
+    <tile
+        id="29"
+        name="ladder" >
     </tile>
 
 </tiles>

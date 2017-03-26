@@ -113,14 +113,16 @@ public class Level {
 	 * @param y  y-coordinate
 	 * @return  the id of the specific tile
 	 */
-	public static int getTileId(String location, TiledMapTileLayer layer, int x, int y) {
+	public static int getTileId(String location, String layerName, int x, int y) {
 		int offset = 0;
 		if(location == "above")
-			offset = 1;
-		else if(location == "below")
 			offset = -1;
+		else if(location == "below")
+			offset = +1;
 		else
 			offset = 0;
+		
+		TiledMapTileLayer layer = (TiledMapTileLayer) GameScreen.map.getLayers().get(layerName);
 		
 		if(layer.getCell(x, y + offset) != null) {
 			return layer.getCell(x, y + offset).getTile().getId();

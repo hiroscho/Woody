@@ -26,8 +26,7 @@ public class WoodyGame extends Game {
 	public final int yTiles = 12;
 
 	/** names of the collision layers **/
-	public static final String[] collisionLayers = new String[] { "Collidable Tiles", "Destructable", "Damaging",
-			"Slime", "Ice", "Vanishing" };
+	public static final String[] collisionLayers = new String[] { "Collidable Tiles", "Destructable"};
 
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
@@ -42,19 +41,26 @@ public class WoodyGame extends Game {
 		this.setScreen(new GameScreen(this, 1));
 	}
 
-	private void loadIdNames() {
-		XmlReader xml = new XmlReader();
-		try {
-			FileHandle file = new FileHandle(new File("TileNames.xml"));
-			XmlReader.Element ele = xml.parse(file);
+    private void loadIdNames() {
+        XmlReader xml = new XmlReader();
+        try {
+            FileHandle file = new FileHandle(new File("TileNames.xml"));
+            XmlReader.Element ele = xml.parse(file);
+            String[] ids;
+            String name;
 
-			for (int i = 0; i < ele.getChildCount(); i++) {
-				idNames.put(ele.getChild(i).getIntAttribute("id"), ele.getChild(i).getAttribute("name"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            for (int i = 0; i < ele.getChildCount(); i++) {
+                ids = ele.getChild(i).getAttribute("id").split(",");
+                name = ele.getChild(i).getAttribute("name");
+                for(String s : ids) {
+                    s = s.trim();
+                    idNames.put(Integer.parseInt(s), name);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 	/**
 	 * Has to be used with care, forced typecast on screen

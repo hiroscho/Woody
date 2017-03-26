@@ -29,7 +29,7 @@ public class WoodyGame extends Game {
 	public static final String[] collisionLayers = new String[] { "Collidable Tiles"};
 
 	/** gravity constant **/
-	public static final float GRAVITY = -0.5f;
+	public static float GRAVITY = -0.5f;
 	
 	/** tile id and their corresponding name, change it in TileNames.xml **/
 	public static HashMap<Integer, String> idNames = new HashMap<Integer, String>();

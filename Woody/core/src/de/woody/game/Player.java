@@ -158,7 +158,7 @@ public class Player {
 				if (facesRight) {
 					int x2 = (int)position.x + 1;
 					int y2 = (int)position.y;
-					if(Level.getTileId("inside", "Collidable Tiles", x2, y2) == 5)
+					if(Level.getTileId("Collidable Tiles", x2, y2) == 5)
 					{
 						((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(x2, y2, null);
 						((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(x2, y2+1,null);
@@ -168,7 +168,7 @@ public class Player {
 				} else {
 					int x2 = (int)position.x - 1;
 					int y2 = (int)position.y;
-					if(Level.getTileId("inside", "Collidable Tiles", x2, y2) == 5)
+					if(Level.getTileId("Collidable Tiles", x2, y2) == 5)
 					{
 						((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(x2, y2,null);
 						((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(x2, y2+1,null);
@@ -360,19 +360,32 @@ public class Player {
 		final int y2 = (int) (position.y);
 		
 		//Damaging
-		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 21)
+		if(Level.getTileId("Collidable Tiles", x2, y2-1) == 21)
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
-//		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 21 && ((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).getCell(x2, y2).getRotation() == 180)
-//			Lifesystem.hearts = Lifesystem.damagePlayer(1);
+		else if(Level.getTileId("Collidable Tiles", x2, y2+2) == 22)
+			Lifesystem.hearts = Lifesystem.damagePlayer(1);
 		
 		//Slime
-		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 23)
+		if(Level.getTileId("Collidable Tiles", x2, y2-1) == 23)
 			MAX_VELOCITY = 1.5f;
 		else
 			MAX_VELOCITY = standartMaxVelocity;
 		
+//		if(Level.getTileId("non Collidable", x2, y2+2) == 23)
+//		{
+//			MAX_VELOCITY = 1.5f;
+//			JUMP_VELOCITY = 5f;
+//			WoodyGame.GRAVITY = -0.2f;
+//		}
+//		else
+//		{
+//			MAX_VELOCITY = standartMaxVelocity;
+//			JUMP_VELOCITY = standartJumpVelocity;
+//			WoodyGame.GRAVITY = -0.5f;
+//		}
+		
 		//Ice
-		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 22)
+		if(Level.getTileId("Collidable Tiles", x2, y2-1) == 22)
 		{
 			DAMPING = 0.975f;
 			sliding = true;
@@ -381,7 +394,7 @@ public class Player {
 			DAMPING = 0.87f;
 		
 		//Vanishing
-		if(Level.getTileName(Level.getTileId("below", "Collidable Tiles", x2, y2)).equals("vanishing"))
+		if(Level.getTileName(Level.getTileId("Collidable Tiles", x2, y2-1)).equals("vanishing"))
 		{
 			Timer.schedule(new Task() {
 
@@ -394,20 +407,20 @@ public class Player {
 		}
 		
 		//Foliage
-		if(Level.getTileId("inside", "non Collidable", x2, y2) == 24)
+		if(Level.getTileId("non Collidable", x2, y2) == 24)
 		{
 			MAX_VELOCITY = MAX_VELOCITY / 2;
 		}
 		
 		//Ladder
-		if(((Level.getTileId("inside", "non Collidable", x2, y2) == 29) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))
+		if(((Level.getTileId("non Collidable", x2, y2) == 29) && ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))
 		{
 			climbing = true;
 			velocity.y = 5f;
 			velocity.x = 0;
 			state = State.Climbing;
 		}
-		else if(((Level.getTileId("inside", "non Collidable", x2, y2) == 29) && !((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))
+		else if(((Level.getTileId("non Collidable", x2, y2) == 29) && !((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)))))
 		{
 			climbing = true;
 			velocity.y = -2.5f;
@@ -420,7 +433,7 @@ public class Player {
 		}
 		
 		//Lava
-		if(Level.getTileName(Level.getTileId("inside", "non Collidable", x2, y2)).equals("lava"))
+		if(Level.getTileName(Level.getTileId("non Collidable", x2, y2)).equals("lava"))
 		{
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
 			MAX_VELOCITY = 1f;
@@ -437,7 +450,7 @@ public class Player {
 			swimming = false;
 		
 		//Water
-		if(Level.getTileName(Level.getTileId("inside", "non Collidable", x2, y2)).equals("water"))
+		if(Level.getTileName(Level.getTileId("non Collidable", x2, y2)).equals("water"))
 		{
 			MAX_VELOCITY = 3f;
 			state = State.Swimming;
@@ -458,13 +471,8 @@ public class Player {
 	{
 		for(int i = x2 -1; i <= x2 +1; i++)
 		{
-			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).getCell(i, y2)) != null))
-			{
-				if(Level.getTileName(Level.getTileId("below", "Collidable Tiles", i, y2)).equals("vanishing"))
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(i, y2, null);
-				
-				System.out.println("DELETED THE BLOCKS");
-			}
+			if(Level.getTileName(Level.getTileId("Collidable Tiles", i, y2)).equals("vanishing"))
+				((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(i, y2, null);
 		}
 		if(velocity.y == 0)
 		{
@@ -475,7 +483,7 @@ public class Player {
 	
 	public boolean checkSameBlockAbove(int x2, int y2)
 	{
-		if(Level.getTileId("below", "non Collidable", x2, y2) == Level.getTileId("inside", "non Collidable", x2, y2))
+		if(Level.getTileId("non Collidable", x2, y2-1) == Level.getTileId("non Collidable", x2, y2))
 		{
 			return true;
 		}

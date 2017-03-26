@@ -27,7 +27,6 @@ import de.woody.game.Level;
 import de.woody.game.Player;
 import de.woody.game.UI;
 import de.woody.game.enemies.Entity;
-import de.woody.game.enemies.Walker;
 
 public class GameScreen implements Screen {
 	

@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.enemies.Entity;
-import de.woody.game.enemies.Walker;
 import de.woody.game.screens.GameScreen;
 import de.woody.game.screens.WoodyGame;
 

@@ -357,7 +357,7 @@ public class Player {
 	public void checkBlock()
 	{		
 		final int x2 = (int) (position.x + WIDTH/2);
-		final int y2 = (int) ((int)position.y);
+		final int y2 = (int) (position.y);
 		
 		//Damaging
 		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 21)
@@ -458,8 +458,13 @@ public class Player {
 	{
 		for(int i = x2 -1; i <= x2 +1; i++)
 		{
-			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).getCell(i, y2)) != null) && (Level.getTileName(Level.getTileId("below", "Collidable Tiles", i, y2))).equals("vanishing"))
-				((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(i, y2, null);
+			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).getCell(i, y2)) != null))
+			{
+				if(Level.getTileName(Level.getTileId("below", "Collidable Tiles", i, y2)).equals("vanishing"))
+					((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(i, y2, null);
+				
+				System.out.println("DELETED THE BLOCKS");
+			}
 		}
 		if(velocity.y == 0)
 		{

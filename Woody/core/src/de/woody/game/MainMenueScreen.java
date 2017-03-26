@@ -3,6 +3,7 @@ package de.woody.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -35,6 +36,9 @@ public class MainMenueScreen implements Screen {
 	private Texture closeButtonak;
 	private Texture background;
 	
+	//Music
+	static Music menueMusic;
+	
 	private AssetManager asMa = WoodyGame.getGame().manager;
 
 	private MainMenueScreen() {}
@@ -53,6 +57,7 @@ public class MainMenueScreen implements Screen {
 		asMa.load("textures/Exit_un.png", Texture.class);
 		asMa.load("textures/Exit_ak.png", Texture.class);
 		asMa.load("textures/Mainscreenbackground3.png", Texture.class);
+		asMa.load("Music/mainTheme.mp3", Music.class);
 		
 		while(!asMa.update()) {
 			asMa.update();
@@ -65,6 +70,7 @@ public class MainMenueScreen implements Screen {
 		closeButton = asMa.get("textures/Exit_un.png", Texture.class);
 		closeButtonak = asMa.get("textures/Exit_ak.png", Texture.class);
 		background = asMa.get("textures/Mainscreenbackground3.png", Texture.class);
+		menueMusic = asMa.get("Music/mainTheme.mp3", Music.class);
 	}
 
 	@Override
@@ -72,6 +78,10 @@ public class MainMenueScreen implements Screen {
 		Gdx.gl.glClearColor(0.5f, 0.7f, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
+		
+		//Background Music
+		menueMusic.setLooping(true);
+		menueMusic.play();
 
 		// Background
 		batch.draw(background, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);

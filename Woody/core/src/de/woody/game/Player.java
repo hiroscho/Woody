@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
@@ -58,6 +60,9 @@ public class Player {
 	public boolean facesRight = true;
 
 	public Lifesystem life;
+	
+	private Sound coinSound;
+	
 
 	public Player() {
 		this(State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
@@ -277,6 +282,8 @@ public class Player {
 				Level.getTileLayer(GameScreen.getInstance().getMap(), "Coins").setCell(i, y2, null);
 				addCoin();
 				// System.out.println(getCoinAmount());
+
+				GameScreen.coinSound.play();
 			}
 		}
 	}

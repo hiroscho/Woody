@@ -62,6 +62,8 @@ public class GameScreen implements Screen {
 
 	
 	private Music rainMusic;
+	static Music menueMusic;
+	static Sound coinSound;
 	
 	private GameScreen() {
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
@@ -103,6 +105,7 @@ public class GameScreen implements Screen {
 		
 		// Sound Test
 		asMa.load("audio/drop.wav", Sound.class);
+		asMa.load("Sounds/coin.wav", Sound.class);
 		asMa.load("audio/rain.mp3", Music.class);
 
 		while (!asMa.update()) {
@@ -157,8 +160,10 @@ public class GameScreen implements Screen {
 		// load the textureRegions for animations
 		playerAnimationHandler = new Animations();
 		
+		// Loading the Sounds 
+		coinSound = asMa.get("Sounds/coin.wav", Sound.class);
+
 		rainMusic = asMa.get("audio/rain.mp3", Music.class);
-		
 		rainMusic.setLooping(true);
 		rainMusic.play();
 

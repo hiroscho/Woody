@@ -115,9 +115,9 @@ public class Level {
 	 */
 	public static int getTileId(String location, String layerName, int x, int y) {
 		int offset = 0;
-		if(location == "above")
+		if(location == "below")
 			offset = -1;
-		else if(location == "below")
+		else if(location == "above")
 			offset = +1;
 		else
 			offset = 0;
@@ -131,6 +131,9 @@ public class Level {
 	}
 	
 	public static String getTileName(Integer id) {
-		return WoodyGame.idNames.get(id);
+	    if(WoodyGame.idNames.get(id) != null) {
+	        return WoodyGame.idNames.get(id);
+	    }
+	    return "null";
 	}
 }

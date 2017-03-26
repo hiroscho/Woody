@@ -21,56 +21,6 @@
     </tile>
 
     <tile
-        id="9"
-        name="" >
-    </tile>
-    
-    <tile
-        id="10"
-        name="" >
-    </tile>
-    
-    <tile
-        id="11"
-        name="" >
-    </tile>
-    
-    <tile
-        id="12"
-        name="" >
-    </tile>
-    
-    <tile
-        id="13"
-        name="" >
-    </tile>
-    
-    <tile
-        id="14"
-        name="" >
-    </tile>
-    
-    <tile
-        id="15"
-        name="" >
-    </tile>
-    
-    <tile
-        id="16"
-        name="" >
-    </tile>
-    
-    <tile
-        id="17"
-        name="" >
-    </tile>
-    
-    <tile
-        id="18"
-        name="" >
-    </tile>
-    
-    <tile
         id="19, 20"
         name="lava" >
     </tile>

@@ -158,15 +158,21 @@ public class Player {
 				if (facesRight) {
 					int x2 = (int)position.x + 1;
 					int y2 = (int)position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2, null);
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
+					if(Level.getTileId("inside", "Collidable Tiles", x2, y2) == 5)
+					{
+						((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(x2, y2, null);
+						((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(x2, y2+1,null);
+					}
 					axeCooldown = System.currentTimeMillis();
 
 				} else {
 					int x2 = (int)position.x - 1;
 					int y2 = (int)position.y;
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2,null);
-					((TiledMapTileLayer) GameScreen.map.getLayers().get("Destructable")).setCell(x2, y2+1,null);
+					if(Level.getTileId("inside", "Collidable Tiles", x2, y2) == 5)
+					{
+						((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(x2, y2,null);
+						((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(x2, y2+1,null);
+					}
 					axeCooldown = System.currentTimeMillis();
 				}
 
@@ -354,19 +360,19 @@ public class Player {
 		final int y2 = (int) ((int)position.y);
 		
 		//Damaging
-		if(Level.getTileId("above", "Collidable Tiles", x2, y2) == 21)
+		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 21)
 			Lifesystem.hearts = Lifesystem.damagePlayer(1);
 //		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 21 && ((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).getCell(x2, y2).getRotation() == 180)
 //			Lifesystem.hearts = Lifesystem.damagePlayer(1);
 		
 		//Slime
-		if(Level.getTileId("above", "Collidable Tiles", x2, y2) == 23)
+		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 23)
 			MAX_VELOCITY = 1.5f;
 		else
 			MAX_VELOCITY = standartMaxVelocity;
 		
 		//Ice
-		if(Level.getTileId("above", "Collidable Tiles", x2, y2) == 22)
+		if(Level.getTileId("below", "Collidable Tiles", x2, y2) == 22)
 		{
 			DAMPING = 0.975f;
 			sliding = true;
@@ -375,13 +381,13 @@ public class Player {
 			DAMPING = 0.87f;
 		
 		//Vanishing
-		if(Level.getTileName(Level.getTileId("above", "Collidable Tiles", x2, y2)) == "vanishing")
+		if(Level.getTileName(Level.getTileId("below", "Collidable Tiles", x2, y2)).equals("vanishing"))
 		{
 			Timer.schedule(new Task() {
 
 				@Override
 				public void run() {
-		            	deleteNearbyVanishingBlocks(x2, y2);
+		            	deleteNearbyVanishingBlocks(x2, y2 -1);
 				}
 
 	         }, (float) 0.5);
@@ -452,7 +458,7 @@ public class Player {
 	{
 		for(int i = x2 -1; i <= x2 +1; i++)
 		{
-			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).getCell(i, y2)) != null) && (Level.getTileName(Level.getTileId("above", "Collidable Tiles", x2, y2))) == "vanishing")
+			if(((((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).getCell(i, y2)) != null) && (Level.getTileName(Level.getTileId("below", "Collidable Tiles", i, y2))).equals("vanishing"))
 				((TiledMapTileLayer) GameScreen.map.getLayers().get("Collidable Tiles")).setCell(i, y2, null);
 		}
 		if(velocity.y == 0)
@@ -464,7 +470,7 @@ public class Player {
 	
 	public boolean checkSameBlockAbove(int x2, int y2)
 	{
-		if(Level.getTileId("above", "non Collidable", x2, y2) == Level.getTileId("inside", "non Collidable", x2, y2))
+		if(Level.getTileId("below", "non Collidable", x2, y2) == Level.getTileId("inside", "non Collidable", x2, y2))
 		{
 			return true;
 		}

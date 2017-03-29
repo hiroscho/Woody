@@ -57,7 +57,7 @@ public class MainMenueScreen implements Screen {
 		asMa.load("textures/Exit_un.png", Texture.class);
 		asMa.load("textures/Exit_ak.png", Texture.class);
 		asMa.load("textures/Mainscreenbackground3.png", Texture.class);
-		asMa.load("Music/mainTheme.mp3", Music.class);
+		asMa.load("audio/mainTheme.mp3", Music.class);
 		
 		while(!asMa.update()) {
 			asMa.update();
@@ -70,7 +70,7 @@ public class MainMenueScreen implements Screen {
 		closeButton = asMa.get("textures/Exit_un.png", Texture.class);
 		closeButtonak = asMa.get("textures/Exit_ak.png", Texture.class);
 		background = asMa.get("textures/Mainscreenbackground3.png", Texture.class);
-		menueMusic = asMa.get("Music/mainTheme.mp3", Music.class);
+		menueMusic = asMa.get("audio/mainTheme.mp3", Music.class);
 	}
 
 	@Override

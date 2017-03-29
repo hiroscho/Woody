@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,8 +11,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -59,11 +56,7 @@ public class GameScreen implements Screen {
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
 
-
-	
-	private Music rainMusic;
-	static Music menueMusic;
-	static Sound coinSound;
+	private Sound coinSound;
 	
 	private GameScreen() {
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
@@ -104,9 +97,7 @@ public class GameScreen implements Screen {
 		asMa.load("textures/sheetRun.png", Texture.class);
 		
 		// Sound Test
-		asMa.load("audio/drop.wav", Sound.class);
-		asMa.load("Sounds/coin.wav", Sound.class);
-		asMa.load("audio/rain.mp3", Music.class);
+		asMa.load("audio/coin.wav", Sound.class);
 
 		while (!asMa.update()) {
 			asMa.update();
@@ -161,11 +152,7 @@ public class GameScreen implements Screen {
 		playerAnimationHandler = new Animations();
 		
 		// Loading the Sounds 
-		coinSound = asMa.get("Sounds/coin.wav", Sound.class);
-
-		rainMusic = asMa.get("audio/rain.mp3", Music.class);
-		rainMusic.setLooping(true);
-		rainMusic.play();
+		coinSound = asMa.get("audio/coin.wav", Sound.class);
 
 		// call once for correct init, lifesystem does the remaining calls
 		getUI().updateHeartsImage(player.life.getHearts());
@@ -317,6 +304,10 @@ public class GameScreen implements Screen {
 
 	public Player getPlayer() {
 		return player;
+	}
+	
+	public Sound getCoinSound() {
+		return coinSound;
 	}
 
 	private void renderDebug() {

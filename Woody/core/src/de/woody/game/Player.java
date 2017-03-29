@@ -60,9 +60,8 @@ public class Player {
 	public boolean facesRight = true;
 
 	public Lifesystem life;
-	
+
 	private Sound coinSound;
-	
 
 	public Player() {
 		this(State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
@@ -94,6 +93,7 @@ public class Player {
 
 	private void addCoin() {
 		coinAmount++;
+		GameScreen.getInstance().getCoinSound().play();
 	}
 
 	private void setCoinAmount(int x) {
@@ -282,8 +282,6 @@ public class Player {
 				Level.getTileLayer(GameScreen.getInstance().getMap(), "Coins").setCell(i, y2, null);
 				addCoin();
 				// System.out.println(getCoinAmount());
-
-				GameScreen.coinSound.play();
 			}
 		}
 	}

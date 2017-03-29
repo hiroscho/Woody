@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 import de.woody.game.enemies.Entity;
 import de.woody.game.screens.GameScreen;
-import de.woody.game.screens.WoodyGame;
 
 public class Projectile {
 	private static int projIdGen = 0;

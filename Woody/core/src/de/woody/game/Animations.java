@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.Player.State;
-import de.woody.game.screens.WoodyGame;
 
 public class Animations {
 
@@ -18,12 +17,14 @@ public class Animations {
 	public TextureRegion woodyStand;
 	public TextureRegion woodyJump;
 	public TextureRegion woodyFall;
+	public Animation woodyClimb;
 	public Texture sheetRun;
 
 	public Animation woodyRuninv;
 	public TextureRegion woodyStandinv;
 	public TextureRegion woodyJumpinv;
 	public TextureRegion woodyFallinv;
+	public Animation woodyClimbinv;
 
 	public float stateTime = 0;
 
@@ -50,12 +51,22 @@ public class Animations {
 		woodyJumpinv = new TextureRegion(sheetRun, 12 * 64, 0, 64, 94);
 		woodyFallinv = new TextureRegion(sheetRun, 13 * 64, 0, 64, 94);
 		woodyStandinv = new TextureRegion(sheetRun, 7 * 64, 0, 64, 94);
+
+		frames.clear();
+		for (int i = 5; i <= 6; i++)
+			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 94));
+		woodyClimb = new Animation(0.2f, frames);
+
+		for (int i = 12; i <= 13; i++)
+			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 94));
+		woodyClimbinv = new Animation(0.2f, frames);
 	}
 
 	public TextureRegion getPlayerFrame(Player player) {
 
 		currentState = player.state;
 		TextureRegion region;
+
 		if (!player.life.isInvulnerable()) {
 			switch (currentState) {
 			case Walking:
@@ -70,16 +81,13 @@ public class Animations {
 				region = woodyFall;
 				break;
 
+			case Climbing:
+				region = woodyClimb.getKeyFrame(stateTime);
+				break;
+
 			default:
 				region = woodyStand;
 			}
-
-			stateTime = currentState == previousState ? stateTime + Gdx.graphics.getDeltaTime() : 0;
-			previousState = currentState;
-			if (currentState == Player.State.Walking && (stateTime >= 1))
-				stateTime = 0;
-			return region;
-
 		} else {
 			switch (currentState) {
 			case Walking:
@@ -94,16 +102,19 @@ public class Animations {
 				region = woodyFallinv;
 				break;
 
+			case Climbing:
+				region = woodyClimb.getKeyFrame(stateTime);
+				break;
+
 			default:
 				region = woodyStandinv;
 			}
-
-			stateTime = currentState == previousState ? stateTime + Gdx.graphics.getDeltaTime() : 0;
-			previousState = currentState;
-			if (currentState == Player.State.Walking && (stateTime >= 1))
-				stateTime = 0;
-			return region;
 		}
-
+		stateTime = currentState == previousState ? stateTime + Gdx.graphics.getDeltaTime() : 0;
+		previousState = currentState;
+		if ((currentState == Player.State.Walking || currentState == Player.State.Climbing) && (stateTime >= 1))
+			stateTime = 0;
+		return region;
 	}
+
 }

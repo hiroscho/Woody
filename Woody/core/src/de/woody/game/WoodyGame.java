@@ -1,13 +1,18 @@
-package de.woody.game.screens;
+package de.woody.game;
+
+import java.io.File;
+import java.util.HashMap;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
+
+import de.woody.game.screens.MainMenueScreen;
+
+import com.badlogic.gdx.utils.XmlReader;
 
 public class WoodyGame extends Game {
 	private static final WoodyGame game = new WoodyGame();
@@ -25,17 +30,17 @@ public class WoodyGame extends Game {
 	/** number of shown tiles on the y-Axis **/
 	public static final int yTiles = 12;
 
-	/** names of the collision layers **/
-	public static final String[] collisionLayers = new String[] { "Collidable Tiles", "Destructable" };
-
 	/** gravity constant **/
 	public static final float GRAVITY = -0.5f;
+
+	/** tile id and their corresponding name, change it in TileNames.xml **/
+	public static HashMap<Integer, String> idNames = new HashMap<Integer, String>();
 
 	public AssetManager manager;
 
 	private WoodyGame() {
 		manager = new AssetManager();
-		
+
 		// Create a loader for maps
 		manager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
 	}
@@ -46,14 +51,29 @@ public class WoodyGame extends Game {
 
 	@Override
 	public void create() {
-		Timer.schedule(new Task() {
-			@Override
-			public void run() {
-				System.out.println(Gdx.app.getJavaHeap() + "   " + Gdx.app.getNativeHeap());
-			}
-
-		}, 2.0F, 2.0F);
+		loadIdNames();
 		this.setScreen(MainMenueScreen.getInstance());
+	}
+
+	private void loadIdNames() {
+		XmlReader xml = new XmlReader();
+		try {
+			FileHandle file = new FileHandle(new File("TileNames.xml"));
+			XmlReader.Element ele = xml.parse(file);
+			String[] ids;
+			String name;
+
+			for (int i = 0; i < ele.getChildCount(); i++) {
+				ids = ele.getChild(i).getAttribute("id").split(",");
+				name = ele.getChild(i).getAttribute("name");
+				for (String s : ids) {
+					s = s.trim();
+					idNames.put(Integer.parseInt(s), name);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

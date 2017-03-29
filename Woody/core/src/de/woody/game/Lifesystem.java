@@ -1,11 +1,9 @@
 package de.woody.game;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import de.woody.game.screens.GameScreen;
-import de.woody.game.screens.WoodyGame;
 
 /**
  * Lifesystem:
@@ -22,7 +20,6 @@ public class Lifesystem {
 	private int hearts;
 	private int life;
 	private boolean isAlive = true;
-	private Sound dropSound;
 
 	public Lifesystem(int hearts) {
 		this(hearts, 0);
@@ -31,7 +28,6 @@ public class Lifesystem {
 	public Lifesystem(int hearts, int life) {
 		this.hearts = hearts;
 		this.life = life;
-		dropSound = WoodyGame.getGame().manager.get("audio/drop.wav", Sound.class);
 	}
 
 	public int getHearts() {
@@ -91,7 +87,6 @@ public class Lifesystem {
 			}
 			hearts -= damage;
 			GameScreen.getInstance().getUI().updateHeartsImage(hearts);
-			dropSound.play();
 		}
 		return hearts;
 	}

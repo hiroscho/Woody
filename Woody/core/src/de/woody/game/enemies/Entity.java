@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import de.woody.game.Lifesystem;
 import de.woody.game.Player;
 import de.woody.game.Projectile;
+import de.woody.game.WoodyGame;
 import de.woody.game.screens.GameScreen;
-import de.woody.game.screens.WoodyGame;
 
 public abstract class Entity {
 	private Array<Projectile> projectiles;

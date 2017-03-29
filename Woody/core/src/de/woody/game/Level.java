@@ -16,10 +16,9 @@ import de.woody.game.enemies.Entity;
 import de.woody.game.enemies.Spitter;
 import de.woody.game.enemies.Walker;
 import de.woody.game.screens.GameScreen;
-import de.woody.game.screens.WoodyGame;
 
 /**
- * Contains level data such as enemies, doors, collisionTileLayers.
+ * Contains level data such as enemies, doors, respawnPoints, layers.
  * 
  */
 public class Level {
@@ -27,18 +26,20 @@ public class Level {
 	public Pool<Rectangle> rectPool;
 	private Array<Door> doors;
 	private Array<Entity> enemies;
-	private Array<TiledMapTileLayer> collisionTileLayers;
+	private TiledMapTileLayer collidable;
+	private TiledMapTileLayer nonCollidable;
 
 	public Level() {
 		doors = new Array<Door>();
 		enemies = new Array<Entity>();
-		collisionTileLayers = new Array<TiledMapTileLayer>();
 		rectPool = new Pool<Rectangle>() {
 			@Override
 			protected Rectangle newObject() {
 				return new Rectangle();
 			}
 		};
+		collidable = Level.getTileLayer(GameScreen.getInstance().getMap(), "Collidable Tiles");
+		nonCollidable = Level.getTileLayer(GameScreen.getInstance().getMap(), "non Collidable");
 		init();
 	}
 
@@ -49,21 +50,20 @@ public class Level {
 	public Array<Door> getDoors() {
 		return doors;
 	}
-
-	private void init() {
-		createDoors(
-				Level.filterObjects(GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects(), "door"));
-		createWalkers(Level.filterObjects(GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects(),
-				"Walker"));
-		createSpitters(Level.filterObjects(GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects(),
-				"Spitter"));
-		createCollisionLayers();
+	
+	public TiledMapTileLayer getCollidable() {
+		return collidable;
 	}
-
-	private void createCollisionLayers() {
-		for (String name : WoodyGame.collisionLayers) {
-			collisionTileLayers.add(getTileLayer(GameScreen.getInstance().getMap(), name));
-		}
+	
+	public TiledMapTileLayer getNonCollidable() {
+		return nonCollidable;
+	}
+	
+	private void init() {
+		MapObjects objects = GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects();
+		createDoors(Level.filterObjects(objects, "door"));
+		createWalkers(Level.filterObjects(objects, "Walker"));
+		createSpitters(Level.filterObjects(objects, "Spitter"));
 	}
 
 	/**
@@ -92,12 +92,11 @@ public class Level {
 	}
 
 	/**
-	 * Create Door-objects out of all the MapObject's add them to an Array and
-	 * return it.
+	 * Create Door-objects out of all the MapObject's add them to the doors
+	 * array.
 	 * 
 	 * @param objects
 	 *            objects from which properties are read to create the doors
-	 * @return an array with all the created doors
 	 */
 	private void createDoors(Array<MapObject> objects) {
 		for (MapObject object : objects) {
@@ -174,18 +173,17 @@ public class Level {
 		rectPool.freeAll(tiles);
 		tiles.clear();
 
-		for (TiledMapTileLayer layer : collisionTileLayers) {
-			for (int y = startY; y <= endY; y++) {
-				for (int x = startX; x <= endX; x++) {
-					Cell cell = layer.getCell(x, y);
-					if (cell != null) {
-						Rectangle rect = rectPool.obtain();
-						rect.set(x, y, 1, 1);
-						tiles.add(rect);
-					}
+		for (int y = startY; y <= endY; y++) {
+			for (int x = startX; x <= endX; x++) {
+				Cell cell = collidable.getCell(x, y);
+				if (cell != null) {
+					Rectangle rect = rectPool.obtain();
+					rect.set(x, y, 1, 1);
+					tiles.add(rect);
 				}
 			}
 		}
+
 		return tiles;
 	}
 
@@ -220,5 +218,12 @@ public class Level {
 			}
 		}
 		return filteredObjects;
+	}
+	
+	public static String getTileName(Integer id) {
+		if (WoodyGame.idNames.get(id) != null) {
+			return WoodyGame.idNames.get(id);
+		}
+		return "null";
 	}
 }

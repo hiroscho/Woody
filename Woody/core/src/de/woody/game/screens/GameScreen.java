@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,6 +24,7 @@ import de.woody.game.Animations;
 import de.woody.game.Level;
 import de.woody.game.Player;
 import de.woody.game.UI;
+import de.woody.game.WoodyGame;
 import de.woody.game.enemies.Entity;
 
 public class GameScreen implements Screen {
@@ -36,36 +35,22 @@ public class GameScreen implements Screen {
 	private float scaleHearts = 2;
 	private float scaleLives = 2;
 
-	// map and camera
 	private TiledMap map;
 	private final OrthographicCamera camera;
 	private OrthogonalTiledMapRenderer renderer;
-
-	// player
 	private Player player;
 	private Animations playerAnimationHandler;
-
 	// nr of the level
 	private int level;
 	// current checkpoint (could be changed to a vector and used directly)
 	private int checkpoint;
-	
-	// UI
 	private UI controller;
-
-
-
-	// level Data TODO: Put all of it into Level
 	public Level levelData;
-
 	private AssetManager asMa = WoodyGame.getGame().manager;
-
 	private boolean debug = false;
 	private ShapeRenderer debugRenderer;
-
-
-	
-	private Music rainMusic;
+	private TiledMapTileLayer collidableTiles;
+	private TiledMapTileLayer nonCollidableTiles;
 	
 	private GameScreen() {
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
@@ -111,9 +96,6 @@ public class GameScreen implements Screen {
 		// Entitytextures
 		// Nothing here yet
 		
-		// Sound Test
-		asMa.load("audio/drop.wav", Sound.class);
-		asMa.load("audio/rain.mp3", Music.class);
 
 		while (!asMa.update()) {
 			asMa.update();
@@ -161,16 +143,13 @@ public class GameScreen implements Screen {
 		map = asMa.get("maps/level" + level + ".tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
 		levelData = new Level();
+		collidableTiles = Level.getTileLayer(map, "Collidable Tiles");
+		nonCollidableTiles = Level.getTileLayer(map, "non Collidable");
 		
 		// playable character
 		player = new Player(levelData.getCurrentSpawn());
 		// load the textureRegions for animations
 		playerAnimationHandler = new Animations();
-		
-		rainMusic = asMa.get("audio/rain.mp3", Music.class);
-		
-		rainMusic.setLooping(true);
-		rainMusic.play();
 
 		// call once for correct init, lifesystem does the remaining calls
 		getUI().updateHeartsImage(player.life.getHearts());
@@ -192,13 +171,17 @@ public class GameScreen implements Screen {
 		if (pressedButtons.size != 0) {
 			for (Button but : pressedButtons) {
 				player.setInputVelocity(but);
+				if(but.getName().equals("Jump"))
+					player.checkBlocks(but);
 			}
 		} else {
 			player.setKeyboardVelocity();
 		}
 
+		player.checkBlocks(null);
 		// checks collision then moves the player
 		player.move(delta);
+
 		
 		for (Entity e : levelData.getEnemies()) {
 			e.move(delta);
@@ -207,7 +190,6 @@ public class GameScreen implements Screen {
 			}
 		}
 
-		// currently only for debug mode
 		checkGameInput();
 
 		// set the camera borders
@@ -325,6 +307,14 @@ public class GameScreen implements Screen {
 	public Player getPlayer() {
 		return player;
 	}
+	
+	public TiledMapTileLayer getCollidableTiles() {
+		return collidableTiles;
+	}
+	
+	public TiledMapTileLayer getNonCollidableTiles() {
+		return nonCollidableTiles;
+	}
 
 	private void renderDebug() {
 		debugRenderer.setProjectionMatrix(camera.combined);
@@ -334,7 +324,7 @@ public class GameScreen implements Screen {
 		debugRenderer.rect(player.position.x, player.position.y, Player.WIDTH, Player.HEIGHT);
 
 		debugRenderer.setColor(Color.YELLOW);
-		TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(WoodyGame.collisionLayers[0]);
+		TiledMapTileLayer layer= levelData.getCollidable();
 		for (int y = 0; y <= layer.getHeight(); y++) {
 			for (int x = 0; x <= layer.getWidth(); x++) {
 				Cell cell = layer.getCell(x, y);

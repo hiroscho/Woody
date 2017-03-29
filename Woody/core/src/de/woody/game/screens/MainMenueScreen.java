@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import de.woody.game.WoodyGame;
+
 public class MainMenueScreen implements Screen {
 	
 	private static final MainMenueScreen mainMenueScreen = new MainMenueScreen();

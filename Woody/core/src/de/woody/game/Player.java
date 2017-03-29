@@ -5,17 +5,17 @@ import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import de.woody.game.enemies.Entity;
 import de.woody.game.screens.GameScreen;
-import de.woody.game.screens.WoodyGame;
-
-import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public class Player {
 	/** width of the player texture scaled to world coordinates **/
@@ -24,14 +24,16 @@ public class Player {
 	public static float HEIGHT;
 
 	/** maximum velocity's (maybe add a maximum fall velocity?) **/
-	public static float MAX_VELOCITY = 10f;
-	public static float JUMP_VELOCITY = 15f;
+	public static float standartMaxVelocity = 10f;
+	public static float standartJumpVelocity = 15f;
+	public float MAX_VELOCITY;
+	public float JUMP_VELOCITY;
 
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;
 
 	public enum State {
-		Standing, Walking, Jumping, Attacking, Falling
+		Standing, Walking, Jumping, Attacking, Falling, Climbing, Swimming
 	}
 
 	/** player position in world coordinates **/
@@ -61,10 +63,19 @@ public class Player {
 	/** is player facing right **/
 	public boolean facesRight = true;
 
+	/** is player sliding to the left **/
+	public boolean slidingLeft = false;
+
+	/** is player sliding to the right **/
+	public boolean slidingRight = false;
+
+	/** Life of the player **/
 	public Lifesystem life;
-	
+
 	/** Required for freeing the rectangles **/
 	private Array<Rectangle> priorTiles;
+
+	private Vector2 savedPosition = new Vector2();
 
 	public Player() {
 		this(State.Standing, new Vector2(1, 1), 10f, 15f, 0.87f);
@@ -88,6 +99,8 @@ public class Player {
 		WIDTH = 1.0F;
 		HEIGHT = 1.46875F;
 		life = new Lifesystem(3, 2);
+		MAX_VELOCITY = standartMaxVelocity;
+		JUMP_VELOCITY = standartJumpVelocity;
 	}
 
 	public int getCoinAmount() {
@@ -109,16 +122,15 @@ public class Player {
 	 *            the detected pressedButton
 	 */
 	public void setInputVelocity(Button button) {
-
-		if (button.getName().equals("Jump")) {
+		if (button.getName().equals("Jump") && !(state == State.Climbing)) {
 			handleJump();
 		}
 
-		if (button.getName().equals("Right")) {
+		if (button.getName().equals("Right") && !slidingRight) {
 			handleRight();
 		}
 
-		if (button.getName().equals("Left")) {
+		if (button.getName().equals("Left") && !slidingLeft) {
 			handleLeft();
 		}
 		// do we need to be grounded for use of this stuff?
@@ -133,15 +145,16 @@ public class Player {
 	 * input.
 	 */
 	public void setKeyboardVelocity() {
-		if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W))
+				&& !(state == State.Climbing)) {
 			handleJump();
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
+		if ((Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) && !slidingLeft) {
 			handleRight();
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
+		if ((Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) && !slidingRight) {
 			handleLeft();
 		}
 
@@ -151,7 +164,7 @@ public class Player {
 	}
 
 	private void handleJump() {
-		if (grounded) {
+		if (grounded || state == State.Swimming) {
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
@@ -205,21 +218,21 @@ public class Player {
 			}
 
 			// destroy blocks
-			TiledMap map = GameScreen.getInstance().getMap();
-
+			int x2;
 			if (facesRight) {
-				int x2 = (int) position.x + 1;
-				int y2 = (int) position.y;
-				Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-				Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
-				axeCooldown = System.currentTimeMillis();
-
+				x2 = (int) position.x + 1;
 			} else {
-				int x2 = (int) position.x - 1;
-				int y2 = (int) position.y;
-				Level.getTileLayer(map, "Destructable").setCell(x2, y2, null);
-				Level.getTileLayer(map, "Destructable").setCell(x2, y2 + 1, null);
-				axeCooldown = System.currentTimeMillis();
+				x2 = (int) position.x - 1;
+			}
+			int y2 = (int) position.y;
+			Cell cell;
+			for (int i = 0; i <= 1; i++) {
+				cell = GameScreen.getInstance().levelData.getCollidable().getCell(x2, y2 + i);
+				if (cell != null && cell.getTile() != null) {
+					if (Level.getTileName(cell.getTile().getId()).equals("destructable")) {
+						GameScreen.getInstance().levelData.getCollidable().setCell(x2, y2 + i, null);
+					}
+				}
 			}
 
 			axeCooldown = System.currentTimeMillis();
@@ -247,13 +260,14 @@ public class Player {
 				state = State.Standing;
 		}
 
-		// apply gravity if player isn't standing or grounded
-		if (!(state == State.Standing) || !grounded) {
+		// apply gravity if player isn't standing or grounded or climbing or
+		// swimming
+		if (!(state == State.Standing) || !grounded && !(state == State.Climbing) && !(state == State.Swimming)) {
 			velocity.add(0, WoodyGame.GRAVITY);
 			grounded = false;
 		}
 
-		if (!grounded && (velocity.y < 0)) {
+		if ((!grounded && (velocity.y < 0)) && !(state == State.Climbing) && !(state == State.Swimming)) {
 			state = State.Falling;
 		}
 
@@ -391,10 +405,214 @@ public class Player {
 		return playerRect;
 	}
 
-	/**
-	 * Render the player depending on state.
-	 * 
-	 */
+	public void checkBlocks(Button pressedButton) {
+		int x = (int) (position.x + WIDTH / 2);
+		int y = (int) (position.y);
+
+		resetParameters();
+
+		applyCollidableEffect(x, y);
+
+		// higher priority thus later
+		applyNonCollidableEffect(x, y, pressedButton);
+	}
+
+	private void resetParameters() {
+		MAX_VELOCITY = standartMaxVelocity;
+		DAMPING = 0.87F;
+		slidingRight = false;
+		slidingLeft = false;
+	}
+
+	private void applyNonCollidableEffect(int x, int y, Button pressedButton) {
+		Cell lowerCell = GameScreen.getInstance().levelData.getNonCollidable().getCell(x, y);
+
+		String lower = "";
+		if (lowerCell != null && lowerCell.getTile() != null) {
+			lower = Level.getTileName(lowerCell.getTile().getId());
+		}
+
+		// Foliage
+		if (lower.equals("bush")) {
+			MAX_VELOCITY = MAX_VELOCITY / 2;
+			return;
+		}
+
+		// Ladder
+		if (lower.equals("ladder")) {
+			if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)
+					|| pressedButton != null) {
+				velocity.y = 5f;
+			} else {
+				velocity.y = -2.5f;
+			}
+			MAX_VELOCITY = MAX_VELOCITY / 3;
+			state = State.Climbing;
+			return;
+		}
+
+		Cell upperCell = GameScreen.getInstance().levelData.getNonCollidable().getCell(x, y + 1);
+		String upper = "";
+		if (upperCell != null && upperCell.getTile() != null) {
+			upper = Level.getTileName(upperCell.getTile().getId());
+		}
+
+		// Lava
+		if (lower.equals("lava")) {
+			if (upper.equals("lava")) {
+				if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)
+						|| Gdx.input.isKeyPressed(Keys.W) || pressedButton != null) {
+					velocity.y = 5F;
+				} else {
+					velocity.y = -0.5F;
+				}
+			} else {
+				if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)
+						|| Gdx.input.isKeyPressed(Keys.W) || pressedButton != null) {
+					handleJump();
+				} else {
+					velocity.y = -0.5F;
+				}
+			}
+			life.damagePlayer(1);
+			MAX_VELOCITY = 1f;
+			state = State.Swimming;
+			return;
+		}
+
+		// Water
+		if (lower.equals("water")) {
+			if (upper.equals("water")) {
+				if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)
+						|| Gdx.input.isKeyPressed(Keys.W) || pressedButton != null) {
+					velocity.y = 5F;
+				} else {
+					velocity.y = -2.5F;
+				}
+
+			} else {
+				if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)
+						|| Gdx.input.isKeyPressed(Keys.W) || pressedButton != null) {
+					handleJump();
+				} else {
+					velocity.y = -2.5F;
+				}
+			}
+			MAX_VELOCITY = 3f;
+			state = State.Swimming;
+			return;
+		}
+
+	}
+
+	private void applyCollidableEffect(int x, int y) {
+		applyLowerCollidableEffect(x, y);
+		applyUpperCollidableEffect(x, y);
+	}
+
+	private void applyUpperCollidableEffect(int x, int y) {
+		Cell upperCell = GameScreen.getInstance().levelData.getCollidable().getCell(x, y + 2);
+		String upper = "";
+		if (upperCell != null && upperCell.getTile() != null) {
+			upper = Level.getTileName(upperCell.getTile().getId());
+		}
+
+		// TODO improve, ice spike above
+		else if (upper.equals("iceLayer")) {
+			life.damagePlayer(1);
+		}
+	}
+
+	private void applyLowerCollidableEffect(int x, int y) {
+
+		Cell lowerCell = GameScreen.getInstance().levelData.getCollidable().getCell(x, y - 1);
+
+		String lower = "";
+		if (lowerCell != null && lowerCell.getTile() != null) {
+			lower = Level.getTileName(lowerCell.getTile().getId());
+		}
+
+		// Damaging
+		if (lower.equals("iceSpikes")) {
+			life.damagePlayer(1);
+			return;
+		}
+
+		// Slime
+		if (lower.equals("slimeLayer")) {
+			MAX_VELOCITY = 1.5f;
+			return;
+		}
+
+		// Ice
+		if (lower.equals("iceLayer")) {
+			if (velocity.x > 0) {
+				slidingRight = true;
+			}
+			if (velocity.x < 0) {
+				slidingLeft = true;
+			}
+			if (velocity.x == 0) {
+				slidingLeft = false;
+				slidingRight = false;
+			}
+			DAMPING = 0.975f;
+			return;
+		}
+
+		if (lowerCell == null) {
+			Cell otherCell = new Cell();
+			if (x + 1 == (int) (position.x + WIDTH)) {
+				// otherCell is right Cell
+				otherCell = GameScreen.getInstance().levelData.getCollidable().getCell(x + 1, y - 1);
+			}
+			if (x - 1 == (int) position.x) {
+				// otherCell is left Cell
+				otherCell = GameScreen.getInstance().levelData.getCollidable().getCell(x - 1, y - 1);
+			}
+			if (otherCell != null/* && otherCell.getTile() != null */) {
+				lower = Level.getTileName(otherCell.getTile().getId());
+			}
+		}
+
+		// Vanishing
+		if (lower.equals("vanishing")) {
+			
+			// still many calls but many less 
+			if (savedPosition.equals(position)) {
+				return;
+			}
+
+			savedPosition = new Vector2(position);
+			vanish(y);
+		}
+	}
+
+	private void vanish(final int y) {
+		final float x2 = position.x;
+
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				Cell cell;
+				for (int i = 0; i <= 1; i++) {
+					cell = GameScreen.getInstance().levelData.getCollidable().getCell((int) (x2 + WIDTH * i), y - 1);
+					if (cell != null && cell.getTile() != null) {
+						if (Level.getTileName(cell.getTile().getId()).equals("vanishing")) {
+							GameScreen.getInstance().levelData.getCollidable().setCell((int) (x2 + WIDTH * i), y - 1,
+									null);
+						}
+					}
+				}
+				if (velocity.y == 0) {
+					velocity.add(0, WoodyGame.GRAVITY);
+					state = State.Falling;
+				}
+			}
+
+		}, 0.5F);
+	}
+
 	public void render() {
 		Batch batch = GameScreen.getInstance().getRenderer().getBatch();
 		Animations pAH = GameScreen.getInstance().getPlayerAnimationHandler();

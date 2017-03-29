@@ -3,6 +3,7 @@ package de.woody.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -37,6 +38,8 @@ public class MainMenueScreen implements Screen {
 	private Texture closeButtonak;
 	private Texture background;
 	
+	private Music menueMusic;
+	
 	private AssetManager asMa = WoodyGame.getGame().manager;
 
 	private MainMenueScreen() {}
@@ -55,6 +58,7 @@ public class MainMenueScreen implements Screen {
 		asMa.load("textures/Exit_un.png", Texture.class);
 		asMa.load("textures/Exit_ak.png", Texture.class);
 		asMa.load("textures/Mainscreenbackground3.png", Texture.class);
+		asMa.load("audio/mainTheme.mp3", Music.class);
 		
 		while(!asMa.update()) {
 			asMa.update();
@@ -67,6 +71,11 @@ public class MainMenueScreen implements Screen {
 		closeButton = asMa.get("textures/Exit_un.png", Texture.class);
 		closeButtonak = asMa.get("textures/Exit_ak.png", Texture.class);
 		background = asMa.get("textures/Mainscreenbackground3.png", Texture.class);
+		
+		//Background Music
+		menueMusic = asMa.get("audio/mainTheme.mp3", Music.class);
+		menueMusic.setLooping(true);
+		menueMusic.play();
 	}
 
 	@Override

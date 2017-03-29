@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.MathUtils;
@@ -109,6 +111,7 @@ public class Player {
 
 	private void addCoin() {
 		coinAmount++;
+		GameScreen.getInstance().getCoinSound().play();
 	}
 
 	private void setCoinAmount(int x) {

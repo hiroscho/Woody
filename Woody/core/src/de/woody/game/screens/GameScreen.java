@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,7 +29,7 @@ import de.woody.game.WoodyGame;
 import de.woody.game.enemies.Entity;
 
 public class GameScreen implements Screen {
-	
+
 	private static final GameScreen gameScreen = new GameScreen();
 
 	// Variables to change the scale of the hearts / lives image conveniently
@@ -51,20 +52,22 @@ public class GameScreen implements Screen {
 	private ShapeRenderer debugRenderer;
 	private TiledMapTileLayer collidableTiles;
 	private TiledMapTileLayer nonCollidableTiles;
-	
+	private Sound coinSound;
+
 	private GameScreen() {
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
 		camera.update();
 	}
-	
+
 	public static GameScreen getInstance() {
 		return gameScreen;
 	}
 
 	/**
 	 * Get the instance of GameScreen, changing the level.
+	 * 
 	 * @param level
 	 * @return
 	 */
@@ -89,20 +92,22 @@ public class GameScreen implements Screen {
 
 		// Animations
 		asMa.load("textures/sheetRun.png", Texture.class);
-		
+
 		// Projectiletexture
 		asMa.load("textures/projectile.png", Texture.class);
-		
+
 		// Entitytextures
 		// Nothing here yet
-		
+
+		// Sounds
+		asMa.load("audio/coin.wav", Sound.class);
 
 		while (!asMa.update()) {
 			asMa.update();
 		}
 
 		controller = new UI();
-		
+
 		// kinda optional and kinda not, allows the setting of positions of UI
 		// elements in world coordinates
 		Vector3 uiPos;
@@ -145,11 +150,13 @@ public class GameScreen implements Screen {
 		levelData = new Level();
 		collidableTiles = Level.getTileLayer(map, "Collidable Tiles");
 		nonCollidableTiles = Level.getTileLayer(map, "non Collidable");
-		
+
 		// playable character
 		player = new Player(levelData.getCurrentSpawn());
 		// load the textureRegions for animations
 		playerAnimationHandler = new Animations();
+
+		coinSound = asMa.get("audio/coin.wav", Sound.class);
 
 		// call once for correct init, lifesystem does the remaining calls
 		getUI().updateHeartsImage(player.life.getHearts());
@@ -171,7 +178,7 @@ public class GameScreen implements Screen {
 		if (pressedButtons.size != 0) {
 			for (Button but : pressedButtons) {
 				player.setInputVelocity(but);
-				if(but.getName().equals("Jump"))
+				if (but.getName().equals("Jump"))
 					player.checkBlocks(but);
 			}
 		} else {
@@ -182,7 +189,6 @@ public class GameScreen implements Screen {
 		// checks collision then moves the player
 		player.move(delta);
 
-		
 		for (Entity e : levelData.getEnemies()) {
 			e.move(delta);
 			if (e.checkCollision(player)) {
@@ -307,13 +313,17 @@ public class GameScreen implements Screen {
 	public Player getPlayer() {
 		return player;
 	}
-	
+
 	public TiledMapTileLayer getCollidableTiles() {
 		return collidableTiles;
 	}
-	
+
 	public TiledMapTileLayer getNonCollidableTiles() {
 		return nonCollidableTiles;
+	}
+
+	public Sound getCoinSound() {
+		return coinSound;
 	}
 
 	private void renderDebug() {
@@ -324,7 +334,7 @@ public class GameScreen implements Screen {
 		debugRenderer.rect(player.position.x, player.position.y, Player.WIDTH, Player.HEIGHT);
 
 		debugRenderer.setColor(Color.YELLOW);
-		TiledMapTileLayer layer= levelData.getCollidable();
+		TiledMapTileLayer layer = levelData.getCollidable();
 		for (int y = 0; y <= layer.getHeight(); y++) {
 			for (int x = 0; x <= layer.getWidth(); x++) {
 				Cell cell = layer.getCell(x, y);

@@ -48,7 +48,7 @@ public class Walker extends Entity {
 	public void move(float delta) {
 		if (delta > 0.1f)
 			delta = 0.1f;
-		System.out.println(getBody().getX());
+		
 		float leftEnd = GameScreen.getInstance().cameraBottomLeft().x;
 		if ((restrX1 > leftEnd && restrX1 < leftEnd + WoodyGame.xTiles)
 				|| (restrX2 > leftEnd && restrX2 < leftEnd + WoodyGame.xTiles)) {

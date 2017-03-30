@@ -26,12 +26,14 @@ public class Level {
 	public Pool<Rectangle> rectPool;
 	private Array<Door> doors;
 	private Array<Entity> enemies;
+	private Array<Respawn>Respawn;
 	private TiledMapTileLayer collidable;
 	private TiledMapTileLayer nonCollidable;
 
 	public Level() {
 		doors = new Array<Door>();
 		enemies = new Array<Entity>();
+		Respawn = new Array<Respawn>();
 		rectPool = new Pool<Rectangle>() {
 			@Override
 			protected Rectangle newObject() {
@@ -51,6 +53,10 @@ public class Level {
 		return doors;
 	}
 	
+	public Array<Respawn>getRespawn(){
+		return Respawn;
+	}
+	
 	public TiledMapTileLayer getCollidable() {
 		return collidable;
 	}
@@ -64,13 +70,19 @@ public class Level {
 		createDoors(Level.filterObjects(objects, "door"));
 		createWalkers(Level.filterObjects(objects, "Walker"));
 		createSpitters(Level.filterObjects(objects, "Spitter"));
+		createRespawns(Level.filterObjects(objects, "Respawn"));
 	}
+	
 
 	/**
 	 * TODO: SPAWNSYSTEM
 	 * 
 	 * @return spawnpoint
 	 */
+	public Vector2 getCurrentSpawn1(){
+		return new Vector2();
+	}
+	
 	public Vector2 getCurrentSpawn() {
 		return new Vector2(10, 1);
 	}
@@ -90,7 +102,31 @@ public class Level {
 		basic.add(properties.get("height", Float.class) * WoodyGame.UNIT_SCALE);
 		return basic;
 	}
-
+	
+	/**
+	 * Create Respawn-objects out of all the MapObject´s add them to the Respawn array.
+	 * 
+	 */
+	private void createRespawns(Array<MapObject> objects){
+		
+		for (MapObject object : objects){
+			
+			
+			// get the properties of the object and save some of them in
+			// variables
+			MapProperties properties = object.getProperties();
+			Array<Float> basic = getBasicProperties(properties);
+			
+			// get the custom properties tpX/tpY
+			int tpX = properties.get("tpX", 0, Integer.class);
+			int tpY = properties.get("tpY", 0, Integer.class);
+			
+			// create the respawn and add it to the array
+			Respawn respawn = new Respawn(basic.get(0), basic.get(1), basic.get(2), basic.get(3), tpX, tpY);
+			Respawn.add(respawn);
+			
+		}
+	}
 	/**
 	 * Create Door-objects out of all the MapObject's add them to the doors
 	 * array.

@@ -27,6 +27,7 @@ import de.woody.game.Player;
 import de.woody.game.UI;
 import de.woody.game.WoodyGame;
 import de.woody.game.enemies.Entity;
+import de.woody.game.enemies.Walker;
 
 public class GameScreen implements Screen {
 
@@ -54,7 +55,8 @@ public class GameScreen implements Screen {
 	private TiledMapTileLayer nonCollidableTiles;
 	private Sound coinSound;
 
-	private GameScreen() {}
+	private GameScreen() {
+	}
 
 	public static GameScreen getInstance() {
 		return gameScreen;
@@ -100,7 +102,7 @@ public class GameScreen implements Screen {
 		while (!asMa.update()) {
 			asMa.update();
 		}
-		
+
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
@@ -255,7 +257,7 @@ public class GameScreen implements Screen {
 		return camera;
 	}
 
-	private Vector2 cameraBottomLeft() {
+	public Vector2 cameraBottomLeft() {
 		return new Vector2(camera.position.x - (WoodyGame.xTiles / 2), camera.position.y - (WoodyGame.yTiles / 2));
 	}
 

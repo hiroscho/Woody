@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import de.woody.game.Projectile;
+import de.woody.game.WoodyGame;
 import de.woody.game.screens.GameScreen;
 
 public class Spitter extends Entity {
@@ -22,8 +23,8 @@ public class Spitter extends Entity {
 		if (delta > 0.1f)
 			delta = 0.1f;
 
-		float playerX = GameScreen.getInstance().getPlayer().position.x;
-		if ((playerX + 4) > (getBody().getX() + getBody().getWidth()) || (playerX - 4) < getBody().getX()) {
+		float leftEnd = GameScreen.getInstance().cameraBottomLeft().x;
+		if (getBody().getX() + getBody().getWidth() > leftEnd && getBody().getX() < leftEnd + WoodyGame.xTiles) {
 			if (cooldown) {
 				float x = getBody().getX() + getBody().getWidth() / 2 - getProjectileWidth() / 2;
 				float y = getBody().getY() + getBody().getHeight() / 2 - getProjectileHeight() / 2;

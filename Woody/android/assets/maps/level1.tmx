@@ -60,6 +60,7 @@
     <property name="projTexture" value="textures/projectile.png"/>
     <property name="projWidth" type="float" value="0.5"/>
     <property name="texture" value="textures/Woddy.png"/>
+    <property name="xVelocity1" type="float" value="0"/>
     <property name="yVelocity1" type="float" value="2"/>
    </properties>
   </object>

@@ -17,7 +17,7 @@ import de.woody.game.screens.GameScreen;
 public abstract class Entity {
 	private Array<Projectile> projectiles;
 	private float projWidth, projHeight, projLifetime, projFrequency;
-	private Vector2 projVelocity;
+	private Array<Vector2> projVelocity;
 	private Texture projTexture;
 	private AssetManager asMa = WoodyGame.getGame().manager;
 	private Lifesystem life;
@@ -30,6 +30,7 @@ public abstract class Entity {
 		body.setBounds(x, y, width, height);
 		ID = id;
 		projectiles = new Array<Projectile>();
+		projVelocity = new Array<Vector2>();
 	}
 
 	public int getID() {
@@ -56,7 +57,7 @@ public abstract class Entity {
 		return projLifetime;
 	}
 	
-	public Vector2 getProjectileVelocity() {
+	public Array<Vector2> getProjectileVelocity() {
 		return projVelocity;
 	}
 	
@@ -80,13 +81,16 @@ public abstract class Entity {
 		body.setTexture(tex);
 	}
 	
-	public void setProjectileProperties(float width, float height, Vector2 velocity, float lifetime, String texture, float frequency) {
+	public void setProjectileProperties(float width, float height, float lifetime, String texture, float frequency) {
 		projWidth = width;
 		projHeight = height;
-		projVelocity = velocity;
 		projLifetime = lifetime;
 		projTexture = asMa.get(texture, Texture.class);
 		projFrequency = frequency;
+	}
+	
+	public void addProjectileVelocity(Vector2 velocity) {
+		projVelocity.add(velocity);
 	}
 
 	public int damageEntity(int dmg) {

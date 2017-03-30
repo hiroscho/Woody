@@ -138,18 +138,27 @@ public class Level {
 			int id = prop.get("id", Integer.class);
 			String texture = prop.get("texture", "textures/Woddy.png", String.class);
 			Array<Float> basic = getBasicProperties(prop);
-			Spitter e = new Spitter(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, basic.get(0),
+			Spitter spitter = new Spitter(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, basic.get(0),
 					basic.get(1), basic.get(2), basic.get(3));
 
 			texture = prop.get("projTexture", "textures/projectile.png", String.class);
-			float xVel = prop.get("xVelocity", 0F, Float.class);
-			float yVel = prop.get("yVelocity", 0F, Float.class);
 			float lifetime = prop.get("projLifetime", 0F, Float.class);
 			float projWidth = prop.get("projWidth", 0.5F, Float.class);
 			float projHeight = prop.get("projHeight", 0.5F, Float.class);
 			float projFrequency = prop.get("projFrequency", 2.0F, Float.class);
-			e.setProjectileProperties(projWidth, projHeight, new Vector2(xVel, yVel), lifetime, texture, projFrequency);
-			enemies.add(e);
+			spitter.setProjectileProperties(projWidth, projHeight, lifetime, texture, projFrequency);
+			float xVel, yVel;
+			
+			try {
+				//maximum 3 projectiles for now...
+				for(int i = 1; i <= 3; i++) {
+					xVel = prop.get("xVelocity" + i, Float.class);
+					yVel = prop.get("yVelocity" + i, Float.class);
+					spitter.addProjectileVelocity(new Vector2(xVel, yVel));
+				}
+				
+			} catch(Exception ignored) {}
+			enemies.add(spitter);
 		}
 	}
 

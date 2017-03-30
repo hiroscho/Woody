@@ -50,8 +50,8 @@ public class Walker extends Entity {
 			delta = 0.1f;
 		
 		float leftEnd = GameScreen.getInstance().cameraBottomLeft().x;
-		if ((restrX1 > leftEnd && restrX1 < leftEnd + WoodyGame.xTiles)
-				|| (restrX2 > leftEnd && restrX2 < leftEnd + WoodyGame.xTiles)) {
+		if ((restrX1 > leftEnd && restrX1 < leftEnd + WoodyGame.getGame().xTiles)
+				|| (restrX2 > leftEnd && restrX2 < leftEnd + WoodyGame.getGame().xTiles)) {
 
 			float moveAmount = velocity.scl(delta).x;
 

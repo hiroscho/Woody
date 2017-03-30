@@ -27,7 +27,6 @@ import de.woody.game.Player;
 import de.woody.game.UI;
 import de.woody.game.WoodyGame;
 import de.woody.game.enemies.Entity;
-import de.woody.game.enemies.Walker;
 
 public class GameScreen implements Screen {
 
@@ -54,6 +53,7 @@ public class GameScreen implements Screen {
 	private TiledMapTileLayer collidableTiles;
 	private TiledMapTileLayer nonCollidableTiles;
 	private Sound coinSound;
+	Array<Button> pressedButtons;
 
 	private GameScreen() {
 	}
@@ -105,7 +105,7 @@ public class GameScreen implements Screen {
 
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
+		camera.setToOrtho(false, WoodyGame.getGame().xTiles, WoodyGame.getGame().yTiles);
 		camera.update();
 
 		controller = new UI();
@@ -148,7 +148,7 @@ public class GameScreen implements Screen {
 			asMa.update();
 		}
 		map = asMa.get("maps/level" + level + ".tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.UNIT_SCALE);
+		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.getGame().UNIT_SCALE);
 		levelData = new Level();
 		collidableTiles = Level.getTileLayer(map, "Collidable Tiles");
 		nonCollidableTiles = Level.getTileLayer(map, "non Collidable");
@@ -174,20 +174,18 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// get the touched/pressed button
-		Array<Button> pressedButtons = controller.checkAllButtons();
+		pressedButtons = controller.checkAllButtons();
 
 		// checks input, sets velocity
 		if (pressedButtons.size != 0) {
 			for (Button but : pressedButtons) {
 				player.setInputVelocity(but);
-				if (but.getName().equals("Jump"))
-					player.checkBlocks(but);
 			}
 		} else {
 			player.setKeyboardVelocity();
 		}
 
-		player.checkBlocks(null);
+		player.checkBlocks();
 		// checks collision then moves the player
 		player.move(delta);
 
@@ -247,18 +245,18 @@ public class GameScreen implements Screen {
 		if (player.position.x < vec.x + 3)
 			camera.position.x += player.position.x - (vec.x + 3);
 
-		if (player.position.x > vec.x + WoodyGame.xTiles / 2)
+		if (player.position.x > vec.x + WoodyGame.getGame().xTiles / 2)
 			camera.position.x = player.position.x;
 
 		// dont show the area left from the start
 		if (player.position.x < 3)
-			camera.position.x = WoodyGame.xTiles / 2;
+			camera.position.x = WoodyGame.getGame().xTiles / 2;
 
 		return camera;
 	}
 
 	public Vector2 cameraBottomLeft() {
-		return new Vector2(camera.position.x - (WoodyGame.xTiles / 2), camera.position.y - (WoodyGame.yTiles / 2));
+		return new Vector2(camera.position.x - (WoodyGame.getGame().xTiles / 2), camera.position.y - (WoodyGame.getGame().yTiles / 2));
 	}
 
 	@Override
@@ -326,6 +324,10 @@ public class GameScreen implements Screen {
 
 	public Sound getCoinSound() {
 		return coinSound;
+	}
+	
+	public Array<Button> getPressedButtons() {
+		return pressedButtons;
 	}
 
 	private void renderDebug() {

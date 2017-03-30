@@ -24,10 +24,8 @@ public class Player {
 	public static float HEIGHT;
 
 	/** maximum velocity's (maybe add a maximum fall velocity?) **/
-	public static float standartMaxVelocity = 10f;
-	public static float standartJumpVelocity = 15f;
-	public float MAX_VELOCITY;
-	public float JUMP_VELOCITY;
+	public static float MAX_VELOCITY;
+	public static float JUMP_VELOCITY;
 
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;
@@ -99,8 +97,8 @@ public class Player {
 		WIDTH = 1.0F;
 		HEIGHT = 1.46875F;
 		life = new Lifesystem(3, 2);
-		MAX_VELOCITY = standartMaxVelocity;
-		JUMP_VELOCITY = standartJumpVelocity;
+		MAX_VELOCITY = 10F;
+		JUMP_VELOCITY = 15F;
 	}
 
 	public int getCoinAmount() {
@@ -127,11 +125,11 @@ public class Player {
 			handleJump();
 		}
 
-		if (button.getName().equals("Right") && !slidingRight) {
+		if (button.getName().equals("Right") && !slidingLeft) {
 			handleRight();
 		}
 
-		if (button.getName().equals("Left") && !slidingLeft) {
+		if (button.getName().equals("Left") && !slidingRight) {
 			handleLeft();
 		}
 		// do we need to be grounded for use of this stuff?
@@ -264,7 +262,7 @@ public class Player {
 		// apply gravity if player isn't standing or grounded or climbing or
 		// swimming
 		if (!(state == State.Standing) || !grounded && !(state == State.Climbing) && !(state == State.Swimming)) {
-			velocity.add(0, WoodyGame.GRAVITY);
+			velocity.add(0, WoodyGame.getGame().GRAVITY);
 			grounded = false;
 		}
 
@@ -413,48 +411,46 @@ public class Player {
 		return playerRect;
 	}
 
-	public void checkBlocks(Button pressedButton) {
-		if (!(state == State.Swimming || state == State.Climbing || slidingRight || slidingLeft)) {
-			if (savedPosition.equals(new Vector2((int) position.x, (int) position.y))) {
-				return;
-			}
-		}
-		savedPosition = new Vector2((int) position.x, (int) position.y);
-
+	public void checkBlocks() {
 		int x = (int) (position.x + WIDTH / 2);
 		int y = (int) (position.y);
-
 		resetParameters();
 		applyCollidableEffect(x, y);
 		// higher priority thus later
-		applyNonCollidableEffect(x, y, pressedButton);
+		applyNonCollidableEffect(x, y);
 	}
 
 	private void resetParameters() {
-		MAX_VELOCITY = standartMaxVelocity;
+		MAX_VELOCITY = 10F;
+		JUMP_VELOCITY = 15F;
 		DAMPING = 0.87F;
 		slidingRight = false;
 		slidingLeft = false;
 	}
 
-	private void applyNonCollidableEffect(int x, int y, Button pressedButton) {
+	private void applyNonCollidableEffect(int x, int y) {
 		Cell lowerCell = GameScreen.getInstance().levelData.getNonCollidable().getCell(x, y);
 
 		String lower = "";
 		if (lowerCell != null) {
 			lower = Level.getTileName(lowerCell.getTile().getId());
 		}
-
 		// Foliage
 		if (lower.equals("bush")) {
 			MAX_VELOCITY = MAX_VELOCITY / 2;
 			return;
 		}
+		boolean pressedFlag = false;
+		for (Button but : GameScreen.getInstance().getPressedButtons()) {
+			if (but.getName().equals("Jump")) {
+				pressedFlag = true;
+			}
+		}
 
 		// Ladder
 		if (lower.equals("ladder")) {
 			if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)
-					|| pressedButton != null) {
+					|| pressedFlag) {
 				velocity.y = 5f;
 			} else {
 				velocity.y = -2.5f;
@@ -474,14 +470,14 @@ public class Player {
 		if (lower.equals("lava")) {
 			if (upper.equals("lava")) {
 				if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)
-						|| Gdx.input.isKeyPressed(Keys.W) || pressedButton != null) {
-					velocity.y = 5F;
+						|| Gdx.input.isKeyPressed(Keys.W) || pressedFlag) {
+					velocity.y = 3F;
 				} else {
 					velocity.y = -0.5F;
 				}
 			} else {
 				if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)
-						|| Gdx.input.isKeyPressed(Keys.W) || pressedButton != null) {
+						|| Gdx.input.isKeyPressed(Keys.W) || pressedFlag) {
 					handleJump();
 				} else {
 					velocity.y = -0.5F;
@@ -497,7 +493,7 @@ public class Player {
 		if (lower.equals("water")) {
 			if (upper.equals("water")) {
 				if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)
-						|| Gdx.input.isKeyPressed(Keys.W) || pressedButton != null) {
+						|| Gdx.input.isKeyPressed(Keys.W) || pressedFlag) {
 					velocity.y = 5F;
 				} else {
 					velocity.y = -2.5F;
@@ -505,7 +501,7 @@ public class Player {
 
 			} else {
 				if (Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP)
-						|| Gdx.input.isKeyPressed(Keys.W) || pressedButton != null) {
+						|| Gdx.input.isKeyPressed(Keys.W) || pressedFlag) {
 					handleJump();
 				} else {
 					velocity.y = -2.5F;
@@ -570,6 +566,7 @@ public class Player {
 				slidingRight = false;
 			}
 			DAMPING = 0.975f;
+			MAX_VELOCITY = MAX_VELOCITY / 2;
 			return;
 		}
 
@@ -590,6 +587,10 @@ public class Player {
 
 		// Vanishing
 		if (lower.equals("vanishing")) {
+			if (savedPosition.equals(new Vector2((int) position.x, (int) position.y))) {
+				return;
+			}
+			savedPosition = new Vector2((int) position.x, (int) position.y);
 			vanish(y);
 		}
 	}
@@ -611,7 +612,7 @@ public class Player {
 					}
 				}
 				if (velocity.y == 0) {
-					velocity.add(0, WoodyGame.GRAVITY);
+					velocity.add(0, WoodyGame.getGame().GRAVITY);
 					state = State.Falling;
 				}
 			}

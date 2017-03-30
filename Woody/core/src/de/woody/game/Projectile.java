@@ -100,7 +100,7 @@ public class Projectile {
 			startX = (int) (body.getX() + 0.1F);
 			endX = (int) (body.getX() + body.getWidth() - 0.1F);
 
-			if (startY > WoodyGame.yTiles && startY < 0) {
+			if (startY > WoodyGame.getGame().yTiles && startY < 0) {
 				owner.getProjectiles().removeValue(this, false);
 				return;
 			}

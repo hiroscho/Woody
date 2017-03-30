@@ -24,7 +24,7 @@ public class Spitter extends Entity {
 			delta = 0.1f;
 
 		float leftEnd = GameScreen.getInstance().cameraBottomLeft().x;
-		if (getBody().getX() + getBody().getWidth() > leftEnd && getBody().getX() < leftEnd + WoodyGame.xTiles) {
+		if (getBody().getX() + getBody().getWidth() > leftEnd && getBody().getX() < leftEnd + WoodyGame.getGame().xTiles) {
 			if (cooldown) {
 				float x = getBody().getX() + getBody().getWidth() / 2 - getProjectileWidth() / 2;
 				float y = getBody().getY() + getBody().getHeight() / 2 - getProjectileHeight() / 2;

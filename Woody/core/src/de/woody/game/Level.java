@@ -84,10 +84,10 @@ public class Level {
 	 */
 	private Array<Float> getBasicProperties(MapProperties properties) {
 		Array<Float> basic = new Array<Float>();
-		basic.add(properties.get("x", Float.class) * WoodyGame.UNIT_SCALE);
-		basic.add(properties.get("y", Float.class) * WoodyGame.UNIT_SCALE);
-		basic.add(properties.get("width", Float.class) * WoodyGame.UNIT_SCALE);
-		basic.add(properties.get("height", Float.class) * WoodyGame.UNIT_SCALE);
+		basic.add(properties.get("x", Float.class) * WoodyGame.getGame().UNIT_SCALE);
+		basic.add(properties.get("y", Float.class) * WoodyGame.getGame().UNIT_SCALE);
+		basic.add(properties.get("width", Float.class) * WoodyGame.getGame().UNIT_SCALE);
+		basic.add(properties.get("height", Float.class) * WoodyGame.getGame().UNIT_SCALE);
 		return basic;
 	}
 
@@ -230,8 +230,8 @@ public class Level {
 	}
 	
 	public static String getTileName(Integer id) {
-		if (WoodyGame.idNames.get(id) != null) {
-			return WoodyGame.idNames.get(id);
+		if (WoodyGame.getGame().idNames.get(id) != null) {
+			return WoodyGame.getGame().idNames.get(id);
 		}
 		return "null";
 	}

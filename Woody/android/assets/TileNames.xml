@@ -42,6 +42,13 @@
     </tile>
     
     <tile
+        id="30"
+        name="coin" >
+    </tile>
+    
+        
+    <!-- for testing, destructable blocks should have a dedicated texture -->
+    <tile
         id ="9"
         name = "destructable">
     </tile>

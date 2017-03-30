@@ -229,7 +229,7 @@ public class Player {
 			Cell cell;
 			for (int i = 0; i <= 1; i++) {
 				cell = GameScreen.getInstance().levelData.getCollidable().getCell(x2, y2 + i);
-				if (cell != null && cell.getTile() != null) {
+				if (cell != null) {
 					if (Level.getTileName(cell.getTile().getId()).equals("destructable")) {
 						GameScreen.getInstance().levelData.getCollidable().setCell(x2, y2 + i, null);
 					}
@@ -277,7 +277,7 @@ public class Player {
 
 		position.add(checkTileCollision());
 
-		deleteNearbyCoinBlocks((int) position.x, (int) position.y);
+		deleteNearbyCoinBlocks();
 
 		// unscale velocity
 		velocity.scl(1 / delta);
@@ -286,13 +286,20 @@ public class Player {
 
 	}
 
-	public void deleteNearbyCoinBlocks(int x2, int y2) {
-
-		for (int i = x2 - 1; i <= x2 + 1; i++) {
-			if (Level.getTileLayer(GameScreen.getInstance().getMap(), "Coins").getCell(i, y2) != null) {
-				Level.getTileLayer(GameScreen.getInstance().getMap(), "Coins").setCell(i, y2, null);
-				addCoin();
-				// System.out.println(getCoinAmount());
+	public void deleteNearbyCoinBlocks() {
+		int x, y;
+		Cell cell;
+		for (int i = 0; i <= 1; i++) {
+			x = (int) (position.x + WIDTH * i);
+			for (float j = 0; j <= 1; j += 0.5) {
+				y = (int) (position.y + HEIGHT * j);
+				cell = GameScreen.getInstance().getNonCollidableTiles().getCell(x, y);
+				if (cell != null) {
+					if (Level.getTileName(cell.getTile().getId()).equals("coin")) {
+						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
+						addCoin();
+					}
+				}
 			}
 		}
 	}
@@ -407,13 +414,18 @@ public class Player {
 	}
 
 	public void checkBlocks(Button pressedButton) {
+		if (!(state == State.Swimming || state == State.Climbing || slidingRight || slidingLeft)) {
+			if (savedPosition.equals(new Vector2((int) position.x, (int) position.y))) {
+				return;
+			}
+		}
+		savedPosition = new Vector2((int) position.x, (int) position.y);
+
 		int x = (int) (position.x + WIDTH / 2);
 		int y = (int) (position.y);
 
 		resetParameters();
-
 		applyCollidableEffect(x, y);
-
 		// higher priority thus later
 		applyNonCollidableEffect(x, y, pressedButton);
 	}
@@ -429,7 +441,7 @@ public class Player {
 		Cell lowerCell = GameScreen.getInstance().levelData.getNonCollidable().getCell(x, y);
 
 		String lower = "";
-		if (lowerCell != null && lowerCell.getTile() != null) {
+		if (lowerCell != null) {
 			lower = Level.getTileName(lowerCell.getTile().getId());
 		}
 
@@ -454,7 +466,7 @@ public class Player {
 
 		Cell upperCell = GameScreen.getInstance().levelData.getNonCollidable().getCell(x, y + 1);
 		String upper = "";
-		if (upperCell != null && upperCell.getTile() != null) {
+		if (upperCell != null) {
 			upper = Level.getTileName(upperCell.getTile().getId());
 		}
 
@@ -514,7 +526,7 @@ public class Player {
 	private void applyUpperCollidableEffect(int x, int y) {
 		Cell upperCell = GameScreen.getInstance().levelData.getCollidable().getCell(x, y + 2);
 		String upper = "";
-		if (upperCell != null && upperCell.getTile() != null) {
+		if (upperCell != null) {
 			upper = Level.getTileName(upperCell.getTile().getId());
 		}
 
@@ -529,7 +541,7 @@ public class Player {
 		Cell lowerCell = GameScreen.getInstance().levelData.getCollidable().getCell(x, y - 1);
 
 		String lower = "";
-		if (lowerCell != null && lowerCell.getTile() != null) {
+		if (lowerCell != null) {
 			lower = Level.getTileName(lowerCell.getTile().getId());
 		}
 
@@ -571,20 +583,13 @@ public class Player {
 				// otherCell is left Cell
 				otherCell = GameScreen.getInstance().levelData.getCollidable().getCell(x - 1, y - 1);
 			}
-			if (otherCell != null/* && otherCell.getTile() != null */) {
+			if (otherCell != null) {
 				lower = Level.getTileName(otherCell.getTile().getId());
 			}
 		}
 
 		// Vanishing
 		if (lower.equals("vanishing")) {
-			
-			// still many calls but many less 
-			if (savedPosition.equals(position)) {
-				return;
-			}
-
-			savedPosition = new Vector2(position);
 			vanish(y);
 		}
 	}
@@ -598,7 +603,7 @@ public class Player {
 				Cell cell;
 				for (int i = 0; i <= 1; i++) {
 					cell = GameScreen.getInstance().levelData.getCollidable().getCell((int) (x2 + WIDTH * i), y - 1);
-					if (cell != null && cell.getTile() != null) {
+					if (cell != null) {
 						if (Level.getTileName(cell.getTile().getId()).equals("vanishing")) {
 							GameScreen.getInstance().levelData.getCollidable().setCell((int) (x2 + WIDTH * i), y - 1,
 									null);

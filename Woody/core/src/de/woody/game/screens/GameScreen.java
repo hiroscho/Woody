@@ -37,7 +37,7 @@ public class GameScreen implements Screen {
 	private float scaleLives = 2;
 
 	private TiledMap map;
-	private final OrthographicCamera camera;
+	private OrthographicCamera camera;
 	private OrthogonalTiledMapRenderer renderer;
 	private Player player;
 	private Animations playerAnimationHandler;
@@ -54,12 +54,7 @@ public class GameScreen implements Screen {
 	private TiledMapTileLayer nonCollidableTiles;
 	private Sound coinSound;
 
-	private GameScreen() {
-		// create an orthographic camera, show (xTiles)x(yTiles) of the map
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
-		camera.update();
-	}
+	private GameScreen() {}
 
 	public static GameScreen getInstance() {
 		return gameScreen;
@@ -105,6 +100,11 @@ public class GameScreen implements Screen {
 		while (!asMa.update()) {
 			asMa.update();
 		}
+		
+		// create an orthographic camera, show (xTiles)x(yTiles) of the map
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, WoodyGame.xTiles, WoodyGame.yTiles);
+		camera.update();
 
 		controller = new UI();
 

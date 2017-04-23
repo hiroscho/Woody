@@ -96,6 +96,7 @@ public class MainMenueScreen implements Screen {
 			batch.draw(playButtonak, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
 				WoodyGame.getGame().setScreen(GameScreen.getInstance(1));
+
 				return;
 			}
 		} else {

@@ -56,6 +56,12 @@ public class Player {
 
 	/** Cooldown for the axe **/
 	public long axeCooldown = System.currentTimeMillis();
+	
+	/** Cooldown for the jumpSound **/
+	public long jumpSoundCooldown = System.currentTimeMillis();
+	
+	/** Cooldown for fightSound **/
+	public long fightCooldown = System.currentTimeMillis();
 
 	/** is player touching the ground **/
 	public boolean grounded = false;
@@ -126,6 +132,12 @@ public class Player {
 	 */
 	public void setInputVelocity(Button button) {
 		if (button.getName().equals("Jump") && !(state == State.Climbing)) {
+			if(freeJump == true){
+				if ((jumpSoundCooldown + 330) < System.currentTimeMillis()) {
+					GameScreen.getInstance().getJumpSound().play();
+					jumpSoundCooldown = System.currentTimeMillis();
+					}
+			}
 			handleJump();
 		}
 
@@ -136,8 +148,13 @@ public class Player {
 		if (button.getName().equals("Left") && !slidingLeft) {
 			handleLeft();
 		}
-		// do we need to be grounded for use of this stuff?
-		if (button.getName().equals("Fight") && grounded) {
+
+		if (button.getName().equals("Fight")) {
+			
+			if ((fightCooldown + 150) < System.currentTimeMillis()) {
+			GameScreen.getInstance().getPunchSound().play();
+			fightCooldown = System.currentTimeMillis();
+			}
 			handleFight();
 		}
 
@@ -150,6 +167,12 @@ public class Player {
 	public void setKeyboardVelocity() {
 		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W))
 				&& !(state == State.Climbing)) {
+			if(freeJump == true){
+				if ((jumpSoundCooldown + 330) < System.currentTimeMillis()) {
+					GameScreen.getInstance().getJumpSound().play();
+					jumpSoundCooldown = System.currentTimeMillis();
+					}
+			}
 			handleJump();
 		}
 
@@ -162,6 +185,12 @@ public class Player {
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
+			
+			if ((fightCooldown + 150) < System.currentTimeMillis()) {
+				GameScreen.getInstance().getPunchSound().play();
+				fightCooldown = System.currentTimeMillis();
+				}
+			
 			handleFight();
 		}
 	}
@@ -206,6 +235,7 @@ public class Player {
 			Door rec = it.next();
 			if (playerRect.overlaps(rec)) {
 				position.set(rec.getTeleportPoint());
+				GameScreen.getInstance().getDoorSound().play();
 			}
 		}
 		GameScreen.getInstance().levelData.rectPool.free(playerRect);
@@ -285,6 +315,8 @@ public class Player {
 		velocity.scl(1 / delta);
 
 		velocity.x *= DAMPING;
+		
+		GameScreen.getInstance().getSnowSlideSound().stop();
 
 	}
 
@@ -549,6 +581,7 @@ public class Player {
 
 		// Ice
 		if (lower.equals("iceLayer")) {
+			GameScreen.getInstance().getSnowSlideSound().play();
 			if (velocity.x > 0) {
 				slidingRight = true;
 			}

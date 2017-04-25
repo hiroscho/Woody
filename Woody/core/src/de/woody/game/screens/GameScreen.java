@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -42,8 +43,7 @@ public class GameScreen implements Screen {
 	private Animations playerAnimationHandler;
 	// nr of the level
 	private int level;
-	// current checkpoint (could be changed to a vector and used directly)
-	private int checkpoint;
+	private Vector2 checkpoint;
 	private UI controller;
 	public Level levelData;
 	private AssetManager asMa = WoodyGame.getGame().manager;
@@ -166,75 +166,84 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-			// background color
-			Gdx.gl.glClearColor(0.7f, 0.7f, 1, 1);
-			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		// background color
+		Gdx.gl.glClearColor(0.7f, 0.7f, 1, 1);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-			// get the touched/pressed button
-			pressedButtons = controller.checkAllButtons();
+		// get the touched/pressed button
+		pressedButtons = controller.checkAllButtons();
 
-			// checks input, sets velocity
-			if (pressedButtons.size != 0) {
-				for (Button but : pressedButtons) {
-					player.setInputVelocity(but);
+		// checks input, sets velocity
+		if (pressedButtons.size != 0) {
+			for (Button but : pressedButtons) {
+				player.setInputVelocity(but);
+			}
+		} else {
+			player.setKeyboardVelocity();
+		}
+
+		player.checkBlocks();
+		// checks collision then moves the player
+		player.move(delta);
+
+		for (Rectangle rec : levelData.getCheckpoints()) {
+			if (player.getPlayerRec().overlaps(rec)) {
+				if (rec.getX() > checkpoint.x) {
+					setCheckpoint(new Vector2(rec.getX(), rec.getY()));
 				}
+			}
+		}
+
+		for (Entity e : levelData.getEnemies()) {
+			e.move(delta);
+			if (e.checkCollision(player)) {
+				player.life.damagePlayer(1);
+			}
+		}
+
+		checkGameInput();
+
+		// set the camera borders
+		setCamera().update();
+
+		// set the renderer view based on what the camera sees and render it
+		renderer.setView(camera);
+		renderer.render();
+
+		// Render, move and check collision for enemies
+		renderer.getBatch().begin();
+		for (Entity e : levelData.getEnemies()) {
+			e.render(renderer.getBatch());
+		}
+		// render the player
+		player.render();
+
+		renderer.getBatch().end();
+
+		player.life.checkAltitude(player);
+		player.life.checkAlive();
+		if (!player.life.isAlive()) {
+			player.position.set(levelData.getCurrentSpawn());
+			camera.position.x = player.position.x;
+			if (player.life.getLife() >= 0) {
+				player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
+				player.life.setIsAlive(true);
 			} else {
-				player.setKeyboardVelocity();
+				WoodyGame.getGame().setScreen(GameoverScreen.getInstance(level));
+				return;
 			}
+		}
 
-			player.checkBlocks();
-			// checks collision then moves the player
-			player.move(delta);
+		// Perform ui logic
+		controller.getStage().act(Gdx.graphics.getDeltaTime());
+		// Draw the ui
+		controller.getStage().draw();
 
-			for (Entity e : levelData.getEnemies()) {
-				e.move(delta);
-				if (e.checkCollision(player)) {
-					player.life.damagePlayer(1);
-				}
-			}
-
-			checkGameInput();
-
-			// set the camera borders
-			setCamera().update();
-
-			// set the renderer view based on what the camera sees and render it
-			renderer.setView(camera);
-			renderer.render();
-
-			// Render, move and check collision for enemies
-			renderer.getBatch().begin();
-			for (Entity e : levelData.getEnemies()) {
-				e.render(renderer.getBatch());
-			}
-			// render the player
-			player.render();
-
-			renderer.getBatch().end();
-
-			player.life.checkAltitude(player);
-			player.life.checkAlive();
-			if (!player.life.isAlive()) {
-				player.position.set(levelData.getCurrentSpawn());
-				if (player.life.getLife() >= 0) {
-					player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
-					player.life.setIsAlive(true);
-				} else {
-					WoodyGame.getGame().setScreen(GameoverScreen.getInstance(level));
-					return;
-				}
-			}
-
-			// Perform ui logic
-			controller.getStage().act(Gdx.graphics.getDeltaTime());
-			// Draw the ui
-			controller.getStage().draw();
-
-			// render debug rectangles
-			if (debug) {
-				renderDebug();
-			}
+		// render debug rectangles
+		if (debug) {
+			renderDebug();
+		}
 	}
 
 	private OrthographicCamera setCamera() {
@@ -275,7 +284,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resume() {
-		//reload all textures and their references....a shitload of work, just don't pause the game if we present it
+		// reload all textures and their references....a shitload of work, just
+		// don't pause the game if we present it
 	}
 
 	@Override
@@ -302,7 +312,7 @@ public class GameScreen implements Screen {
 		return level;
 	}
 
-	public int getCheckpoint() {
+	public Vector2 getCheckpoint() {
 		return checkpoint;
 	}
 
@@ -328,6 +338,10 @@ public class GameScreen implements Screen {
 
 	public Array<Button> getPressedButtons() {
 		return pressedButtons;
+	}
+
+	public void setCheckpoint(Vector2 vec) {
+		checkpoint = vec;
 	}
 
 	private void renderDebug() {

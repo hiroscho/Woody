@@ -519,14 +519,13 @@ public class Player {
 	}
 
 	private void applyUpperCollidableEffect(int x, int y) {
-		Cell upperCell = GameScreen.getInstance().levelData.getCollidable().getCell(x, y + 2);
+		Cell upperCell = GameScreen.getInstance().levelData.getCollidable().getCell(x, (int)(y + HEIGHT + 0.6F));
 		String upper = "";
 		if (upperCell != null && upperCell.getTile() != null) {
 			upper = Level.getTileName(upperCell.getTile().getId());
 		}
 
-		// TODO improve, ice spike above
-		else if (upper.equals("iceLayer")) {
+		if (upper.equals("iceLayer")) {
 			life.damagePlayer(1);
 		}
 	}

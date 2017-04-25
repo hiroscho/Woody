@@ -29,7 +29,6 @@ import de.woody.game.WoodyGame;
 import de.woody.game.enemies.Entity;
 
 public class GameScreen implements Screen {
-
 	private static final GameScreen gameScreen = new GameScreen();
 
 	// Variables to change the scale of the hearts / lives image conveniently
@@ -53,7 +52,7 @@ public class GameScreen implements Screen {
 	private TiledMapTileLayer collidableTiles;
 	private TiledMapTileLayer nonCollidableTiles;
 	private Sound coinSound;
-	Array<Button> pressedButtons;
+	private Array<Button> pressedButtons;
 
 	private GameScreen() {
 	}
@@ -167,76 +166,75 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+			// background color
+			Gdx.gl.glClearColor(0.7f, 0.7f, 1, 1);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// background color
-		Gdx.gl.glClearColor(0.7f, 0.7f, 1, 1);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			// get the touched/pressed button
+			pressedButtons = controller.checkAllButtons();
 
-		// get the touched/pressed button
-		pressedButtons = controller.checkAllButtons();
-
-		// checks input, sets velocity
-		if (pressedButtons.size != 0) {
-			for (Button but : pressedButtons) {
-				player.setInputVelocity(but);
-			}
-		} else {
-			player.setKeyboardVelocity();
-		}
-
-		player.checkBlocks();
-		// checks collision then moves the player
-		player.move(delta);
-
-		for (Entity e : levelData.getEnemies()) {
-			e.move(delta);
-			if (e.checkCollision(player)) {
-				player.life.damagePlayer(1);
-			}
-		}
-
-		checkGameInput();
-
-		// set the camera borders
-		setCamera().update();
-
-		// set the renderer view based on what the camera sees and render it
-		renderer.setView(camera);
-		renderer.render();
-
-		// Render, move and check collision for enemies
-		renderer.getBatch().begin();
-		for (Entity e : levelData.getEnemies()) {
-			e.render(renderer.getBatch());
-		}
-		// render the player
-		player.render();
-
-		renderer.getBatch().end();
-
-		player.life.checkAltitude(player);
-		player.life.checkAlive();
-		if (!player.life.isAlive()) {
-			player.position.set(levelData.getCurrentSpawn());
-			if (player.life.getLife() >= 0) {
-				player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
-				player.life.setIsAlive(true);
+			// checks input, sets velocity
+			if (pressedButtons.size != 0) {
+				for (Button but : pressedButtons) {
+					player.setInputVelocity(but);
+				}
 			} else {
-				WoodyGame.getGame().setScreen(GameoverScreen.getInstance(level));
-				return;
+				player.setKeyboardVelocity();
 			}
-		}
 
-		// Perform ui logic
-		controller.getStage().act(Gdx.graphics.getDeltaTime());
-		// Draw the ui
-		controller.getStage().draw();
+			player.checkBlocks();
+			// checks collision then moves the player
+			player.move(delta);
 
-		// render debug rectangles
-		if (debug) {
-			renderDebug();
-		}
+			for (Entity e : levelData.getEnemies()) {
+				e.move(delta);
+				if (e.checkCollision(player)) {
+					player.life.damagePlayer(1);
+				}
+			}
+
+			checkGameInput();
+
+			// set the camera borders
+			setCamera().update();
+
+			// set the renderer view based on what the camera sees and render it
+			renderer.setView(camera);
+			renderer.render();
+
+			// Render, move and check collision for enemies
+			renderer.getBatch().begin();
+			for (Entity e : levelData.getEnemies()) {
+				e.render(renderer.getBatch());
+			}
+			// render the player
+			player.render();
+
+			renderer.getBatch().end();
+
+			player.life.checkAltitude(player);
+			player.life.checkAlive();
+			if (!player.life.isAlive()) {
+				player.position.set(levelData.getCurrentSpawn());
+				if (player.life.getLife() >= 0) {
+					player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
+					player.life.setIsAlive(true);
+				} else {
+					WoodyGame.getGame().setScreen(GameoverScreen.getInstance(level));
+					return;
+				}
+			}
+
+			// Perform ui logic
+			controller.getStage().act(Gdx.graphics.getDeltaTime());
+			// Draw the ui
+			controller.getStage().draw();
+
+			// render debug rectangles
+			if (debug) {
+				renderDebug();
+			}
 	}
 
 	private OrthographicCamera setCamera() {
@@ -256,7 +254,8 @@ public class GameScreen implements Screen {
 	}
 
 	public Vector2 cameraBottomLeft() {
-		return new Vector2(camera.position.x - (WoodyGame.getGame().xTiles / 2), camera.position.y - (WoodyGame.getGame().yTiles / 2));
+		return new Vector2(camera.position.x - (WoodyGame.getGame().xTiles / 2),
+				camera.position.y - (WoodyGame.getGame().yTiles / 2));
 	}
 
 	@Override
@@ -276,6 +275,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void resume() {
+		//reload all textures and their references....a shitload of work, just don't pause the game if we present it
 	}
 
 	@Override
@@ -325,7 +325,7 @@ public class GameScreen implements Screen {
 	public Sound getCoinSound() {
 		return coinSound;
 	}
-	
+
 	public Array<Button> getPressedButtons() {
 		return pressedButtons;
 	}

@@ -75,7 +75,6 @@ public class Level {
 		MapObject spawn = Level.filterObjects(objects, "spawn").random();
 		MapProperties properties = spawn.getProperties();
 		Array<Float> basic = getBasicProperties(properties);
-		System.out.println(basic.get(0) + "  " + basic.get(1));
 		GameScreen.getInstance().setCheckpoint(new Vector2(basic.get(0), basic.get(1)));
 	}
 

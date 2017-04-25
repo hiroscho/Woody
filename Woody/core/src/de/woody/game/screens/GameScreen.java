@@ -226,6 +226,9 @@ public class GameScreen implements Screen {
 		if (!player.life.isAlive()) {
 			player.position.set(levelData.getCurrentSpawn());
 			camera.position.x = player.position.x;
+			if (camera.position.x < WoodyGame.getGame().xTiles / 2) {
+				camera.position.x = WoodyGame.getGame().xTiles / 2;
+			}
 			if (player.life.getLife() >= 0) {
 				player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
 				player.life.setIsAlive(true);
@@ -244,6 +247,8 @@ public class GameScreen implements Screen {
 		if (debug) {
 			renderDebug();
 		}
+		// Swipe-Check
+		LevelSelect.getInstance().checking();
 	}
 
 	private OrthographicCamera setCamera() {

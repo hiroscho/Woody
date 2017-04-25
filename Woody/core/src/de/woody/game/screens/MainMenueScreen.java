@@ -42,7 +42,7 @@ public class MainMenueScreen implements Screen {
 	
 	private AssetManager asMa = WoodyGame.getGame().manager;
 
-	private MainMenueScreen() {}
+	MainMenueScreen() {}
 	
 	public static MainMenueScreen getInstance() {
 		mainMenueScreen.batch = new SpriteBatch();
@@ -95,7 +95,7 @@ public class MainMenueScreen implements Screen {
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > y) {
 			batch.draw(playButtonak, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
-				WoodyGame.getGame().setScreen(GameScreen.getInstance(1));
+				WoodyGame.getGame().setScreen(LevelSelect.getInstance());
 				return;
 			}
 		} else {

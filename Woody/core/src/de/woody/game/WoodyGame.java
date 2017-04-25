@@ -11,7 +11,6 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import de.woody.game.screens.MainMenueScreen;
 
 import com.badlogic.gdx.utils.ArrayMap;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
 
 public class WoodyGame extends Game {
@@ -52,9 +51,6 @@ public class WoodyGame extends Game {
 	@Override
 	public void create() {
 		loadIdNames();
-		for(ObjectMap.Entry<Integer, String> entry : WoodyGame.getGame().idNames.entries()) {
-			System.out.println(entry);
-		}
 		this.setScreen(MainMenueScreen.getInstance());
 	}
 

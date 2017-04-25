@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -43,8 +44,7 @@ public class GameScreen implements Screen {
 	private Animations playerAnimationHandler;
 	// nr of the level
 	private int level;
-	// current checkpoint (could be changed to a vector and used directly)
-	private int checkpoint;
+	private Vector2 checkpoint;
 	private UI controller;
 	public Level levelData;
 	private AssetManager asMa = WoodyGame.getGame().manager;
@@ -189,6 +189,14 @@ public class GameScreen implements Screen {
 		// checks collision then moves the player
 		player.move(delta);
 
+		for (Rectangle rec : levelData.getCheckpoints()) {
+			if (player.getPlayerRec().overlaps(rec)) {
+				if (rec.getX() > checkpoint.x) {
+					setCheckpoint(new Vector2(rec.getX(), rec.getY()));
+				}
+			}
+		}
+
 		for (Entity e : levelData.getEnemies()) {
 			e.move(delta);
 			if (e.checkCollision(player)) {
@@ -219,6 +227,7 @@ public class GameScreen implements Screen {
 		player.life.checkAlive();
 		if (!player.life.isAlive()) {
 			player.position.set(levelData.getCurrentSpawn());
+			camera.position.x = player.position.x;
 			if (player.life.getLife() >= 0) {
 				player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
 				player.life.setIsAlive(true);
@@ -256,7 +265,8 @@ public class GameScreen implements Screen {
 	}
 
 	public Vector2 cameraBottomLeft() {
-		return new Vector2(camera.position.x - (WoodyGame.getGame().xTiles / 2), camera.position.y - (WoodyGame.getGame().yTiles / 2));
+		return new Vector2(camera.position.x - (WoodyGame.getGame().xTiles / 2),
+				camera.position.y - (WoodyGame.getGame().yTiles / 2));
 	}
 
 	@Override
@@ -302,7 +312,7 @@ public class GameScreen implements Screen {
 		return level;
 	}
 
-	public int getCheckpoint() {
+	public Vector2 getCheckpoint() {
 		return checkpoint;
 	}
 
@@ -325,9 +335,13 @@ public class GameScreen implements Screen {
 	public Sound getCoinSound() {
 		return coinSound;
 	}
-	
+
 	public Array<Button> getPressedButtons() {
 		return pressedButtons;
+	}
+
+	public void setCheckpoint(Vector2 vec) {
+		checkpoint = vec;
 	}
 
 	private void renderDebug() {

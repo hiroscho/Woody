@@ -26,12 +26,14 @@ public class Level {
 	public Pool<Rectangle> rectPool;
 	private Array<Door> doors;
 	private Array<Entity> enemies;
+	private Array<Rectangle> checkpoints;
 	private TiledMapTileLayer collidable;
 	private TiledMapTileLayer nonCollidable;
 
 	public Level() {
 		doors = new Array<Door>();
 		enemies = new Array<Entity>();
+		checkpoints = new Array<Rectangle>();
 		rectPool = new Pool<Rectangle>() {
 			@Override
 			protected Rectangle newObject() {
@@ -50,20 +52,31 @@ public class Level {
 	public Array<Door> getDoors() {
 		return doors;
 	}
-	
+
+	public Array<Rectangle> getCheckpoints() {
+		return checkpoints;
+	}
+
 	public TiledMapTileLayer getCollidable() {
 		return collidable;
 	}
-	
+
 	public TiledMapTileLayer getNonCollidable() {
 		return nonCollidable;
 	}
-	
+
 	private void init() {
 		MapObjects objects = GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects();
 		createDoors(Level.filterObjects(objects, "door"));
 		createWalkers(Level.filterObjects(objects, "Walker"));
 		createSpitters(Level.filterObjects(objects, "Spitter"));
+		createCheckpoints(Level.filterObjects(objects, "checkpoint"));
+
+		MapObject spawn = Level.filterObjects(objects, "spawn").random();
+		MapProperties properties = spawn.getProperties();
+		Array<Float> basic = getBasicProperties(properties);
+		System.out.println(basic.get(0) + "  " + basic.get(1));
+		GameScreen.getInstance().setCheckpoint(new Vector2(basic.get(0), basic.get(1)));
 	}
 
 	/**
@@ -72,7 +85,7 @@ public class Level {
 	 * @return spawnpoint
 	 */
 	public Vector2 getCurrentSpawn() {
-		return new Vector2(10, 1);
+		return GameScreen.getInstance().getCheckpoint();
 	}
 
 	/**
@@ -82,7 +95,7 @@ public class Level {
 	 *            the properties of the object
 	 * @return an array with x, y, width, height in this order
 	 */
-	private Array<Float> getBasicProperties(MapProperties properties) {
+	public Array<Float> getBasicProperties(MapProperties properties) {
 		Array<Float> basic = new Array<Float>();
 		basic.add(properties.get("x", Float.class) * WoodyGame.getGame().UNIT_SCALE);
 		basic.add(properties.get("y", Float.class) * WoodyGame.getGame().UNIT_SCALE);
@@ -113,6 +126,20 @@ public class Level {
 			// create the door and add it to the array
 			Door door = new Door(basic.get(0), basic.get(1), basic.get(2), basic.get(3), tpX, tpY);
 			doors.add(door);
+		}
+	}
+
+	private void createCheckpoints(Array<MapObject> objects) {
+		for (MapObject object : objects) {
+
+			// get the properties of the object and save some of them in
+			// variables
+			MapProperties properties = object.getProperties();
+			Array<Float> basic = getBasicProperties(properties);
+
+			// create the door and add it to the array
+			Rectangle checkpoint = new Rectangle(basic.get(0), basic.get(1), basic.get(2), basic.get(3));
+			checkpoints.add(checkpoint);
 		}
 	}
 
@@ -148,16 +175,17 @@ public class Level {
 			float projFrequency = prop.get("projFrequency", 2.0F, Float.class);
 			spitter.setProjectileProperties(projWidth, projHeight, lifetime, texture, projFrequency);
 			float xVel, yVel;
-			
+
 			try {
-				//maximum 3 projectiles for now...
-				for(int i = 1; i <= 3; i++) {
+				// maximum 3 projectiles for now...
+				for (int i = 1; i <= 3; i++) {
 					xVel = prop.get("xVelocity" + i, Float.class);
 					yVel = prop.get("yVelocity" + i, Float.class);
 					spitter.addProjectileVelocity(new Vector2(xVel, yVel));
 				}
-				
-			} catch(Exception ignored) {}
+
+			} catch (Exception ignored) {
+			}
 			enemies.add(spitter);
 		}
 	}
@@ -228,7 +256,7 @@ public class Level {
 		}
 		return filteredObjects;
 	}
-	
+
 	public static String getTileName(Integer id) {
 		if (WoodyGame.getGame().idNames.get(id) != null) {
 			return WoodyGame.getGame().idNames.get(id);

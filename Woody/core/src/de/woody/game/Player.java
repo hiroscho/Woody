@@ -132,12 +132,6 @@ public class Player {
 	 */
 	public void setInputVelocity(Button button) {
 		if (button.getName().equals("Jump") && !(state == State.Climbing)) {
-			if(freeJump == true){
-				if ((jumpSoundCooldown + 330) < System.currentTimeMillis()) {
-					GameScreen.getInstance().getJumpSound().play();
-					jumpSoundCooldown = System.currentTimeMillis();
-					}
-			}
 			handleJump();
 		}
 
@@ -167,12 +161,6 @@ public class Player {
 	public void setKeyboardVelocity() {
 		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W))
 				&& !(state == State.Climbing)) {
-			if(freeJump == true){
-				if ((jumpSoundCooldown + 330) < System.currentTimeMillis()) {
-					GameScreen.getInstance().getJumpSound().play();
-					jumpSoundCooldown = System.currentTimeMillis();
-					}
-			}
 			handleJump();
 		}
 
@@ -197,12 +185,14 @@ public class Player {
 
 	private void handleJump() {
 		if (grounded || state == State.Swimming) {
+			GameScreen.getInstance().getJumpSound().play();
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
 			freeJump = true;
 		} else {
 			if (freeJump && velocity.y < 1) {
+				GameScreen.getInstance().getJumpSound().play();
 				velocity.y = JUMP_VELOCITY;
 				state = State.Jumping;
 				grounded = false;
@@ -419,6 +409,7 @@ public class Player {
 						position.y = tile.y + tile.height;
 						// set grounded to true to allow jumping
 						grounded = true;
+						// counter zurück
 						freeJump = true;
 						if (velocity.x != 0)
 							state = State.Walking;

@@ -88,7 +88,8 @@ public class GameScreen implements Screen {
 
 		// Animations
 		asMa.load("textures/sheetRun.png", Texture.class);
-
+		asMa.load("textures/vanishSheet.png", Texture.class);
+		
 		// Projectiletexture
 		asMa.load("textures/projectile.png", Texture.class);
 
@@ -389,11 +390,14 @@ public class GameScreen implements Screen {
 			counterU++;
 			if (counterU % 2 == 1) {
 				for (Actor actor : controller.getStage().getActors()) {
-					actor.setVisible(false);
+					//actor.setVisible(false);
+					 if((actor.getName().equals("Right")) || (actor.getName().equals("Left")) || (actor.getName().equals("Fight")) || (actor.getName().equals("Jump")))
+						 actor.setVisible(false);
 				}
 			} else
 				for (Actor actor : controller.getStage().getActors()) {
-					actor.setVisible(true);
+					if((actor.getName().equals("Right")) || (actor.getName().equals("Left")) || (actor.getName().equals("Fight")) || (actor.getName().equals("Jump")))
+						 actor.setVisible(true);
 				}
 		}
 	}

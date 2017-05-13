@@ -29,7 +29,7 @@ public class Player {
 
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;
-
+	//
 	public enum State {
 		Standing, Walking, Jumping, Attacking, Falling, Climbing, Swimming
 	}
@@ -564,7 +564,7 @@ public class Player {
 				slidingRight = false;
 			}
 			DAMPING = 0.975f;
-			MAX_VELOCITY = MAX_VELOCITY / 2;
+			//MAX_VELOCITY = MAX_VELOCITY / 2;
 			return;
 		}
 
@@ -595,7 +595,9 @@ public class Player {
 
 	private void vanish(final int y) {
 		final float x2 = position.x;
-
+		Animations pAH = GameScreen.getInstance().getPlayerAnimationHandler();
+		pAH.vanishAnimation((int)x2,y);
+		
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
@@ -615,7 +617,7 @@ public class Player {
 				}
 			}
 
-		}, 0.5F);
+		}, 1F);
 	}
 
 	public void render() {

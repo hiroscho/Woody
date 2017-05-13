@@ -8,11 +8,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.Player.State;
+import de.woody.game.screens.GameScreen;
 
 public class Animations {
 
 	public State currentState;
 	public State previousState;
+	
 	public Animation woodyRun;
 	public TextureRegion woodyStand;
 	public TextureRegion woodyJump;
@@ -25,14 +27,19 @@ public class Animations {
 	public TextureRegion woodyJumpinv;
 	public TextureRegion woodyFallinv;
 	public Animation woodyClimbinv;
+	
+	public Texture sheetAnimation;
+	public Animation animVanish;
 
 	public float stateTime = 0;
 
 	private AssetManager asMa = WoodyGame.getGame().manager;
 
-	public Animations() {
+	public Animations() {		
 		sheetRun = asMa.get("textures/sheetRun.png", Texture.class);
+		sheetAnimation = asMa.get("textures/vanishSheet.png", Texture.class);
 
+		
 		// RUN not damaged
 		Array<TextureRegion> frames = new Array<TextureRegion>();
 		for (int i = 1; i < 5; i++)
@@ -60,6 +67,11 @@ public class Animations {
 		for (int i = 12; i <= 13; i++)
 			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 94));
 		woodyClimbinv = new Animation(0.2f, frames);
+
+		frames.clear();
+		for(int i = 1; i <= 5; i++)
+			frames.add(new TextureRegion(sheetAnimation, i *66, 0,66,66));
+		animVanish = new Animation(0.2f, frames);
 	}
 
 	public TextureRegion getPlayerFrame(Player player) {
@@ -117,4 +129,18 @@ public class Animations {
 		return region;
 	}
 
+	public void vanishAnimation(int x, int y)
+	{
+		TextureRegion textureRegion;
+	
+		for(int i =0; i>5;i++)
+		{
+			textureRegion = animVanish.getKeyFrame((float) (i*animVanish.getFrameDuration()));
+			if(GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().getId() == 27)		
+			{
+				GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().setTextureRegion(null);
+				GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().setTextureRegion(textureRegion);
+			}
+		}
+	}
 }

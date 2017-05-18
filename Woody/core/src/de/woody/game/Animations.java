@@ -5,7 +5,10 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import de.woody.game.Player.State;
 import de.woody.game.screens.GameScreen;
@@ -143,4 +146,35 @@ public class Animations {
 			}
 		}
 	}
+	
+//	public void blockAnimations(int x, int y, int Id, boolean destroyAfter)
+//	{
+//		TextureRegion texReg;
+//		
+//		if(GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().getId() == Id && (GameScreen.getInstance().levelData.getCollidable().getCell(x, y) != null))
+//		{
+//			int i = 0;
+//			Timer.schedule(new Task() {
+//				@Override
+//				public void run() {
+//					Cell cell;
+//					while(GameScreen.getInstance().levelData.getCollidable().getCell(x, y) != null)
+//					{
+//						
+//						texReg = animVanish.getKeyFrame((float) (i*animVanish.getFrameDuration()));
+//						GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().setTextureRegion(null);
+//						GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().setTextureRegion(texReg);
+//						i++;
+//					}
+//				}
+//
+//			}, 1F);
+//		}
+//		
+//		else if(GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().getId() == Id && (GameScreen.getInstance().levelData.getNonCollidable().getCell(x, y) != null))
+//		{
+//			int i = 0;
+//
+//		}
+//	}
 }

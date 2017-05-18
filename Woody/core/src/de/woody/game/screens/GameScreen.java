@@ -102,7 +102,12 @@ public class GameScreen implements Screen {
 
 		// Playertexture
 		asMa.load("textures/Woddy.png", Texture.class);
-
+		
+		//Enemytetures
+		asMa.load("textures/Turret.png", Texture.class);
+		asMa.load("textures/Raptor2.png", Texture.class);
+		asMa.load("textures/Rabbit.png", Texture.class);
+		
 		// Animations
 		asMa.load("textures/sheetRun.png", Texture.class);
 

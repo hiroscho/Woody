@@ -122,7 +122,7 @@ public class Level {
 			int id = prop.get("id", Integer.class);
 			int x1 = prop.get("leftRoom", 0, Integer.class);
 			int x2 = prop.get("rightRoom", 0, Integer.class);
-			String texture = prop.get("texture", "textures/Woddy.png", String.class);
+			String texture = prop.get("texture", "textures/Rabbit.png", String.class);
 			Array<Float> basic = getBasicProperties(prop);
 			Walker e = new Walker(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, x1, x2, basic.get(0),
 					basic.get(1), basic.get(2), basic.get(3));
@@ -136,7 +136,7 @@ public class Level {
 		for (MapObject obj : objects) {
 			MapProperties prop = obj.getProperties();
 			int id = prop.get("id", Integer.class);
-			String texture = prop.get("texture", "textures/Woddy.png", String.class);
+			String texture = prop.get("texture", "textures/Turret.png", String.class);
 			Array<Float> basic = getBasicProperties(prop);
 			Spitter e = new Spitter(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, basic.get(0),
 					basic.get(1), basic.get(2), basic.get(3));

@@ -590,6 +590,7 @@ public class Player {
 			}
 			savedPosition = new Vector2((int) position.x, (int) position.y);
 			vanish(y);
+			
 		}
 	}
 

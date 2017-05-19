@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
@@ -133,7 +134,7 @@ public class Animations {
 	}
 
 	public void vanishAnimation(int x, int y)
-	{
+	{;
 		TextureRegion textureRegion;
 	
 		for(int i =0; i>5;i++)
@@ -141,7 +142,7 @@ public class Animations {
 			textureRegion = animVanish.getKeyFrame((float) (i*animVanish.getFrameDuration()));
 			if(GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().getId() == 27)		
 			{
-				GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().setTextureRegion(null);
+				//GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().setTextureRegion(null);
 				GameScreen.getInstance().levelData.getCollidable().getCell(x, y).getTile().setTextureRegion(textureRegion);
 			}
 		}

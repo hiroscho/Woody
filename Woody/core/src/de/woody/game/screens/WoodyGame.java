@@ -53,7 +53,7 @@ public class WoodyGame extends Game {
 			}
 
 		}, 2.0F, 2.0F);
-		this.setScreen(LevelSelect.getInstance());	//MainMenueScreen.getInstance()
+		this.setScreen(SettingsScreen.getInstance());	//MainMenueScreen.getInstance()
 	}
 
 	@Override

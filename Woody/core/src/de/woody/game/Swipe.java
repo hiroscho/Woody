@@ -33,42 +33,27 @@ public class Swipe implements GestureListener{
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
 		if(Math.abs(velocityX)>Math.abs(velocityY)){
-			if(velocityX>10){	//0
-				LevelSelect.check--;
-				if(LevelSelect.checking(LevelSelect.check, LevelSelect.MIN, LevelSelect.MAX) == true){
+			if(velocityX>0){
+				if(LevelSelect.check <= 1){
 					flinged = false;
-					System.out.println("RECHTS STOP STOP");
-//					rightone = 0;
-//					leftone = 0;
+					LevelSelect.check = 1;
 				}else{
 					flinged = true;
-//            		rightone = Gdx.graphics.getWidth();
-//					leftone = 0;
-                    System.out.println("RECHTS "+ LevelSelect.check);
-                    return true;
-				}   
-            }else if (velocityX<-10){	//0
-            	LevelSelect.check++;
-            	if(LevelSelect.checking(LevelSelect.check, LevelSelect.MIN, LevelSelect.MAX) == true){
-            		System.out.println("LINKS STOP STOP");
-            		flinged = false;
-//            		rightone = 0;
-//            		leftone = 0;
-            	}else{
-            		flinged = true;
-//            		leftone = Gdx.graphics.getWidth();
-//            		rightone = 0;
-            		System.out.println("LINKS "+LevelSelect.check);
-            		return true;
-            	}
-            }else{
-            	flinged = false;
-//            	rightone = 0;
-//           	leftone = 0;
-            }
-		}else{
-
-			// Ignore the input, because we don't care about up/down swipes.
+					LevelSelect.check--;
+					System.out.println(LevelSelect.check);
+				}
+			}
+			if(velocityX<0){
+				if(LevelSelect.check >= 3){
+					flinged = false;
+					LevelSelect.check = 3;
+					System.out.println(LevelSelect.check);
+				}else{
+					flinged = true;
+					LevelSelect.check++;
+					System.out.println(LevelSelect.check);
+				}
+			}
 		}
 		return false; //true
 	}

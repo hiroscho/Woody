@@ -26,20 +26,6 @@ public class LevelSelect implements Screen{
 	public static final int MIN = 1;
 	public static int check = 1;
 	
-	public static boolean checking(int value, int min, int max){
-		if(value > max){
-			value = max;
-			System.out.println("Stay on the right "+value);
-			return false;
-		}else if(value < min){
-			value = min;
-			System.out.println("Stay on the left"+ value);
-			return false;
-		}else{
-			return true;
-		}
-	}
-	
 	
 	//Textures
 	//Levelnumbers
@@ -71,11 +57,6 @@ public class LevelSelect implements Screen{
 	private final int BACKGROUND_WIDTH = Gdx.graphics.getWidth();
 	private final int BACKGROUND_HEIGHT = Gdx.graphics.getHeight();
 	
-//	public LevelSelect() {
-//		batch = new SpriteBatch();
-//		Gdx.input.setInputProcessor(new GestureDetector(new Swipe()));
-//		return levelSelect;
-//	}
 	private LevelSelect(){
 		
 	}
@@ -135,32 +116,9 @@ public class LevelSelect implements Screen{
 		xfourteen = ((Gdx.graphics.getWidth() / 2 - LEVELB_WIDTH / 2) * 1.30f);
 		xfiveteen = ((Gdx.graphics.getWidth() / 2 - LEVELB_WIDTH / 2) * 1.60f);
 		
-		//Swipe x changes
-//		if(Swipe.flinged == true){
-//			//1-5
-//			xfirst += (Swipe.rightone -Swipe.leftone);
-//			xsecond += (Swipe.rightone -Swipe.leftone);
-//			xthir += (Swipe.rightone -Swipe.leftone);
-//			xfour += (Swipe.rightone -Swipe.leftone);
-//			xfive += (Swipe.rightone -Swipe.leftone);
-//			//6-10
-//			xsix += (Swipe.rightone -Swipe.leftone);
-//			xseven += (Swipe.rightone -Swipe.leftone);
-//			xeight += (Swipe.rightone -Swipe.leftone);
-//			xnine += (Swipe.rightone -Swipe.leftone);
-//			xten += (Swipe.rightone -Swipe.leftone);
-//			//11-15
-//			xeleven += (Swipe.rightone -Swipe.leftone);
-//			xtwelve += (Swipe.rightone -Swipe.leftone);
-//			xthirteen +=(Swipe.rightone -Swipe.leftone);
-//			xfourteen += (Swipe.rightone -Swipe.leftone);
-//			xfiveteen += (Swipe.rightone -Swipe.leftone);
-//		}
+	
 		//Y cordinate
 		int y = Gdx.graphics.getHeight() / 2 + LEVELB_HEIGHT / 4;
-		
-		
-
 		
 	if(check == 1){
 		//ONE

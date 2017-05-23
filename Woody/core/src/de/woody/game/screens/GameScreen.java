@@ -10,6 +10,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -66,6 +72,11 @@ public class GameScreen implements Screen {
 	private Music level1Music;
 	private Music level2Music;
 	private Music level3Music;
+	//Coin Counter Output 
+	private String yourScoreName;
+	BitmapFont myCoins;
+
+	
 
 	private GameScreen() {
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
@@ -129,7 +140,7 @@ public class GameScreen implements Screen {
 		while (!asMa.update()) {
 			asMa.update();
 		}
-
+	    
 		controller = new UI();
 
 		// kinda optional and kinda not, allows the setting of positions of UI
@@ -250,6 +261,38 @@ public class GameScreen implements Screen {
 		for (Entity e : levelData.getEnemies()) {
 			e.render(renderer.getBatch());
 		}
+		
+		myCoins = new BitmapFont(Gdx.files.internal("Fonts/V3.fnt"));
+		int score = Player.getCoinAmount();
+		
+		GlyphLayout scoreLayout = new GlyphLayout(myCoins, "" + score);
+		
+		boolean wrap = true;
+		
+		CharSequence scorelay = "" + score;
+
+		myCoins.draw(renderer.getBatch(),scorelay, 12.0f, 11.0f, 0, 11, wrap );
+		//myCoins.draw(renderer.getBatch(), scoreLayout,9,12);
+		
+	//	SpriteBatch batch;
+	//	batch = new SpriteBatch();
+		
+		//GameScreen.getInstance().getbatch.begin();
+		
+		//myCoins.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		//myCoins.setColor(0.5f, 0.5f, 0.7f, 0.7f);
+		//myCoins.draw(batch , yourScoreName, 15, 50); 
+		
+		
+
+		//batch = new SpriteBatch();
+		//myCoins = new BitmapFont();
+		//CharSequence str = "Hello World!";
+		//myCoins.setColor(0.9f, 0.9f, 0.2f, 0.2f);
+		//myCoins.draw(renderer.getBatch(), str, 10, 10);
+		
+		
+		
 		// render the player
 		player.render();
 

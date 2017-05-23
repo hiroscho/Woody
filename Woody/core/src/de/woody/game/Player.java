@@ -52,16 +52,19 @@ public class Player {
 	public boolean freeJump;
 
 	/** current coin score **/
-	private int coinAmount;
+	private static int coinAmount;
 
 	/** Cooldown for the axe **/
 	public long axeCooldown = System.currentTimeMillis();
 	
+	/** Cooldown for fightSound **/
+	public long fightCooldown = System.currentTimeMillis();
+	
 	/** Cooldown for the jumpSound **/
 	public long jumpSoundCooldown = System.currentTimeMillis();
 	
-	/** Cooldown for fightSound **/
-	public long fightCooldown = System.currentTimeMillis();
+	/**	Jump Counter for sound**/
+	public int jumpCounter = 0;
 
 	/** is player touching the ground **/
 	public boolean grounded = false;
@@ -111,7 +114,7 @@ public class Player {
 		JUMP_VELOCITY = standartJumpVelocity;
 	}
 
-	public int getCoinAmount() {
+	public static int getCoinAmount() {
 		return coinAmount;
 	}
 
@@ -133,10 +136,19 @@ public class Player {
 	public void setInputVelocity(Button button) {
 		if (button.getName().equals("Jump") && !(state == State.Climbing)) {
 			if(freeJump == true){
-				if ((jumpSoundCooldown + 330) < System.currentTimeMillis()) {
+				//if ((jumpSoundCooldown + 20) < System.currentTimeMillis()) {
+				if(jumpCounter < 3){
 					GameScreen.getInstance().getJumpSound().play();
+					jumpCounter++;
 					jumpSoundCooldown = System.currentTimeMillis();
-					}
+				}	
+					//}
+			}else{
+				if(jumpCounter < 3){
+				GameScreen.getInstance().getJumpSound().play();
+				//jumpCounter++;
+				jumpSoundCooldown = System.currentTimeMillis();
+			}
 			}
 			handleJump();
 		}
@@ -167,12 +179,16 @@ public class Player {
 	public void setKeyboardVelocity() {
 		if ((Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W))
 				&& !(state == State.Climbing)) {
-			if(freeJump == true){
-				if ((jumpSoundCooldown + 330) < System.currentTimeMillis()) {
-					GameScreen.getInstance().getJumpSound().play();
-					jumpSoundCooldown = System.currentTimeMillis();
-					}
+		
+			if (((jumpSoundCooldown + 70) < System.currentTimeMillis()) && freeJump == true) {
+					//	if(jumpCounter < 4){
+					//	jumpCounter++;
+							GameScreen.getInstance().getJumpSound().play();
+							jumpSoundCooldown = System.currentTimeMillis();
+					//	}
 			}
+					//	jumpCounter++;
+						
 			handleJump();
 		}
 
@@ -419,6 +435,7 @@ public class Player {
 						position.y = tile.y + tile.height;
 						// set grounded to true to allow jumping
 						grounded = true;
+						jumpCounter = 0;
 						freeJump = true;
 						if (velocity.x != 0)
 							state = State.Walking;

@@ -1,5 +1,8 @@
 package de.woody.game.screens;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -10,12 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -26,6 +24,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.Animations;
@@ -68,15 +67,16 @@ public class GameScreen implements Screen {
 	private Music lavaSound;
 	private Music powerupSound;
 	private Music snowSlideSound;
-	//private Music 
+	// private Music
 	private Music level1Music;
 	private Music level2Music;
 	private Music level3Music;
-	//Coin Counter Output 
-	private String yourScoreName;
-	BitmapFont myCoins;
+	// Coin Counter Output
+	// private String yourScoreName;
+	BitmapFont coinsFont;
 
-	
+	// Test
+	float sclx = 4, scly = 4, px = 9, py = 6.7f;
 
 	private GameScreen() {
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
@@ -136,11 +136,13 @@ public class GameScreen implements Screen {
 		asMa.load("audio/level2.mp3", Music.class);
 		asMa.load("audio/level3.mp3", Music.class);
 
-		
+		// Font
+		asMa.load("Fonts/V3.fnt", BitmapFont.class);
+
 		while (!asMa.update()) {
 			asMa.update();
 		}
-	    
+
 		controller = new UI();
 
 		// kinda optional and kinda not, allows the setting of positions of UI
@@ -201,15 +203,16 @@ public class GameScreen implements Screen {
 		powerupSound = asMa.get("audio/powerup.wav", Music.class);
 		snowSlideSound = asMa.get("audio/snowSlide.mp3", Music.class);
 		level1Music = asMa.get("audio/level1.mp3", Music.class);
-		level2Music = asMa.get("audio/level2.mp3", Music.class);		
-		level3Music = asMa.get("audio/level3.mp3", Music.class);	
-		
+		level2Music = asMa.get("audio/level2.mp3", Music.class);
+		level3Music = asMa.get("audio/level3.mp3", Music.class);
+		// Font
+		coinsFont = asMa.get("Fonts/V3.fnt", BitmapFont.class);
+
 		// call once for correct init, lifesystem does the remaining calls
 		getUI().updateHeartsImage(player.life.getHearts());
 		getUI().updateLifeImage(player.life.getLife());
-		
-		
-		//play level1 Music
+
+		// play level1 Music
 		level1Music.setLooping(true);
 		level1Music.play();
 	}
@@ -261,38 +264,28 @@ public class GameScreen implements Screen {
 		for (Entity e : levelData.getEnemies()) {
 			e.render(renderer.getBatch());
 		}
-		
-		myCoins = new BitmapFont(Gdx.files.internal("Fonts/V3.fnt"));
-		int score = Player.getCoinAmount();
-		
-		GlyphLayout scoreLayout = new GlyphLayout(myCoins, "" + score);
-		
-		boolean wrap = true;
-		
-		CharSequence scorelay = "" + score;
 
-		myCoins.draw(renderer.getBatch(),scorelay, 12.0f, 11.0f, 0, 11, wrap );
-		//myCoins.draw(renderer.getBatch(), scoreLayout,9,12);
-		
-	//	SpriteBatch batch;
-	//	batch = new SpriteBatch();
-		
-		//GameScreen.getInstance().getbatch.begin();
-		
-		//myCoins.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		//myCoins.setColor(0.5f, 0.5f, 0.7f, 0.7f);
-		//myCoins.draw(batch , yourScoreName, 15, 50); 
-		
-		
+		// GlyphLayout scoreLayout = new GlyphLayout(myCoins, "" +
+		// player.getCoinAmount());
 
-		//batch = new SpriteBatch();
-		//myCoins = new BitmapFont();
-		//CharSequence str = "Hello World!";
-		//myCoins.setColor(0.9f, 0.9f, 0.2f, 0.2f);
-		//myCoins.draw(renderer.getBatch(), str, 10, 10);
-		
-		
-		
+		// CharSequence scorelay = "" + score;
+		// myCoins.draw(renderer.getBatch(), scoreLayout,9,12);
+
+		// SpriteBatch batch;
+		// batch = new SpriteBatch();
+
+		// GameScreen.getInstance().getbatch.begin();
+
+		// myCoins.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		// myCoins.setColor(0.5f, 0.5f, 0.7f, 0.7f);
+		// myCoins.draw(batch , yourScoreName, 15, 50);
+
+		// batch = new SpriteBatch();
+		// myCoins = new BitmapFont();
+		// CharSequence str = "Hello World!";
+		// myCoins.setColor(0.9f, 0.9f, 0.2f, 0.2f);
+		// myCoins.draw(renderer.getBatch(), str, 10, 10);
+
 		// render the player
 		player.render();
 
@@ -315,6 +308,13 @@ public class GameScreen implements Screen {
 		controller.getStage().act(Gdx.graphics.getDeltaTime());
 		// Draw the ui
 		controller.getStage().draw();
+		if (sclx != 0f && scly != 0f) {
+			coinsFont.getData().setScale(sclx, scly);
+		}
+		controller.getStage().getBatch().begin();
+		coinsFont.draw(controller.getStage().getBatch(), Integer.toString(player.getCoinAmount()),
+				px / WoodyGame.UNIT_SCALE, py / WoodyGame.UNIT_SCALE, 1.0f / WoodyGame.UNIT_SCALE, Align.left, true);
+		controller.getStage().getBatch().end();
 
 		// render debug rectangles
 		if (debug) {
@@ -408,50 +408,48 @@ public class GameScreen implements Screen {
 	public Sound getCoinSound() {
 		return coinSound;
 	}
-	
-	public Music getJumpSound(){
+
+	public Music getJumpSound() {
 		return jumpSound;
 	}
-	
+
 	public Music getPunchSound() {
 		return punchSound;
 	}
-	
+
 	public Music getDoorSound() {
 		return doorSound;
 	}
-	
+
 	public Music getHurtSound() {
 		return hurtSound;
 	}
-	
+
 	public Music getLavaSound() {
 		return lavaSound;
 	}
-	
+
 	public Music getPowerupSound() {
 		return powerupSound;
 	}
-	
+
 	public Music getSnowSlideSound() {
 		return snowSlideSound;
 	}
-	
-	public Music getLevel1Music(){
+
+	public Music getLevel1Music() {
 		return level1Music;
 	}
-	
-	public Music getLevel2Music(){
+
+	public Music getLevel2Music() {
 		return level2Music;
 	}
-	
-	public Music getLevel3Music(){
+
+	public Music getLevel3Music() {
 		return level3Music;
 	}
-	
-	
-	
-	//GameScreen.getInstance().getPushButtonSound().play();
+
+	// GameScreen.getInstance().getPushButtonSound().play();
 
 	private void renderDebug() {
 		debugRenderer.setProjectionMatrix(camera.combined);
@@ -486,6 +484,20 @@ public class GameScreen implements Screen {
 				player.life.setLife(2);
 			else
 				player.life.setLife(3);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.X)) {
+			try {
+				BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+				System.out.println("sclx: ");
+				sclx = Float.parseFloat(r.readLine());
+				System.out.println("scly: ");
+				scly = Float.parseFloat(r.readLine());
+				System.out.println("x: ");
+				px = Float.parseFloat(r.readLine());
+				System.out.println("y: ");
+				py = Float.parseFloat(r.readLine());
+			} catch (Exception e) {
+			}
 		}
 
 		// Disable Button UI

@@ -112,7 +112,7 @@ public class Player {
 		JUMP_VELOCITY = standartJumpVelocity;
 	}
 
-	public int getCoinAmount() {
+	public static int getCoinAmount() {
 		return coinAmount;
 	}
 

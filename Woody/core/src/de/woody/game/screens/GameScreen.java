@@ -75,8 +75,8 @@ public class GameScreen implements Screen {
 	// private String yourScoreName;
 	BitmapFont coinsFont;
 
-	// Test
-	float sclx = 4, scly = 4, px = 9, py = 6.7f;
+	// Test  x6.8
+	float sclx = 4.3f, scly = 4.3f, px = 6.5f, py = 7.45f;
 
 	private GameScreen() {
 		// create an orthographic camera, show (xTiles)x(yTiles) of the map
@@ -207,7 +207,7 @@ public class GameScreen implements Screen {
 		level3Music = asMa.get("audio/level3.mp3", Music.class);
 		// Font
 		coinsFont = asMa.get("Fonts/V3.fnt", BitmapFont.class);
-
+		
 		// call once for correct init, lifesystem does the remaining calls
 		getUI().updateHeartsImage(player.life.getHearts());
 		getUI().updateLifeImage(player.life.getLife());
@@ -296,7 +296,7 @@ public class GameScreen implements Screen {
 		if (!player.life.isAlive()) {
 			player.position.set(levelData.getCurrentSpawn());
 			if (player.life.getLife() >= 0) {
-				player.life.setHearts(3); // TEMPORÄR!!!!!!!!!!!!!
+				player.life.setHearts(5); // TEMPORÄR!!!!!!!!!!!!!
 				player.life.setIsAlive(true);
 			} else {
 				WoodyGame.getGame().setScreen(GameoverScreen.getInstance(level));
@@ -306,6 +306,50 @@ public class GameScreen implements Screen {
 
 		// Perform ui logic
 		controller.getStage().act(Gdx.graphics.getDeltaTime());
+		
+		//check coin Amount
+		if(Player.getCoinAmount() < 10 ){
+			sclx = 4.3f;
+			scly = 4.3f;
+			px = 6.8f;
+			py = 7.45f;
+		}
+		
+		if((Player.getCoinAmount() < 100 ) && (Player.getCoinAmount() > 9)){
+			sclx = 4.3f;
+			scly = 4.3f;
+			px = 6.41f;
+			py = 7.45f;
+		}
+		
+		if((Player.getCoinAmount() < 1000) && (Player.getCoinAmount() > 99 )){
+			sclx = 3.5f;
+			scly = 4f;
+			px = 6.22f;
+			py = 7.45f;
+		}
+		
+		if((Player.getCoinAmount() < 10000) && (Player.getCoinAmount() > 999 )){
+			sclx = 2.66f;
+			scly = 4.0f;
+			px = 6.22f;
+			py = 7.45f;
+		}
+		if((Player.getCoinAmount() < 100000) && (Player.getCoinAmount() > 9999 )){
+			sclx = 2.0f;
+			scly = 4.0f;
+			px = 6.284f;
+			py = 7.45f;
+		}
+		
+		if((Player.getCoinAmount() < 1000000) && (Player.getCoinAmount() > 99999 )){
+			sclx = 1.5f;
+			scly = 4.0f;
+			px = 6.4f;
+			py = 7.45f;
+		}
+		
+		
 		// Draw the ui
 		controller.getStage().draw();
 		if (sclx != 0f && scly != 0f) {

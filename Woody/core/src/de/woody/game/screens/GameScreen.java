@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
 
 import de.woody.game.Animations;
+import de.woody.game.BlockAnimations;
 import de.woody.game.Level;
 import de.woody.game.Player;
 import de.woody.game.UI;
@@ -41,6 +42,7 @@ public class GameScreen implements Screen {
 	private OrthogonalTiledMapRenderer renderer;
 	private Player player;
 	private Animations playerAnimationHandler;
+	private BlockAnimations blockAnimationHandler;
 	// nr of the level
 	private int level;
 	private Vector2 checkpoint;
@@ -158,6 +160,8 @@ public class GameScreen implements Screen {
 		// load the textureRegions for animations
 		playerAnimationHandler = new Animations();
 
+		blockAnimationHandler = new BlockAnimations();
+		
 		coinSound = asMa.get("audio/coin.wav", Sound.class);
 
 		// call once for correct init, lifesystem does the remaining calls
@@ -326,6 +330,11 @@ public class GameScreen implements Screen {
 		return playerAnimationHandler;
 	}
 
+	public BlockAnimations getBlockAnimationHandler()
+	{
+		return blockAnimationHandler;
+	}
+	
 	public Player getPlayer() {
 		return player;
 	}

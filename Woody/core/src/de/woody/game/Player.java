@@ -590,14 +590,13 @@ public class Player {
 			}
 			savedPosition = new Vector2((int) position.x, (int) position.y);
 			vanish(y);
-			
 		}
 	}
 
 	private void vanish(final int y) {
 		final float x2 = position.x;
-		Animations pAH = GameScreen.getInstance().getPlayerAnimationHandler();
-		pAH.vanishAnimation((int)x2,y);
+		BlockAnimations bAH = GameScreen.getInstance().getBlockAnimationHandler();
+		bAH.vanishAnimation((int)x2,y);
 		
 		Timer.schedule(new Task() {
 			@Override
@@ -624,11 +623,13 @@ public class Player {
 	public void render() {
 		Batch batch = GameScreen.getInstance().getRenderer().getBatch();
 		Animations pAH = GameScreen.getInstance().getPlayerAnimationHandler();
+		BlockAnimations bAH = GameScreen.getInstance().getBlockAnimationHandler();
 
 		if (facesRight) {
 			batch.draw(pAH.getPlayerFrame(this), position.x, position.y, WIDTH, HEIGHT);
 		} else { // faces left
 			batch.draw(pAH.getPlayerFrame(this), position.x + WIDTH, position.y, -WIDTH, HEIGHT);
 		}
+		batch.draw(bAH.vanishAnimation((int) position.x,(int) position.y- 1), position.x, position.y -1, 64, 64);
 	}
 }

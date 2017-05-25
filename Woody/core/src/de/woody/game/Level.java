@@ -124,7 +124,7 @@ public class Level {
 			int x2 = prop.get("rightRoom", 0, Integer.class);
 			String texture = prop.get("texture", "textures/Rabbit.png", String.class);
 			Array<Float> basic = getBasicProperties(prop);
-			Walker e = new Walker(1, WoodyGame.getGame().manager.get(texture, Texture.class), id, x1, x2, basic.get(0),
+			Walker e = new Walker(1, WoodyGame.getGame().manager.get(texture, Texture.class), 45, "textures/Rabbit.png", id, x1, x2, basic.get(0),
 					basic.get(1), basic.get(2), basic.get(3));
 			enemies.add(e);
 		}

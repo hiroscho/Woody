@@ -1,9 +1,14 @@
 package de.woody.game.enemies;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
+import de.woody.game.WoodyGame;
 import de.woody.game.screens.GameScreen;
 
 public class Walker extends Entity{
@@ -11,10 +16,19 @@ public class Walker extends Entity{
 	private int restrX1, restrX2;
 	private boolean walkLeft = false;
 	private Vector2 velocity;
-
-	public Walker(int hearts, Texture tex, int id, int x1, int x2, float x, float y, float width, float height) {
+	private final int texSplit;
+	public Animation walkerRun;
+	private String texName;
+	
+	public Texture walkerRunSheet;
+	
+	private AssetManager asMa = WoodyGame.getGame().manager;
+	
+	public Walker(int hearts, Texture tex, int texSplit, String texName, int id, int x1, int x2, float x, float y, float width, float height) {
 		super(hearts, tex, id,  x, y, width, height);
 		setRestriction(x1, x2);
+		this.texSplit = texSplit;
+		this.texName = texName;
 		
 		velocity = new Vector2(2.5F, 0);
 	}
@@ -38,11 +52,24 @@ public class Walker extends Entity{
 		restrX1 = (int) getBody().getX() - x1;
 		restrX2 = (int) getBody().getX() + 1 + x2;
 	}
-
+	
+	public void animation(){
+		walkerRunSheet = asMa.get(texName, Texture.class);
+		Array<TextureRegion> frames = new Array<TextureRegion>();
+		final int j =  walkerRunSheet.getWidth()/texSplit;
+		for (int i = 0; i < j; i++){
+			frames.add(new TextureRegion(walkerRunSheet, i * texSplit, 0, texSplit, walkerRunSheet.getHeight()));
+		}
+		final float frameTime = 1/j;
+		walkerRun = new Animation(frameTime, frames);
+	}
+	
 	@Override
 	public void move(float delta) {
 		if (delta > 0.1f)
 			delta = 0.1f;
+		
+		this.animation();
 		
 		float moveAmount = velocity.scl(delta).x;
 		

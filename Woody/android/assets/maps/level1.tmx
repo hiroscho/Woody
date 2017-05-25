@@ -65,7 +65,6 @@
    <properties>
     <property name="leftRoom" type="int" value="1"/>
     <property name="rightRoom" type="int" value="2"/>
-    <property name="texture" value="textures/Raptor2.png"/>
    </properties>
   </object>
   <object id="42" name="Spitter" type="Spitter" x="1262" y="426" width="82" height="86">

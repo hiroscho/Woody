@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import de.woody.game.Animations;
 import de.woody.game.WoodyGame;
 import de.woody.game.screens.GameScreen;
 
@@ -19,6 +20,7 @@ public class Walker extends Entity{
 	private final int texSplit;
 	public Animation walkerRun;
 	private String texName;
+	float frameTime;
 	
 	public Texture walkerRunSheet;
 	
@@ -53,15 +55,19 @@ public class Walker extends Entity{
 		restrX2 = (int) getBody().getX() + 1 + x2;
 	}
 	
-	public void animation(){
+	public Animation animation(){
 		walkerRunSheet = asMa.get(texName, Texture.class);
 		Array<TextureRegion> frames = new Array<TextureRegion>();
+		
 		final int j =  walkerRunSheet.getWidth()/texSplit;
 		for (int i = 0; i < j; i++){
 			frames.add(new TextureRegion(walkerRunSheet, i * texSplit, 0, texSplit, walkerRunSheet.getHeight()));
 		}
-		final float frameTime = 1/j;
+		
+		frameTime = 1/j;
 		walkerRun = new Animation(frameTime, frames);
+		
+		return walkerRun;
 	}
 	
 	@Override
@@ -103,6 +109,7 @@ public class Walker extends Entity{
 
 	@Override
 	public void render(Batch batch) {
-		getBody().draw(batch);
+		this.animation().getKeyFrame(frameTime);
+		//getBody().draw(batch);
 	}
 }

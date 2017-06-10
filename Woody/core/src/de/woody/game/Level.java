@@ -125,7 +125,7 @@ public class Level {
 			String name = prop.get("name","rabbit", String.class);
 			
 			Array<Float> basic = getBasicProperties(prop);
-			Walker e = new Walker(1, e.createAnimation(name), id, x1, x2, basic.get(0),
+			Walker e = new Walker(1, Walker.createAnimation(name), id, x1, x2, basic.get(0),
 					basic.get(1), basic.get(2), basic.get(3));
 			enemies.add(e);
 			

@@ -67,19 +67,24 @@ public class Level {
 
 	private void init() {
 		MapObjects objects = GameScreen.getInstance().getMap().getLayers().get("Objects").getObjects();
-		createDoors(Level.filterObjects(objects, "door"));
-		createWalkers(Level.filterObjects(objects, "Walker"));
-		createSpitters(Level.filterObjects(objects, "Spitter"));
-		createCheckpoints(Level.filterObjects(objects, "checkpoint"));
+		createDoors(filterObjects(objects, "door"));
+		createWalkers(filterObjects(objects, "Walker"));
+		createSpitters(filterObjects(objects, "Spitter"));
+		createCheckpoints(filterObjects(objects, "checkpoint"));
 
-		MapObject spawn = Level.filterObjects(objects, "spawn").random();
+		MapObject spawn = filterObjects(objects, "spawn").first();
+
 		MapProperties properties = spawn.getProperties();
 		Array<Float> basic = getBasicProperties(properties);
 		GameScreen.getInstance().setCheckpoint(new Vector2(basic.get(0), basic.get(1)));
+
+		MapObject end = filterObjects(objects, "end").first();
+		properties = end.getProperties();
+		basic = getBasicProperties(properties);
+		GameScreen.getInstance().setEndpoint(new Rectangle(basic.get(0), basic.get(1), basic.get(2), basic.get(3)));
 	}
 
 	/**
-	 * TODO: SPAWNSYSTEM
 	 * 
 	 * @return spawnpoint
 	 */
@@ -92,7 +97,7 @@ public class Level {
 	 * 
 	 * @param properties
 	 *            the properties of the object
-	 * @return an array with x, y, width, height in this order
+	 * @return an array containing x, y, width, height in this order
 	 */
 	public Array<Float> getBasicProperties(MapProperties properties) {
 		Array<Float> basic = new Array<Float>();

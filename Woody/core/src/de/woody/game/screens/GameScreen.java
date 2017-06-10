@@ -44,6 +44,7 @@ public class GameScreen implements Screen {
 	// nr of the level
 	private int level;
 	private Vector2 checkpoint;
+	private Rectangle endpoint;
 	private UI controller;
 	public Level levelData;
 	private AssetManager asMa = WoodyGame.getGame().manager;
@@ -187,6 +188,7 @@ public class GameScreen implements Screen {
 		// checks collision then moves the player
 		player.move(delta);
 
+		//check and update the checkpoint
 		for (Rectangle rec : levelData.getCheckpoints()) {
 			if (player.getPlayerRec().overlaps(rec)) {
 				if (rec.getX() > checkpoint.x) {
@@ -194,7 +196,15 @@ public class GameScreen implements Screen {
 				}
 			}
 		}
+		
+		//check if player reached the end
+		if(endpoint.overlaps(player.getPlayerRec())) {
+			//TODO: Levelende screen
+			WoodyGame.getGame().setScreen(GameScreen.getInstance(level + 1));
+			return;
+		}
 
+		//move entities and check for player collision
 		for (Entity e : levelData.getEnemies()) {
 			e.move(delta);
 			if (e.checkCollision(player)) {
@@ -320,6 +330,10 @@ public class GameScreen implements Screen {
 	public Vector2 getCheckpoint() {
 		return checkpoint;
 	}
+	
+	public Rectangle getEndpoint() {
+		return endpoint;
+	}
 
 	public Animations getPlayerAnimationHandler() {
 		return playerAnimationHandler;
@@ -347,6 +361,10 @@ public class GameScreen implements Screen {
 
 	public void setCheckpoint(Vector2 vec) {
 		checkpoint = vec;
+	}
+
+	public void setEndpoint(Rectangle rec) {
+		endpoint = rec;
 	}
 
 	private void renderDebug() {

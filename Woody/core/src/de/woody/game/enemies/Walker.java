@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -17,7 +18,7 @@ public class Walker extends Entity{
 	private int restrX1, restrX2;
 	private boolean walkLeft = false;
 	private Vector2 velocity;
-	private final int texSplit;
+	private int texSplit = 48;
 	public Animation walkerRun;
 	private String texName;
 	float frameTime;
@@ -26,11 +27,16 @@ public class Walker extends Entity{
 	
 	private AssetManager asMa = WoodyGame.getGame().manager;
 	
-	public Walker(int hearts, Texture tex, int texSplit, String texName, int id, int x1, int x2, float x, float y, float width, float height) {
+	public Walker(int hearts, Texture tex, int id, int x1, int x2, float x, float y, float width, float height) {
 		super(hearts, tex, id,  x, y, width, height);
 		setRestriction(x1, x2);
-		this.texSplit = texSplit;
-		this.texName = texName;
+		
+		velocity = new Vector2(2.5F, 0);
+	}
+	
+	public Walker(int hearts, Animation tex, int id, int x1, int x2, float x, float y, float width, float height) {
+		super(hearts, tex, id,  x, y, width, height);
+		setRestriction(x1, x2);
 		
 		velocity = new Vector2(2.5F, 0);
 	}
@@ -55,8 +61,15 @@ public class Walker extends Entity{
 		restrX2 = (int) getBody().getX() + 1 + x2;
 	}
 	
-	public Animation animation(){
+	public Animation createAnimation(String name){
+		if(name.equals("rabbit"))
+		{
+			texName = "textures\rabbit.png";
+			texSplit= 48;
+		}
+		
 		walkerRunSheet = asMa.get(texName, Texture.class);
+
 		Array<TextureRegion> frames = new Array<TextureRegion>();
 		
 		final int j =  walkerRunSheet.getWidth()/texSplit;
@@ -74,9 +87,7 @@ public class Walker extends Entity{
 	public void move(float delta) {
 		if (delta > 0.1f)
 			delta = 0.1f;
-		
-		this.animation();
-		
+
 		float moveAmount = velocity.scl(delta).x;
 		
 		if (walkLeft) {
@@ -109,7 +120,7 @@ public class Walker extends Entity{
 
 	@Override
 	public void render(Batch batch) {
-		this.animation().getKeyFrame(frameTime);
-		//getBody().draw(batch);
+		getBody().draw(batch);
+		
 	}
 }

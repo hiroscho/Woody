@@ -122,11 +122,13 @@ public class Level {
 			int id = prop.get("id", Integer.class);
 			int x1 = prop.get("leftRoom", 0, Integer.class);
 			int x2 = prop.get("rightRoom", 0, Integer.class);
-			String texture = prop.get("texture", "textures/Rabbit.png", String.class);
+			String name = prop.get("name","rabbit", String.class);
+			
 			Array<Float> basic = getBasicProperties(prop);
-			Walker e = new Walker(1, WoodyGame.getGame().manager.get(texture, Texture.class), 45, "textures/Rabbit.png", id, x1, x2, basic.get(0),
+			Walker e = new Walker(1, e.createAnimation(name), id, x1, x2, basic.get(0),
 					basic.get(1), basic.get(2), basic.get(3));
 			enemies.add(e);
+			
 		}
 	}
 

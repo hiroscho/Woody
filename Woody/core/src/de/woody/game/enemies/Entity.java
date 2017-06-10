@@ -2,6 +2,7 @@ package de.woody.game.enemies;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
@@ -27,6 +28,15 @@ public abstract class Entity {
 	public Entity(int hearts, Texture tex, int id, float x, float y, float width, float height) {
 		life = new Lifesystem(hearts);
 		body = new Sprite(tex);
+		body.setBounds(x, y, width, height);
+		ID = id;
+		projectiles = new Array<Projectile>();
+	}
+	
+	public Entity(int hearts, Animation tex, int id, float x, float y, float width, float height) {
+		life = new Lifesystem(hearts);
+		float stateTime = 0;
+		body = new Sprite(tex.getKeyFrame(stateTime));
 		body.setBounds(x, y, width, height);
 		ID = id;
 		projectiles = new Array<Projectile>();

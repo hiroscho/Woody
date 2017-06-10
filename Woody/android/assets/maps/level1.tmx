@@ -64,6 +64,7 @@
   <object id="38" name="Walker" type="Walker" x="960" y="625" width="155" height="79">
    <properties>
     <property name="leftRoom" type="int" value="1"/>
+    <property name="name" value="rabbit"/>
     <property name="rightRoom" type="int" value="2"/>
    </properties>
   </object>

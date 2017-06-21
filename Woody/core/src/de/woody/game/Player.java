@@ -49,12 +49,15 @@ public class Player {
 
 	/** current coin score **/
 	private int coinAmount;
+
+	/** Cooldown for fightSound **/
+	public long fightCooldown = System.currentTimeMillis();
 	
 	/** Cooldown for the jumpSound **/
 	public long jumpSoundCooldown = System.currentTimeMillis();
 	
-	/** Cooldown for fightSound **/
-	public long fightCooldown = System.currentTimeMillis();
+	/**	Jump Counter for sound**/
+	public int jumpCounter = 0;
 
 	/** is player touching the ground **/
 	public boolean grounded = false;
@@ -397,7 +400,6 @@ public class Player {
 						position.y = tile.y + tile.height;
 						// set grounded to true to allow jumping
 						grounded = true;
-						// counter zurück
 						freeJump = true;
 						if (velocity.x != 0)
 							state = State.Walking;

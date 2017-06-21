@@ -49,9 +49,12 @@ public class Player {
 
 	/** current coin score **/
 	private int coinAmount;
-
-	/** Cooldown for the axe **/
-	public long axeCooldown = System.currentTimeMillis();
+	
+	/** Cooldown for the jumpSound **/
+	public long jumpSoundCooldown = System.currentTimeMillis();
+	
+	/** Cooldown for fightSound **/
+	public long fightCooldown = System.currentTimeMillis();
 
 	/** is player touching the ground **/
 	public boolean grounded = false;
@@ -132,8 +135,9 @@ public class Player {
 		if (button.getName().equals("Left") && !slidingRight) {
 			handleLeft();
 		}
-		// do we need to be grounded for use of this stuff?
-		if (button.getName().equals("Fight") && grounded) {
+
+		if (button.getName().equals("Fight")) {
+
 			handleFight();
 		}
 
@@ -158,18 +162,26 @@ public class Player {
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
+			
+			if ((fightCooldown + 150) < System.currentTimeMillis()) {
+				GameScreen.getInstance().getPunchSound().play();
+				fightCooldown = System.currentTimeMillis();
+				}
+			
 			handleFight();
 		}
 	}
 
 	private void handleJump() {
 		if (grounded || state == State.Swimming) {
+			GameScreen.getInstance().getJumpSound().play();
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
 			freeJump = true;
 		} else {
 			if (freeJump && velocity.y < 1) {
+				GameScreen.getInstance().getJumpSound().play();
 				velocity.y = JUMP_VELOCITY;
 				state = State.Jumping;
 				grounded = false;
@@ -193,7 +205,6 @@ public class Player {
 	}
 
 	private void handleFight() {
-
 		// use doors
 		Rectangle playerRect = getPlayerRec();
 
@@ -202,12 +213,13 @@ public class Player {
 			Door rec = it.next();
 			if (playerRect.overlaps(rec)) {
 				position.set(rec.getTeleportPoint());
+				GameScreen.getInstance().getDoorSound().play();
 			}
 		}
 		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 
-		if ((axeCooldown + 200) < System.currentTimeMillis()) {
-
+		if ((fightCooldown + 150) < System.currentTimeMillis()) {
+			GameScreen.getInstance().getPunchSound().play();
 			// hit enemies
 			Rectangle area = GameScreen.getInstance().levelData.rectPool.obtain();
 			area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
@@ -234,7 +246,7 @@ public class Player {
 				}
 			}
 
-			axeCooldown = System.currentTimeMillis();
+			fightCooldown = System.currentTimeMillis();
 		}
 	}
 
@@ -280,7 +292,9 @@ public class Player {
 		// unscale velocity
 		velocity.scl(1 / delta);
 
-		velocity.x *= DAMPING;
+		velocity.x *= DAMPING;	
+		
+		GameScreen.getInstance().getSnowSlideSound().stop();
 	}
 
 	public void deleteNearbyCoinBlocks() {
@@ -389,6 +403,7 @@ public class Player {
 						position.y = tile.y + tile.height;
 						// set grounded to true to allow jumping
 						grounded = true;
+						// counter zurück
 						freeJump = true;
 						if (velocity.x != 0)
 							state = State.Walking;
@@ -414,7 +429,7 @@ public class Player {
 		int x = (int) (position.x + WIDTH / 2);
 		int y = (int) (position.y);
 		resetParameters();
-		applyCollidableEffect(x, y);
+		applyLowerCollidableEffect(x, y);
 		// higher priority thus later
 		applyNonCollidableEffect(x, y);
 	}
@@ -513,23 +528,6 @@ public class Player {
 
 	}
 
-	private void applyCollidableEffect(int x, int y) {
-		applyLowerCollidableEffect(x, y);
-		applyUpperCollidableEffect(x, y);
-	}
-
-	private void applyUpperCollidableEffect(int x, int y) {
-		Cell upperCell = GameScreen.getInstance().levelData.getCollidable().getCell(x, (int)(y + HEIGHT + 0.6F));
-		String upper = "";
-		if (upperCell != null && upperCell.getTile() != null) {
-			upper = Level.getTileName(upperCell.getTile().getId());
-		}
-
-		if (upper.equals("iceLayer")) {
-			life.damagePlayer(1);
-		}
-	}
-
 	private void applyLowerCollidableEffect(int x, int y) {
 
 		Cell lowerCell = GameScreen.getInstance().levelData.getCollidable().getCell(x, y - 1);
@@ -553,6 +551,7 @@ public class Player {
 
 		// Ice
 		if (lower.equals("iceLayer")) {
+			GameScreen.getInstance().getSnowSlideSound().play();
 			if (velocity.x > 0) {
 				slidingRight = true;
 			}

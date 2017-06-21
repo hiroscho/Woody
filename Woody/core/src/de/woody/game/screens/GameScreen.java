@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -52,8 +53,20 @@ public class GameScreen implements Screen {
 	private ShapeRenderer debugRenderer;
 	private TiledMapTileLayer collidableTiles;
 	private TiledMapTileLayer nonCollidableTiles;
+	// Sound Variables
 	private Sound coinSound;
 	private Array<Button> pressedButtons;
+	private Music jumpSound;
+	private Music punchSound;
+	private Music doorSound;
+	private Music hurtSound;
+	private Music lavaSound;
+	private Music powerupSound;
+	private Music snowSlideSound;
+	//private Music 
+	private Music level1Music;
+	private Music level2Music;
+	private Music level3Music;
 
 	private GameScreen() {
 	}
@@ -96,9 +109,20 @@ public class GameScreen implements Screen {
 		// Entitytextures
 		// Nothing here yet
 
-		// Sounds
+		// load Sounds
 		asMa.load("audio/coin.wav", Sound.class);
+		asMa.load("audio/jump.wav", Music.class);
+		asMa.load("audio/punch.wav", Music.class);
+		asMa.load("audio/door.wav", Music.class);
+		asMa.load("audio/hurt.wav", Music.class);
+		asMa.load("audio/lava.mp3", Music.class);
+		asMa.load("audio/snowSlide.mp3", Music.class);
+		asMa.load("audio/powerup.wav", Music.class);
+		asMa.load("audio/level1.mp3", Music.class);
+		asMa.load("audio/level2.mp3", Music.class);
+		asMa.load("audio/level3.mp3", Music.class);
 
+		
 		while (!asMa.update()) {
 			asMa.update();
 		}
@@ -158,11 +182,27 @@ public class GameScreen implements Screen {
 		// load the textureRegions for animations
 		playerAnimationHandler = new Animations();
 
+		// assign sound
 		coinSound = asMa.get("audio/coin.wav", Sound.class);
-
+		jumpSound = asMa.get("audio/jump.wav", Music.class);
+		punchSound = asMa.get("audio/punch.wav", Music.class);
+		doorSound = asMa.get("audio/door.wav", Music.class);
+		hurtSound = asMa.get("audio/hurt.wav", Music.class);
+		lavaSound = asMa.get("audio/lava.mp3", Music.class);
+		powerupSound = asMa.get("audio/powerup.wav", Music.class);
+		snowSlideSound = asMa.get("audio/snowSlide.mp3", Music.class);
+		level1Music = asMa.get("audio/level1.mp3", Music.class);
+		level2Music = asMa.get("audio/level2.mp3", Music.class);		
+		level3Music = asMa.get("audio/level3.mp3", Music.class);	
+		
 		// call once for correct init, lifesystem does the remaining calls
 		getUI().updateHeartsImage(player.life.getHearts());
 		getUI().updateLifeImage(player.life.getLife());
+		
+		
+		//play level1 Music
+		level1Music.setLooping(true);
+		level1Music.play();
 	}
 
 	@Override
@@ -354,6 +394,50 @@ public class GameScreen implements Screen {
 	public Sound getCoinSound() {
 		return coinSound;
 	}
+	
+	public Music getJumpSound(){
+		return jumpSound;
+	}
+	
+	public Music getPunchSound() {
+		return punchSound;
+	}
+	
+	public Music getDoorSound() {
+		return doorSound;
+	}
+	
+	public Music getHurtSound() {
+		return hurtSound;
+	}
+	
+	public Music getLavaSound() {
+		return lavaSound;
+	}
+	
+	public Music getPowerupSound() {
+		return powerupSound;
+	}
+	
+	public Music getSnowSlideSound() {
+		return snowSlideSound;
+	}
+	
+	public Music getLevel1Music(){
+		return level1Music;
+	}
+	
+	public Music getLevel2Music(){
+		return level2Music;
+	}
+	
+	public Music getLevel3Music(){
+		return level3Music;
+	}
+	
+	
+	
+	//GameScreen.getInstance().getPushButtonSound().play();
 
 	public Array<Button> getPressedButtons() {
 		return pressedButtons;

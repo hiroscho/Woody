@@ -42,7 +42,7 @@ public class MainMenueScreen implements Screen {
 	
 	private AssetManager asMa = WoodyGame.getGame().manager;
 
-	MainMenueScreen() {}
+	private MainMenueScreen() {}
 	
 	public static MainMenueScreen getInstance() {
 		mainMenueScreen.batch = new SpriteBatch();

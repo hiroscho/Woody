@@ -2,7 +2,6 @@ package de.woody.game.enemies;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -24,15 +23,14 @@ public class Spitter extends Entity {
 			delta = 0.1f;
 
 		float leftEnd = GameScreen.getInstance().cameraBottomLeft().x;
-		if (getBody().getX() + getBody().getWidth() > leftEnd && getBody().getX() < leftEnd + WoodyGame.getGame().xTiles) {
+		if (getBody().getX() + getBody().getWidth() > leftEnd
+				&& getBody().getX() < leftEnd + WoodyGame.getGame().xTiles) {
 			if (cooldown) {
 				float x = getBody().getX() + getBody().getWidth() / 2 - getProjectileWidth() / 2;
 				float y = getBody().getY() + getBody().getHeight() / 2 - getProjectileHeight() / 2;
-				for (Vector2 velocity : getProjectileVelocity()) {
-					Projectile p = new Projectile(this, getProjectileTexture(), x, y, getProjectileWidth(),
-							getProjectileHeight(), velocity, getProjectileLifetime());
-					getProjectiles().add(p);
-				}
+				Projectile p = new Projectile(this, getProjectileTexture(), x, y, getProjectileWidth(),
+						getProjectileHeight(), getProjectileVelocity(), getProjectileLifetime());
+				getProjectiles().add(p);
 				cooldown(getProjectileFrequency());
 			}
 			for (Projectile p : getProjectiles()) {

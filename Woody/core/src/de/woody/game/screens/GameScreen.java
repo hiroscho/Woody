@@ -330,7 +330,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void hide() {
 		asMa.clear();
-		dispose();
+		//dispose();
 	}
 
 	@Override

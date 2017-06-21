@@ -162,12 +162,6 @@ public class Player {
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.ENTER) && grounded) {
-			
-			if ((fightCooldown + 150) < System.currentTimeMillis()) {
-				GameScreen.getInstance().getPunchSound().play();
-				fightCooldown = System.currentTimeMillis();
-				}
-			
 			handleFight();
 		}
 	}

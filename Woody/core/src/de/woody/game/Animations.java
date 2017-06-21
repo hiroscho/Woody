@@ -53,8 +53,8 @@ public class Animations {
 		woodyStandinv = new TextureRegion(sheetRun, 7 * 64, 0, 64, 94);
 
 		frames.clear();
-		for (int i = 0; i <= 1; i++)
-			frames.add(new TextureRegion(sheetRun, i * 57, 117, 57, 95));
+		for (int i = 14; i <= 15; i++)
+			frames.add(new TextureRegion(sheetRun, i * 64, 0, 64, 94));
 		woodyClimb = new Animation(0.2f, frames);
 
 		for (int i = 12; i <= 13; i++)

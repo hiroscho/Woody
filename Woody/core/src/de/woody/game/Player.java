@@ -47,6 +47,8 @@ public class Player {
 	/** can player jump in the air **/
 	public boolean freeJump;
 	public boolean attacking = false;
+	public boolean speedActivated = false;
+	public boolean jumpActivated = false;
 
 	/** current coin score **/
 	private int coinAmount;
@@ -222,7 +224,7 @@ public class Player {
 		}
 		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 
-		if ((fightCooldown + 1100) < System.currentTimeMillis()) {
+		if ((fightCooldown + 850) < System.currentTimeMillis()) {
 			attacking = true;
 			
 			Timer.schedule(new Task() {
@@ -231,7 +233,7 @@ public class Player {
 				{
 					attacking = false;
 				}
-			}, 1F);
+			}, 0.75F);
 				
 			GameScreen.getInstance().getPunchSound().play();
 			// hit enemies
@@ -326,6 +328,32 @@ public class Player {
 					if (Level.getTileName(cell.getTile().getId()).equals("coin")) {
 						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
 						addCoin();
+					}
+					else if(Level.getTileName(cell.getTile().getId()).equals("speedBoots"))
+					{
+						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
+						MAX_VELOCITY = MAX_VELOCITY *2;
+						speedActivated = true;
+						Timer.schedule(new Task() {
+							@Override
+							public void run()
+							{
+								speedActivated = false;
+							}
+						}, 5F);
+					}
+					else if(Level.getTileName(cell.getTile().getId()).equals("jumpBoots"))
+					{
+						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
+						JUMP_VELOCITY = JUMP_VELOCITY *2;
+						jumpActivated = true;
+						Timer.schedule(new Task() {
+							@Override
+							public void run()
+							{
+								jumpActivated = false;
+							}
+						}, 5F);
 					}
 				}
 			}
@@ -446,7 +474,14 @@ public class Player {
 	public void checkBlocks() {
 		int x = (int) (position.x + WIDTH / 2);
 		int y = (int) (position.y);
-		resetParameters();
+		if(speedActivated && jumpActivated)
+			resetParametersBoth();
+		else if(speedActivated)
+			resetParametersSpeed();
+		else if(jumpActivated)
+			resetParametersJump();
+		else
+			resetParameters();
 		applyUpperCollidableEffect(x, y);
 		applyLowerCollidableEffect(x, y);
 		// higher priority thus later
@@ -456,6 +491,30 @@ public class Player {
 	private void resetParameters() {
 		MAX_VELOCITY = 10F;
 		JUMP_VELOCITY = 15F;
+		DAMPING = 0.87F;
+		slidingRight = false;
+		slidingLeft = false;
+	}
+	
+	private void resetParametersSpeed() {
+		MAX_VELOCITY = 10F * 2;
+		JUMP_VELOCITY = 15F;
+		DAMPING = 0.87F;
+		slidingRight = false;
+		slidingLeft = false;
+	}
+	
+	private void resetParametersJump() {
+		MAX_VELOCITY = 10F;
+		JUMP_VELOCITY = 15F * 2;
+		DAMPING = 0.87F;
+		slidingRight = false;
+		slidingLeft = false;
+	}
+	
+	private void resetParametersBoth() {
+		MAX_VELOCITY = 10F * 2;
+		JUMP_VELOCITY = 15F * 2;
 		DAMPING = 0.87F;
 		slidingRight = false;
 		slidingLeft = false;
@@ -490,6 +549,13 @@ public class Player {
 			}
 			MAX_VELOCITY = MAX_VELOCITY / 3;
 			state = State.Climbing;
+			return;
+		}
+		
+		if(lower.equals("lifeBlock"))
+		{
+			life.setHearts(3);
+			lowerCell.setTile(null);
 			return;
 		}
 

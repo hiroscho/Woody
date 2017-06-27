@@ -52,5 +52,20 @@
         id ="9"
         name = "destructable">
     </tile>
+    
+    <tile
+        id ="10"
+        name = "speedBoots">
+    </tile>
+    
+    <tile
+        id ="11"
+        name = "jumpBoots">
+    </tile>
+    
+    <tile
+        id ="13"
+        name = "lifeBlock">
+    </tile>
 
 </tiles>

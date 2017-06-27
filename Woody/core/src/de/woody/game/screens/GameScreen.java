@@ -69,11 +69,8 @@ public class GameScreen implements Screen {
 	private Music powerupSound;
 	private Music snowSlideSound;
 	// private Music
-	private Music level1Music;
-	private Music level2Music;
-	private Music level3Music;
-	// Coin Counter Output
-	// private String yourScoreName;
+	private Music levelMusic;
+
 	BitmapFont coinsFont;
 
 	// Test  x6.8
@@ -134,9 +131,7 @@ public class GameScreen implements Screen {
 		asMa.load("audio/lava.mp3", Music.class);
 		asMa.load("audio/snowSlide.mp3", Music.class);
 		asMa.load("audio/powerup.wav", Music.class);
-		asMa.load("audio/level1.mp3", Music.class);
-		asMa.load("audio/level2.mp3", Music.class);
-		asMa.load("audio/level3.mp3", Music.class);
+		asMa.load("audio/level" + level + ".mp3", Music.class);
 
 		// Font
 		asMa.load("Fonts/V3.fnt", BitmapFont.class);
@@ -189,7 +184,8 @@ public class GameScreen implements Screen {
 		while (!asMa.isLoaded("maps/level" + level + ".tmx")) {
 			asMa.update();
 		}
-		map = asMa.get("maps/level" + level + ".tmx");
+	
+		map = asMa.get("maps/level" + level + ".tmx");   // Jeweils richtiges Level Laden
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.getGame().UNIT_SCALE);
 		levelData = new Level();
 		collidableTiles = Level.getTileLayer(map, "Collidable Tiles");
@@ -209,9 +205,9 @@ public class GameScreen implements Screen {
 		lavaSound = asMa.get("audio/lava.mp3", Music.class);
 		powerupSound = asMa.get("audio/powerup.wav", Music.class);
 		snowSlideSound = asMa.get("audio/snowSlide.mp3", Music.class);
-		level1Music = asMa.get("audio/level1.mp3", Music.class);
-		level2Music = asMa.get("audio/level2.mp3", Music.class);
-		level3Music = asMa.get("audio/level3.mp3", Music.class);
+		
+		levelMusic = asMa.get("audio/level" + level + ".mp3");
+		
 		// Font
 		coinsFont = asMa.get("Fonts/V3.fnt", BitmapFont.class);
 		
@@ -220,8 +216,8 @@ public class GameScreen implements Screen {
 		getUI().updateLifeImage(player.life.getLife());
 
 		// play level1 Music
-		level1Music.setLooping(true);
-		level1Music.play();
+		levelMusic.setLooping(true);
+		levelMusic.play();
 	}
 
 	@Override
@@ -514,20 +510,6 @@ public class GameScreen implements Screen {
 	public Music getSnowSlideSound() {
 		return snowSlideSound;
 	}
-
-	public Music getLevel1Music() {
-		return level1Music;
-	}
-
-	public Music getLevel2Music() {
-		return level2Music;
-	}
-
-	public Music getLevel3Music() {
-		return level3Music;
-	}
-
-	// GameScreen.getInstance().getPushButtonSound().play();
 
 	public Array<Button> getPressedButtons() {
 		return pressedButtons;

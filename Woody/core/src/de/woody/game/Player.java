@@ -447,6 +447,7 @@ public class Player {
 		int x = (int) (position.x + WIDTH / 2);
 		int y = (int) (position.y);
 		resetParameters();
+		applyUpperCollidableEffect(x, y);
 		applyLowerCollidableEffect(x, y);
 		// higher priority thus later
 		applyNonCollidableEffect(x, y);
@@ -607,6 +608,20 @@ public class Player {
 			}
 			savedPosition = new Vector2((int) position.x, (int) position.y);
 			vanish(y);
+		}
+	}
+	
+	private void applyUpperCollidableEffect(int x, int y) {
+		Cell upperCell = GameScreen.getInstance().levelData.getCollidable().getCell(x, y + 2);
+		String upper = "";
+		if (upperCell != null && upperCell.getTile() != null) {
+			upper = Level.getTileName(upperCell.getTile().getId());
+		}
+
+		// Damaging
+		if (upper.equals("iceLayer")) {
+			life.damagePlayer(1);
+			return;
 		}
 	}
 

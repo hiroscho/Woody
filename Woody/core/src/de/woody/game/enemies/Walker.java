@@ -65,6 +65,12 @@ public class Walker extends Entity {
 			texName = "textures/Rabbit.png";
 			texSplit = 45;
 		}
+		
+		else if (name.equals("raptor"))
+		{
+			texName= "textures/Raptor.png";
+			texSplit = 232;
+		}
 
 		asMa.load(texName, Texture.class);
 		asMa.finishLoading();

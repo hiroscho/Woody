@@ -46,6 +46,7 @@ public class Player {
 
 	/** can player jump in the air **/
 	public boolean freeJump;
+	public boolean attacking = false;
 
 	/** current coin score **/
 	private int coinAmount;
@@ -170,7 +171,7 @@ public class Player {
 	}
 
 	private void handleJump() {
-		if (grounded || state == State.Swimming) {
+		if ((grounded || state == State.Swimming) && !attacking) {
 			GameScreen.getInstance().getJumpSound().play();
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
@@ -188,17 +189,23 @@ public class Player {
 	}
 
 	private void handleRight() {
-		velocity.x = MAX_VELOCITY;
-		if (grounded)
-			state = State.Walking;
-		facesRight = true;
+		if(!attacking)
+		{
+			velocity.x = MAX_VELOCITY;
+			if (grounded)
+				state = State.Walking;
+			facesRight = true;
+		}
 	}
 
 	private void handleLeft() {
-		velocity.x = -MAX_VELOCITY;
-		if (grounded)
-			state = State.Walking;
-		facesRight = false;
+		if(!attacking)
+		{
+			velocity.x = -MAX_VELOCITY;
+			if (grounded)
+				state = State.Walking;
+			facesRight = false;
+		}
 	}
 
 	private void handleFight() {
@@ -215,7 +222,17 @@ public class Player {
 		}
 		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 
-		if ((fightCooldown + 150) < System.currentTimeMillis()) {
+		if ((fightCooldown + 1000) < System.currentTimeMillis()) {
+			attacking = true;
+			
+			Timer.schedule(new Task() {
+				@Override
+				public void run()
+				{
+					attacking = false;
+				}
+			}, 1);
+				
 			GameScreen.getInstance().getPunchSound().play();
 			// hit enemies
 			Rectangle area = GameScreen.getInstance().levelData.rectPool.obtain();
@@ -260,24 +277,27 @@ public class Player {
 		// clamp velocities to max
 		velocity.x = MathUtils.clamp(velocity.x, -MAX_VELOCITY, MAX_VELOCITY);
 		velocity.y = MathUtils.clamp(velocity.y, -JUMP_VELOCITY, JUMP_VELOCITY);
-
+		
 		// velocity is < 1, set it to 0
-		if (Math.abs(velocity.x) < 1) {
+		if (Math.abs(velocity.x) < 1 && !attacking) {
 			velocity.x = 0;
-			if (velocity.y == 0)
+			if (velocity.y == 0 && !attacking)
 				state = State.Standing;
 		}
 
 		// apply gravity if player isn't standing or grounded or climbing or
-		// swimming
-		if (!(state == State.Standing) || !grounded && !(state == State.Climbing) && !(state == State.Swimming)) {
+		// swimming or attacking or...
+		if (!(state == State.Standing) || !grounded && !(state == State.Climbing) && !(state == State.Swimming) && !attacking) {
 			velocity.add(0, WoodyGame.getGame().GRAVITY);
 			grounded = false;
 		}
 
-		if ((!grounded && (velocity.y < 0)) && !(state == State.Climbing) && !(state == State.Swimming)) {
+		if ((!grounded && (velocity.y < 0)) && !(state == State.Climbing) && !(state == State.Swimming) && !attacking) {
 			state = State.Falling;
 		}
+
+		if(attacking)
+			state = State.Attacking;
 
 		// scale to frame velocity
 		velocity.scl(delta);
@@ -401,8 +421,10 @@ public class Player {
 						// set grounded to true to allow jumping
 						grounded = true;
 						freeJump = true;
-						if (velocity.x != 0)
+						if (velocity.x != 0 && !attacking)
 							state = State.Walking;
+						else if (attacking)
+							state = State.Attacking;
 						else
 							state = State.Standing;
 					}

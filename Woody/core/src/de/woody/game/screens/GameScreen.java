@@ -118,6 +118,7 @@ public class GameScreen implements Screen {
 		
 		// Animations
 		asMa.load("textures/sheetRun.png", Texture.class);
+		asMa.load("textures/sheetAttack.png", Texture.class);
 
 		// Projectiletexture
 		asMa.load("textures/projectile.png", Texture.class);

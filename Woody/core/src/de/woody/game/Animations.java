@@ -19,6 +19,9 @@ public class Animations {
 	public TextureRegion woodyFall;
 	public Animation woodyClimb;
 	public Texture sheetRun;
+	
+	public Texture sheetAttack;
+	public Animation woodyAttack;
 
 	public Animation woodyRuninv;
 	public TextureRegion woodyStandinv;
@@ -32,6 +35,7 @@ public class Animations {
 
 	public Animations() {
 		sheetRun = asMa.get("textures/sheetRun.png", Texture.class);
+		sheetAttack = asMa.get("textures/sheetAttack.png", Texture.class);
 
 		// RUN not damaged
 		Array<TextureRegion> frames = new Array<TextureRegion>();
@@ -42,7 +46,13 @@ public class Animations {
 		woodyJump = new TextureRegion(sheetRun, 5 * 64, 0, 64, 94);
 		woodyFall = new TextureRegion(sheetRun, 6 * 64, 0, 64, 94);
 		woodyStand = new TextureRegion(sheetRun, 0, 0, 64, 94);
-
+		
+		//Attack
+		frames.clear();
+		for (int i = 0; i < 5; i++)
+			frames.add(new TextureRegion(sheetAttack, i * 90, 0, 90, 94));
+		woodyAttack = new Animation(0.25f, frames);
+		
 		// damaged
 		frames.clear();
 		for (int j = 7; j < 11; j++)
@@ -84,6 +94,10 @@ public class Animations {
 			case Climbing:
 				region = woodyClimb.getKeyFrame(stateTime);
 				break;
+				
+			case Attacking:
+				region = woodyAttack.getKeyFrame(stateTime);
+				break;
 
 			default:
 				region = woodyStand;
@@ -104,6 +118,10 @@ public class Animations {
 
 			case Climbing:
 				region = woodyClimb.getKeyFrame(stateTime);
+				break;
+				
+			case Attacking:
+				region = woodyAttack.getKeyFrame(stateTime);
 				break;
 
 			default:

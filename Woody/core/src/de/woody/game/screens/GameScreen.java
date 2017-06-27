@@ -113,7 +113,7 @@ public class GameScreen implements Screen {
 		
 		//Enemytetures
 		asMa.load("textures/Turret.png", Texture.class);
-		asMa.load("textures/Raptor2.png", Texture.class);
+		asMa.load("textures/Raptor.png", Texture.class);
 		asMa.load("textures/Rabbit.png", Texture.class);
 		
 		// Animations

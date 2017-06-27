@@ -222,7 +222,7 @@ public class Player {
 		}
 		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 
-		if ((fightCooldown + 600) < System.currentTimeMillis()) {
+		if ((fightCooldown + 1100) < System.currentTimeMillis()) {
 			attacking = true;
 			
 			Timer.schedule(new Task() {
@@ -231,7 +231,7 @@ public class Player {
 				{
 					attacking = false;
 				}
-			}, 0.5F);
+			}, 1F);
 				
 			GameScreen.getInstance().getPunchSound().play();
 			// hit enemies

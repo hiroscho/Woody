@@ -49,9 +49,13 @@ public class Animations {
 		
 		//Attack
 		frames.clear();
-		for (int i = 0; i < 5; i++)
-			frames.add(new TextureRegion(sheetAttack, i * 72, 0, 93, 94));
-		woodyAttack = new Animation(0.125f, frames);
+		frames.add(new TextureRegion(sheetAttack, 0, 0, 65, 94));
+		frames.add(new TextureRegion(sheetAttack, 65, 0, 74, 94));
+		frames.add(new TextureRegion(sheetAttack, 139, 0, 66, 94));
+		frames.add(new TextureRegion(sheetAttack, 205, 0, 69, 94));
+//		for (int i = 0; i < 5; i++)
+//			frames.add(new TextureRegion(sheetAttack, i * 70, 0, 93, 94));
+		woodyAttack = new Animation(0.25f, frames);
 		
 		// damaged
 		frames.clear();

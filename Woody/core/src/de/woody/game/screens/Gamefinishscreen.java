@@ -29,8 +29,9 @@ public class Gamefinishscreen implements Screen{
 	//Konstruktor
 	private Gamefinishscreen(){}
 	//Instance
-	public static Gamefinishscreen getInstance(){	
+	public static Gamefinishscreen getInstance(int level){	
 		gamefinishScreen.batch = new SpriteBatch();
+		gamefinishScreen.priorLevel = level;
 		return gamefinishScreen;
 	}
 	
@@ -71,7 +72,7 @@ public class Gamefinishscreen implements Screen{
 		if (Gdx.input.getX() < x + B_width && Gdx.input.getX() > x && Gdx.graphics.getHeight() - Gdx.input.getY() < y + B_height && Gdx.graphics.getHeight() - Gdx.input.getY() > y){
 			batch.draw(Nextlvl, x, y, B_width, B_height);
 			if(Gdx.input.justTouched()){
-				WoodyGame.getGame().setScreen(GameScreen.getInstance(priorLevel + 2));
+				WoodyGame.getGame().setScreen(GameScreen.getInstance(priorLevel + 1));
 			}
 		}else{
 			batch.draw(Nextlvl, x, y, B_width, B_height);
@@ -83,7 +84,7 @@ public class Gamefinishscreen implements Screen{
 		if (Gdx.input.getX() < a + B_width && Gdx.input.getX() > a && Gdx.graphics.getHeight() - Gdx.input.getY() < b + B_height && Gdx.graphics.getHeight() - Gdx.input.getY() > b){
 			batch.draw(Replay, a, b, B_width, B_height);
 			if(Gdx.input.justTouched()){
-				WoodyGame.getGame().setScreen(GameScreen.getInstance(priorLevel +1));
+				WoodyGame.getGame().setScreen(GameScreen.getInstance(priorLevel));
 			}
 		}else{
 			batch.draw(Replay, a, b, B_width, B_height);

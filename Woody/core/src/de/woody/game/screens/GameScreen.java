@@ -61,13 +61,13 @@ public class GameScreen implements Screen {
 	// Sound Variables
 	private Sound coinSound;
 	private Array<Button> pressedButtons;
-	private Music jumpSound;
-	private Music punchSound;
-	private Music doorSound;
-	private Music hurtSound;
-	private Music lavaSound;
-	private Music powerupSound;
-	private Music snowSlideSound;
+	private Sound jumpSound;
+	private Sound punchSound;
+	private Sound doorSound;
+	private Sound hurtSound;
+	private Sound lavaSound;
+	private Sound powerupSound;
+	private Sound snowSlideSound;
 	// private Music
 	private Music level1Music;
 	private Music level2Music;
@@ -127,13 +127,13 @@ public class GameScreen implements Screen {
 
 		// load Sounds
 		asMa.load("audio/coin.wav", Sound.class);
-		asMa.load("audio/jump.wav", Music.class);
-		asMa.load("audio/punch.wav", Music.class);
-		asMa.load("audio/door.wav", Music.class);
-		asMa.load("audio/hurt.wav", Music.class);
-		asMa.load("audio/lava.mp3", Music.class);
-		asMa.load("audio/snowSlide.mp3", Music.class);
-		asMa.load("audio/powerup.wav", Music.class);
+		asMa.load("audio/jump.wav", Sound.class);
+		asMa.load("audio/punch.wav", Sound.class);
+		asMa.load("audio/door.wav", Sound.class);
+		asMa.load("audio/hurt.wav", Sound.class);
+		asMa.load("audio/lava.mp3", Sound.class);
+		asMa.load("audio/snowSlide.mp3", Sound.class);
+		asMa.load("audio/powerup.wav", Sound.class);
 		asMa.load("audio/level1.mp3", Music.class);
 		asMa.load("audio/level2.mp3", Music.class);
 		asMa.load("audio/level3.mp3", Music.class);
@@ -202,13 +202,13 @@ public class GameScreen implements Screen {
 
 		// assign sound
 		coinSound = asMa.get("audio/coin.wav", Sound.class);
-		jumpSound = asMa.get("audio/jump.wav", Music.class);
-		punchSound = asMa.get("audio/punch.wav", Music.class);
-		doorSound = asMa.get("audio/door.wav", Music.class);
-		hurtSound = asMa.get("audio/hurt.wav", Music.class);
-		lavaSound = asMa.get("audio/lava.mp3", Music.class);
-		powerupSound = asMa.get("audio/powerup.wav", Music.class);
-		snowSlideSound = asMa.get("audio/snowSlide.mp3", Music.class);
+		jumpSound = asMa.get("audio/jump.wav", Sound.class);
+		punchSound = asMa.get("audio/punch.wav", Sound.class);
+		doorSound = asMa.get("audio/door.wav", Sound.class);
+		hurtSound = asMa.get("audio/hurt.wav", Sound.class);
+		lavaSound = asMa.get("audio/lava.mp3", Sound.class);
+		powerupSound = asMa.get("audio/powerup.wav", Sound.class);
+		snowSlideSound = asMa.get("audio/snowSlide.mp3", Sound.class);
 		level1Music = asMa.get("audio/level1.mp3", Music.class);
 		level2Music = asMa.get("audio/level2.mp3", Music.class);
 		level3Music = asMa.get("audio/level3.mp3", Music.class);
@@ -221,7 +221,10 @@ public class GameScreen implements Screen {
 
 		// play level1 Music
 		level1Music.setLooping(true);
-		level1Music.play();
+		if(WoodyGame.getGame().VOLUME > 0.0f) {
+			level1Music.setVolume(WoodyGame.getGame().VOLUME);
+			level1Music.play();
+		}
 	}
 
 	@Override
@@ -259,7 +262,7 @@ public class GameScreen implements Screen {
 		//check if player reached the end
 		if(endpoint.overlaps(player.getPlayerRec())) {
 			//TODO: Levelende screen
-			WoodyGame.getGame().setScreen(GameScreen.getInstance(level + 1));
+			WoodyGame.getGame().setScreen(Gamefinishscreen.getInstance(level));
 			return;
 		}
 
@@ -487,31 +490,31 @@ public class GameScreen implements Screen {
 		return coinSound;
 	}
 
-	public Music getJumpSound() {
+	public Sound getJumpSound() {
 		return jumpSound;
 	}
 
-	public Music getPunchSound() {
+	public Sound getPunchSound() {
 		return punchSound;
 	}
 
-	public Music getDoorSound() {
+	public Sound getDoorSound() {
 		return doorSound;
 	}
 
-	public Music getHurtSound() {
+	public Sound getHurtSound() {
 		return hurtSound;
 	}
 
-	public Music getLavaSound() {
+	public Sound getLavaSound() {
 		return lavaSound;
 	}
 
-	public Music getPowerupSound() {
+	public Sound getPowerupSound() {
 		return powerupSound;
 	}
 
-	public Music getSnowSlideSound() {
+	public Sound getSnowSlideSound() {
 		return snowSlideSound;
 	}
 

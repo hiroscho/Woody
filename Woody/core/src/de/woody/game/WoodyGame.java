@@ -34,6 +34,8 @@ public class WoodyGame extends Game {
 
 	/** tile id and their corresponding name, change it in TileNames.xml **/
 	public final ArrayMap<Integer, String> idNames = new ArrayMap<Integer, String>();
+	
+	public float VOLUME = 0.5f;
 
 	public AssetManager manager;
 

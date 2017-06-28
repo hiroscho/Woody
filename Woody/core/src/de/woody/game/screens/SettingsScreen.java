@@ -101,13 +101,12 @@ public class SettingsScreen implements Screen{
 		switch(check){
 		
 		case 0:{
-			
-			//SOUND-ON FUNKTION PASTE HERE
+			WoodyGame.getGame().VOLUME = 0.5f;
 			batch.draw(soundon, b, c, TITEL_WIDTH, TITEL_HEIGHT);
 			break;
 		}
 		case 1:{
-			//SOUND-OFF FUNKTION PASTE HERE
+			WoodyGame.getGame().VOLUME = 0.0f;
 			batch.draw(soundoff, b, c, TITEL_WIDTH, TITEL_HEIGHT);
 			break;
 		}

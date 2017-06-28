@@ -87,7 +87,7 @@ public class Lifesystem {
 			}
 			hearts -= damage;
 			GameScreen.getInstance().getUI().updateHeartsImage(hearts);
-			GameScreen.getInstance().getHurtSound().play();
+			GameScreen.getInstance().getHurtSound().play(WoodyGame.getGame().VOLUME);
 		}
 		return hearts;
 	}

@@ -52,11 +52,11 @@ public class Player {
 
 	/** Cooldown for fightSound **/
 	public long fightCooldown = System.currentTimeMillis();
-	
+
 	/** Cooldown for the jumpSound **/
 	public long jumpSoundCooldown = System.currentTimeMillis();
-	
-	/**	Jump Counter for sound**/
+
+	/** Jump Counter for sound **/
 	public int jumpCounter = 0;
 
 	/** is player touching the ground **/
@@ -113,7 +113,7 @@ public class Player {
 
 	private void addCoin() {
 		coinAmount++;
-		GameScreen.getInstance().getCoinSound().play();
+		GameScreen.getInstance().getCoinSound().play(WoodyGame.getGame().VOLUME);
 	}
 
 	private void setCoinAmount(int x) {
@@ -170,15 +170,26 @@ public class Player {
 	}
 
 	private void handleJump() {
+		Cell lowerCell = GameScreen.getInstance().levelData.getNonCollidable().getCell((int) (position.x + WIDTH / 2),
+				(int) position.y);
+		String lower = "";
+		if (lowerCell != null && lowerCell.getTile() != null) {
+			lower = Level.getTileName(lowerCell.getTile().getId());
+		}
 		if (grounded || state == State.Swimming) {
-			GameScreen.getInstance().getJumpSound().play();
+
+			if (!(lower.equals("water") || lower.equals("lava"))) {
+				GameScreen.getInstance().getJumpSound().play(WoodyGame.getGame().VOLUME);
+			}
 			velocity.y = JUMP_VELOCITY;
 			state = State.Jumping;
 			grounded = false;
 			freeJump = true;
 		} else {
 			if (freeJump && velocity.y < 1) {
-				GameScreen.getInstance().getJumpSound().play();
+				if (!(lower.equals("water") || lower.equals("lava"))) {
+					GameScreen.getInstance().getJumpSound().play(WoodyGame.getGame().VOLUME);
+				}
 				velocity.y = JUMP_VELOCITY;
 				state = State.Jumping;
 				grounded = false;
@@ -210,13 +221,13 @@ public class Player {
 			Door rec = it.next();
 			if (playerRect.overlaps(rec)) {
 				position.set(rec.getTeleportPoint());
-				GameScreen.getInstance().getDoorSound().play();
+				GameScreen.getInstance().getDoorSound().play(WoodyGame.getGame().VOLUME);
 			}
 		}
 		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 
 		if ((fightCooldown + 150) < System.currentTimeMillis()) {
-			GameScreen.getInstance().getPunchSound().play();
+			GameScreen.getInstance().getPunchSound().play(WoodyGame.getGame().VOLUME);
 			// hit enemies
 			Rectangle area = GameScreen.getInstance().levelData.rectPool.obtain();
 			area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
@@ -289,8 +300,8 @@ public class Player {
 		// unscale velocity
 		velocity.scl(1 / delta);
 
-		velocity.x *= DAMPING;	
-		
+		velocity.x *= DAMPING;
+
 		GameScreen.getInstance().getSnowSlideSound().stop();
 	}
 
@@ -547,7 +558,7 @@ public class Player {
 
 		// Ice
 		if (lower.equals("iceLayer")) {
-			GameScreen.getInstance().getSnowSlideSound().play();
+			GameScreen.getInstance().getSnowSlideSound().play(WoodyGame.getGame().VOLUME);
 			if (velocity.x > 0) {
 				slidingRight = true;
 			}

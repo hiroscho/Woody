@@ -69,14 +69,11 @@ public class GameScreen implements Screen {
 	private Sound powerupSound;
 	private Sound snowSlideSound;
 	// private Music
-	private Music level1Music;
-	private Music level2Music;
-	private Music level3Music;
-	// Coin Counter Output
-	// private String yourScoreName;
+	private Music levelMusic;
+
 	BitmapFont coinsFont;
 
-	// Test  x6.8
+	// Test x6.8
 	float sclx = 4.3f, scly = 4.3f, px = 6.5f, py = 7.45f;
 
 	private GameScreen() {
@@ -110,12 +107,12 @@ public class GameScreen implements Screen {
 
 		// Playertexture
 		asMa.load("textures/Woddy.png", Texture.class);
-		
-		//Enemytetures
+
+		// Enemytetures
 		asMa.load("textures/Turret.png", Texture.class);
 		asMa.load("textures/Raptor2.png", Texture.class);
 		asMa.load("textures/Rabbit.png", Texture.class);
-		
+
 		// Animations
 		asMa.load("textures/sheetRun.png", Texture.class);
 
@@ -134,9 +131,7 @@ public class GameScreen implements Screen {
 		asMa.load("audio/lava.mp3", Sound.class);
 		asMa.load("audio/snowSlide.mp3", Sound.class);
 		asMa.load("audio/powerup.wav", Sound.class);
-		asMa.load("audio/level1.mp3", Music.class);
-		asMa.load("audio/level2.mp3", Music.class);
-		asMa.load("audio/level3.mp3", Music.class);
+		asMa.load("audio/level" + level + ".mp3", Music.class);
 
 		// Font
 		asMa.load("Fonts/V3.fnt", BitmapFont.class);
@@ -189,7 +184,9 @@ public class GameScreen implements Screen {
 		while (!asMa.isLoaded("maps/level" + level + ".tmx")) {
 			asMa.update();
 		}
-		map = asMa.get("maps/level" + level + ".tmx");
+
+		map = asMa.get("maps/level" + level + ".tmx"); // Jeweils richtiges
+														// Level Laden
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.getGame().UNIT_SCALE);
 		levelData = new Level();
 		collidableTiles = Level.getTileLayer(map, "Collidable Tiles");
@@ -209,22 +206,23 @@ public class GameScreen implements Screen {
 		lavaSound = asMa.get("audio/lava.mp3", Sound.class);
 		powerupSound = asMa.get("audio/powerup.wav", Sound.class);
 		snowSlideSound = asMa.get("audio/snowSlide.mp3", Sound.class);
-		level1Music = asMa.get("audio/level1.mp3", Music.class);
-		level2Music = asMa.get("audio/level2.mp3", Music.class);
-		level3Music = asMa.get("audio/level3.mp3", Music.class);
+		levelMusic = asMa.get("audio/level" + level + ".mp3");
+
 		// Font
 		coinsFont = asMa.get("Fonts/V3.fnt", BitmapFont.class);
-		
+
 		// call once for correct init, lifesystem does the remaining calls
 		getUI().updateHeartsImage(player.life.getHearts());
 		getUI().updateLifeImage(player.life.getLife());
 
 		// play level1 Music
-		level1Music.setLooping(true);
-		if(WoodyGame.getGame().VOLUME > 0.0f) {
-			level1Music.setVolume(WoodyGame.getGame().VOLUME);
-			level1Music.play();
+
+		levelMusic.setLooping(true);
+		if (WoodyGame.getGame().VOLUME > 0.0f) {
+			levelMusic.setVolume(WoodyGame.getGame().VOLUME);
+			levelMusic.play();
 		}
+
 	}
 
 	@Override
@@ -250,7 +248,7 @@ public class GameScreen implements Screen {
 		// checks collision then moves the player
 		player.move(delta);
 
-		//check and update the checkpoint
+		// check and update the checkpoint
 		for (Rectangle rec : levelData.getCheckpoints()) {
 			if (player.getPlayerRec().overlaps(rec)) {
 				if (rec.getX() > checkpoint.x) {
@@ -258,15 +256,15 @@ public class GameScreen implements Screen {
 				}
 			}
 		}
-		
-		//check if player reached the end
-		if(endpoint.overlaps(player.getPlayerRec())) {
-			//TODO: Levelende screen
+
+		// check if player reached the end
+		if (endpoint.overlaps(player.getPlayerRec())) {
+			// TODO: Levelende screen
 			WoodyGame.getGame().setScreen(Gamefinishscreen.getInstance(level));
 			return;
 		}
 
-		//move entities and check for player collision
+		// move entities and check for player collision
 		for (Entity e : levelData.getEnemies()) {
 			e.move(delta);
 			if (e.checkCollision(player)) {
@@ -334,50 +332,49 @@ public class GameScreen implements Screen {
 
 		// Perform ui logic
 		controller.getStage().act(Gdx.graphics.getDeltaTime());
-		
-		//check coin Amount
-		if(player.getCoinAmount() < 10 ){
+
+		// check coin Amount
+		if (player.getCoinAmount() < 10) {
 			sclx = 4.3f;
 			scly = 4.3f;
 			px = 6.8f;
 			py = 7.45f;
 		}
-		
-		if((player.getCoinAmount() < 100 ) && (player.getCoinAmount() > 9)){
+
+		if ((player.getCoinAmount() < 100) && (player.getCoinAmount() > 9)) {
 			sclx = 4.3f;
 			scly = 4.3f;
 			px = 6.41f;
 			py = 7.45f;
 		}
-		
-		if((player.getCoinAmount() < 1000) && (player.getCoinAmount() > 99 )){
+
+		if ((player.getCoinAmount() < 1000) && (player.getCoinAmount() > 99)) {
 			sclx = 3.5f;
 			scly = 4f;
 			px = 6.22f;
 			py = 7.45f;
 		}
-		
-		if((player.getCoinAmount() < 10000) && (player.getCoinAmount() > 999 )){
+
+		if ((player.getCoinAmount() < 10000) && (player.getCoinAmount() > 999)) {
 			sclx = 2.66f;
 			scly = 4.0f;
 			px = 6.22f;
 			py = 7.45f;
 		}
-		if((player.getCoinAmount() < 100000) && (player.getCoinAmount() > 9999 )){
+		if ((player.getCoinAmount() < 100000) && (player.getCoinAmount() > 9999)) {
 			sclx = 2.0f;
 			scly = 4.0f;
 			px = 6.284f;
 			py = 7.45f;
 		}
-		
-		if((player.getCoinAmount() < 1000000) && (player.getCoinAmount() > 99999 )){
+
+		if ((player.getCoinAmount() < 1000000) && (player.getCoinAmount() > 99999)) {
 			sclx = 1.5f;
 			scly = 4.0f;
 			px = 6.4f;
 			py = 7.45f;
 		}
-		
-		
+
 		// Draw the ui
 		controller.getStage().draw();
 		if (sclx != 0f && scly != 0f) {
@@ -385,7 +382,8 @@ public class GameScreen implements Screen {
 		}
 		controller.getStage().getBatch().begin();
 		coinsFont.draw(controller.getStage().getBatch(), Integer.toString(player.getCoinAmount()),
-				px / WoodyGame.getGame().UNIT_SCALE, py / WoodyGame.getGame().UNIT_SCALE, 1.0f / WoodyGame.getGame().UNIT_SCALE, Align.left, true);
+				px / WoodyGame.getGame().UNIT_SCALE, py / WoodyGame.getGame().UNIT_SCALE,
+				1.0f / WoodyGame.getGame().UNIT_SCALE, Align.left, true);
 		controller.getStage().getBatch().end();
 
 		// render debug rectangles
@@ -425,7 +423,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void hide() {
 		asMa.clear();
-		//dispose();
+		// dispose();
 	}
 
 	@Override
@@ -465,7 +463,7 @@ public class GameScreen implements Screen {
 	public Vector2 getCheckpoint() {
 		return checkpoint;
 	}
-	
+
 	public Rectangle getEndpoint() {
 		return endpoint;
 	}
@@ -517,20 +515,6 @@ public class GameScreen implements Screen {
 	public Sound getSnowSlideSound() {
 		return snowSlideSound;
 	}
-
-	public Music getLevel1Music() {
-		return level1Music;
-	}
-
-	public Music getLevel2Music() {
-		return level2Music;
-	}
-
-	public Music getLevel3Music() {
-		return level3Music;
-	}
-
-	// GameScreen.getInstance().getPushButtonSound().play();
 
 	public Array<Button> getPressedButtons() {
 		return pressedButtons;

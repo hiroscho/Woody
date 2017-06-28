@@ -75,7 +75,10 @@ public class MainMenueScreen implements Screen {
 		//Background Music
 		menueMusic = asMa.get("audio/mainTheme.mp3", Music.class);
 		menueMusic.setLooping(true);
-		menueMusic.play();
+		if (WoodyGame.getGame().VOLUME > 0.0f) {
+			menueMusic.setVolume(WoodyGame.getGame().VOLUME);
+			menueMusic.play();
+		}
 	}
 
 	@Override

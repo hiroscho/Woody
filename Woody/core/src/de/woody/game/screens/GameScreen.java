@@ -110,11 +110,12 @@ public class GameScreen implements Screen {
 
 		// Enemytetures
 		asMa.load("textures/Turret.png", Texture.class);
-		asMa.load("textures/Raptor2.png", Texture.class);
+		asMa.load("textures/Raptor.png", Texture.class);
 		asMa.load("textures/Rabbit.png", Texture.class);
 
 		// Animations
 		asMa.load("textures/sheetRun.png", Texture.class);
+		asMa.load("textures/sheetAttack.png", Texture.class);
 
 		// Projectiletexture
 		asMa.load("textures/projectile.png", Texture.class);
@@ -322,7 +323,7 @@ public class GameScreen implements Screen {
 				camera.position.x = WoodyGame.getGame().xTiles / 2;
 			}
 			if (player.life.getLife() >= 0) {
-				player.life.setHearts(5); // TEMPORÄR!!!!!!!!!!!!!
+				player.life.setHearts(3);
 				player.life.setIsAlive(true);
 			} else {
 				WoodyGame.getGame().setScreen(GameoverScreen.getInstance(level));

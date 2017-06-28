@@ -46,6 +46,9 @@ public class Player {
 
 	/** can player jump in the air **/
 	public boolean freeJump;
+	public boolean attacking = false;
+	public boolean speedActivated = false;
+	public boolean jumpActivated = false;
 
 	/** current coin score **/
 	private int coinAmount;
@@ -176,7 +179,7 @@ public class Player {
 		if (lowerCell != null && lowerCell.getTile() != null) {
 			lower = Level.getTileName(lowerCell.getTile().getId());
 		}
-		if (grounded || state == State.Swimming) {
+		if ((grounded || state == State.Swimming) && !attacking) {
 
 			if (!(lower.equals("water") || lower.equals("lava"))) {
 				GameScreen.getInstance().getJumpSound().play(WoodyGame.getGame().VOLUME);
@@ -199,17 +202,21 @@ public class Player {
 	}
 
 	private void handleRight() {
-		velocity.x = MAX_VELOCITY;
-		if (grounded)
-			state = State.Walking;
-		facesRight = true;
+		if (!attacking) {
+			velocity.x = MAX_VELOCITY;
+			if (grounded)
+				state = State.Walking;
+			facesRight = true;
+		}
 	}
 
 	private void handleLeft() {
-		velocity.x = -MAX_VELOCITY;
-		if (grounded)
-			state = State.Walking;
-		facesRight = false;
+		if (!attacking) {
+			velocity.x = -MAX_VELOCITY;
+			if (grounded)
+				state = State.Walking;
+			facesRight = false;
+		}
 	}
 
 	private void handleFight() {
@@ -226,14 +233,26 @@ public class Player {
 		}
 		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 
-		if ((fightCooldown + 150) < System.currentTimeMillis()) {
+		if ((fightCooldown + 850) < System.currentTimeMillis()) {
+			attacking = true;
+
+			Timer.schedule(new Task() {
+				@Override
+				public void run() {
+					attacking = false;
+				}
+			}, 0.75F);
+
 			GameScreen.getInstance().getPunchSound().play(WoodyGame.getGame().VOLUME);
 			// hit enemies
 			Rectangle area = GameScreen.getInstance().levelData.rectPool.obtain();
+			Rectangle area2 = GameScreen.getInstance().levelData.rectPool.obtain();
 			area.set(position.x + WIDTH, position.y, 1.5F, 1.5F);
+			area2.set(position.x - 1.5f, position.y, 1.5F, 1.5F);
 
 			for (Entity e : GameScreen.getInstance().levelData.getEnemies()) {
 				e.checkHit(area);
+				e.checkHit(area2);
 			}
 
 			// destroy blocks
@@ -273,22 +292,26 @@ public class Player {
 		velocity.y = MathUtils.clamp(velocity.y, -JUMP_VELOCITY, JUMP_VELOCITY);
 
 		// velocity is < 1, set it to 0
-		if (Math.abs(velocity.x) < 1) {
+		if (Math.abs(velocity.x) < 1 && !attacking) {
 			velocity.x = 0;
-			if (velocity.y == 0)
+			if (velocity.y == 0 && !attacking)
 				state = State.Standing;
 		}
 
 		// apply gravity if player isn't standing or grounded or climbing or
-		// swimming
-		if (!(state == State.Standing) || !grounded && !(state == State.Climbing) && !(state == State.Swimming)) {
+		// swimming or attacking or...
+		if (!(state == State.Standing)
+				|| !grounded && !(state == State.Climbing) && !(state == State.Swimming) && !attacking) {
 			velocity.add(0, WoodyGame.getGame().GRAVITY);
 			grounded = false;
 		}
 
-		if ((!grounded && (velocity.y < 0)) && !(state == State.Climbing) && !(state == State.Swimming)) {
+		if ((!grounded && (velocity.y < 0)) && !(state == State.Climbing) && !(state == State.Swimming) && !attacking) {
 			state = State.Falling;
 		}
+
+		if (attacking)
+			state = State.Attacking;
 
 		// scale to frame velocity
 		velocity.scl(delta);
@@ -317,6 +340,26 @@ public class Player {
 					if (Level.getTileName(cell.getTile().getId()).equals("coin")) {
 						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
 						addCoin();
+					} else if (Level.getTileName(cell.getTile().getId()).equals("speedBoots")) {
+						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
+						MAX_VELOCITY = MAX_VELOCITY * 2;
+						speedActivated = true;
+						Timer.schedule(new Task() {
+							@Override
+							public void run() {
+								speedActivated = false;
+							}
+						}, 5F);
+					} else if (Level.getTileName(cell.getTile().getId()).equals("jumpBoots")) {
+						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
+						JUMP_VELOCITY = JUMP_VELOCITY * 2;
+						jumpActivated = true;
+						Timer.schedule(new Task() {
+							@Override
+							public void run() {
+								jumpActivated = false;
+							}
+						}, 5F);
 					}
 				}
 			}
@@ -412,8 +455,10 @@ public class Player {
 						// set grounded to true to allow jumping
 						grounded = true;
 						freeJump = true;
-						if (velocity.x != 0)
+						if (velocity.x != 0 && !attacking)
 							state = State.Walking;
+						else if (attacking)
+							state = State.Attacking;
 						else
 							state = State.Standing;
 					}
@@ -435,7 +480,14 @@ public class Player {
 	public void checkBlocks() {
 		int x = (int) (position.x + WIDTH / 2);
 		int y = (int) (position.y);
-		resetParameters();
+		if (speedActivated && jumpActivated)
+			resetParametersBoth();
+		else if (speedActivated)
+			resetParametersSpeed();
+		else if (jumpActivated)
+			resetParametersJump();
+		else
+			resetParameters();
 		applyLowerCollidableEffect(x, y);
 		// higher priority thus later
 		applyNonCollidableEffect(x, y);
@@ -444,6 +496,30 @@ public class Player {
 	private void resetParameters() {
 		MAX_VELOCITY = 10F;
 		JUMP_VELOCITY = 15F;
+		DAMPING = 0.87F;
+		slidingRight = false;
+		slidingLeft = false;
+	}
+
+	private void resetParametersSpeed() {
+		MAX_VELOCITY = 10F * 2;
+		JUMP_VELOCITY = 15F;
+		DAMPING = 0.87F;
+		slidingRight = false;
+		slidingLeft = false;
+	}
+
+	private void resetParametersJump() {
+		MAX_VELOCITY = 10F;
+		JUMP_VELOCITY = 15F * 2;
+		DAMPING = 0.87F;
+		slidingRight = false;
+		slidingLeft = false;
+	}
+
+	private void resetParametersBoth() {
+		MAX_VELOCITY = 10F * 2;
+		JUMP_VELOCITY = 15F * 2;
 		DAMPING = 0.87F;
 		slidingRight = false;
 		slidingLeft = false;
@@ -478,6 +554,12 @@ public class Player {
 			}
 			MAX_VELOCITY = MAX_VELOCITY / 3;
 			state = State.Climbing;
+			return;
+		}
+
+		if (lower.equals("lifeBlock")) {
+			life.setHearts(3);
+			lowerCell.setTile(null);
 			return;
 		}
 

@@ -22,23 +22,8 @@ public class LevelSelect implements Screen{
 	public float xthirteen, xfourteen, xfiveteen;
 	
 	//Level Stages
-	private final int MAX = 3;
-	private final int MIN = 1;
-	public int check = 1;
+	public static int check = 1;
 	
-	public boolean checking(){
-		if(check > MAX){
-			check = MAX;
-//			System.out.println("Stay on the right "+check);
-			return false;
-		}else if(check < MIN){
-			check = MIN;
-//			System.out.println("Stay on the left"+ check);
-			return false;
-		}else{
-			return true;
-		}
-	}
 	
 	private Texture one;
 	private Texture two;

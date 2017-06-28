@@ -30,36 +30,31 @@ public class Swipe implements GestureListener {
 
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
-		if (Math.abs(velocityX) > Math.abs(velocityY)) {
-			if (velocityX > 10) { // 0
-				LevelSelect.getInstance().check--;
-				if (LevelSelect.getInstance().checking()) {
+		if(Math.abs(velocityX)>Math.abs(velocityY)){
+			if(velocityX>0){
+				if(LevelSelect.check <= 1){
 					flinged = false;
-//					System.out.println("RECHTS STOP STOP");
-				} else {
+					LevelSelect.check = 1;
+				}else{
 					flinged = true;
-//					System.out.println("RECHTS " + LevelSelect.getInstance().check);
-					return true;
+					LevelSelect.check--;
+					System.out.println(LevelSelect.check);
 				}
-			} else if (velocityX < -10) { // 0
-				LevelSelect.getInstance().check++;
-				if (LevelSelect.getInstance().checking()) {
-//					System.out.println("LINKS STOP STOP");
-					flinged = false;
-				} else {
-					flinged = true;
-//					System.out.println("LINKS " + LevelSelect.getInstance().check);
-					return true;
-				}
-			} else {
-				flinged = false;
 			}
-		} else {
-
-			// Ignore the input, because we don't care about up/down swipes.
+			if(velocityX<0){
+				if(LevelSelect.check >= 3){
+					flinged = false;
+					LevelSelect.check = 3;
+					System.out.println(LevelSelect.check);
+				}else{
+					flinged = true;
+					LevelSelect.check++;
+					System.out.println(LevelSelect.check);
+				}
+			}
 		}
-		return false; // true
-	}
+		return false; //true
+}
 
 	@Override
 	public boolean pan(float x, float y, float deltaX, float deltaY) {

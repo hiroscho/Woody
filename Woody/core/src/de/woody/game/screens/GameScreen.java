@@ -391,8 +391,6 @@ public class GameScreen implements Screen {
 		if (debug) {
 			renderDebug();
 		}
-		// Swipe-Check
-		LevelSelect.getInstance().checking();
 	}
 
 	private OrthographicCamera setCamera() {

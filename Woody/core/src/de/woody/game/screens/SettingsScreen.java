@@ -20,7 +20,7 @@ public class SettingsScreen implements Screen{
 	private Texture titel;
 	private Texture menuun;
 	private Texture menuak;
-	//private Texture settingsbackground;
+	private Texture settingsbackground;
 	private Texture soundoff;
 	private Texture soundon;
 	
@@ -58,20 +58,20 @@ public class SettingsScreen implements Screen{
 		asMa.load("textures/Settings_un.png", Texture.class);
 		asMa.load("textures/Menu_un.png", Texture.class);
 		asMa.load("textures/Menu_ak.png", Texture.class);
-		//asMa.load("textures/SettingsBackground.png", Texture.class);
-		asMa.load("textures/soundoff.png", Texture.class);
-		asMa.load("textures/soundon.png", Texture.class);
+		asMa.load("textures/Soundbackground.png", Texture.class);
+		asMa.load("textures/Soundoff.png", Texture.class);
+		asMa.load("textures/Soundon.png", Texture.class);
 		
 		while(!asMa.update()) {
 			asMa.update();
 		}
 		
-		//settingsbackground = asMa.get("textures/SettingsBackground.png", Texture.class);
+		settingsbackground = asMa.get("textures/Soundbackground.png", Texture.class);
 		titel = asMa.get("textures/Settings_un.png", Texture.class);
 		menuun = asMa.get("textures/Menu_un.png", Texture.class);
 		menuak = asMa.get("textures/Menu_ak.png", Texture.class);
-		soundoff = asMa.get("textures/soundoff.png", Texture.class);
-		soundon = asMa.get("textures/soundon.png", Texture.class);
+		soundoff = asMa.get("textures/Soundoff.png", Texture.class);
+		soundon = asMa.get("textures/Soundon.png", Texture.class);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class SettingsScreen implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		//Background
-		//batch.draw(settingsbackground,0,0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+		batch.draw(settingsbackground,0,0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 		
 		//TITEL
 		float k = 1.70f;

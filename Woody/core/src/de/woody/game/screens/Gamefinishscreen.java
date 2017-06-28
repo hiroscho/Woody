@@ -73,6 +73,7 @@ public class Gamefinishscreen implements Screen{
 			batch.draw(Nextlvl, x, y, B_width, B_height);
 			if(Gdx.input.justTouched()){
 				WoodyGame.getGame().setScreen(GameScreen.getInstance(priorLevel + 1));
+				return;
 			}
 		}else{
 			batch.draw(Nextlvl, x, y, B_width, B_height);
@@ -85,6 +86,7 @@ public class Gamefinishscreen implements Screen{
 			batch.draw(Replay, a, b, B_width, B_height);
 			if(Gdx.input.justTouched()){
 				WoodyGame.getGame().setScreen(GameScreen.getInstance(priorLevel));
+				return;
 			}
 		}else{
 			batch.draw(Replay, a, b, B_width, B_height);
@@ -139,4 +141,3 @@ public class Gamefinishscreen implements Screen{
 	}
 	
 }
-

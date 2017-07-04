@@ -26,8 +26,8 @@ public class Player {
 	/** maximum velocity's (maybe add a maximum fall velocity?) **/
 	public static float MAX_VELOCITY;
 	public static float JUMP_VELOCITY;
-	public static float jumpMultiplier = 1.25f;
-	public static float speedMultiplier = 1.5f;
+	public float jumpMultiplier = 1.25f;
+	public float speedMultiplier = 1.5f;
 
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;

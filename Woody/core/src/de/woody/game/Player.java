@@ -26,6 +26,8 @@ public class Player {
 	/** maximum velocity's (maybe add a maximum fall velocity?) **/
 	public static float MAX_VELOCITY;
 	public static float JUMP_VELOCITY;
+	public static float jumpMultiplier = 1.25f;
+	public static float speedMultiplier = 1.5f;
 
 	// Deceleration after key release
 	public static float DAMPING = 0.87f;
@@ -224,7 +226,7 @@ public class Player {
 		}
 		GameScreen.getInstance().levelData.rectPool.free(playerRect);
 
-		if ((fightCooldown + 850) < System.currentTimeMillis()) {
+		if ((fightCooldown + 700) < System.currentTimeMillis()) {
 			attacking = true;
 			
 			Timer.schedule(new Task() {
@@ -233,7 +235,7 @@ public class Player {
 				{
 					attacking = false;
 				}
-			}, 0.75F);
+			}, 0.6F);
 				
 			GameScreen.getInstance().getPunchSound().play();
 			// hit enemies
@@ -332,7 +334,7 @@ public class Player {
 					else if(Level.getTileName(cell.getTile().getId()).equals("speedBoots"))
 					{
 						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
-						MAX_VELOCITY = MAX_VELOCITY *2;
+						MAX_VELOCITY = MAX_VELOCITY *speedMultiplier;
 						speedActivated = true;
 						Timer.schedule(new Task() {
 							@Override
@@ -345,7 +347,7 @@ public class Player {
 					else if(Level.getTileName(cell.getTile().getId()).equals("jumpBoots"))
 					{
 						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
-						JUMP_VELOCITY = JUMP_VELOCITY *2;
+						JUMP_VELOCITY = JUMP_VELOCITY *jumpMultiplier;
 						jumpActivated = true;
 						Timer.schedule(new Task() {
 							@Override
@@ -497,7 +499,7 @@ public class Player {
 	}
 	
 	private void resetParametersSpeed() {
-		MAX_VELOCITY = 10F * 2;
+		MAX_VELOCITY = 10F * speedMultiplier;
 		JUMP_VELOCITY = 15F;
 		DAMPING = 0.87F;
 		slidingRight = false;
@@ -506,15 +508,15 @@ public class Player {
 	
 	private void resetParametersJump() {
 		MAX_VELOCITY = 10F;
-		JUMP_VELOCITY = 15F * 2;
+		JUMP_VELOCITY = 15F * jumpMultiplier;
 		DAMPING = 0.87F;
 		slidingRight = false;
 		slidingLeft = false;
 	}
 	
 	private void resetParametersBoth() {
-		MAX_VELOCITY = 10F * 2;
-		JUMP_VELOCITY = 15F * 2;
+		MAX_VELOCITY = 10F * speedMultiplier;
+		JUMP_VELOCITY = 15F * jumpMultiplier;
 		DAMPING = 0.87F;
 		slidingRight = false;
 		slidingLeft = false;

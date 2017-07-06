@@ -58,7 +58,7 @@ public class GameScreen implements Screen {
 	private ShapeRenderer debugRenderer;
 	private TiledMapTileLayer collidableTiles;
 	private TiledMapTileLayer nonCollidableTiles;
-	// Sound Variables
+	// Sound 
 	private Sound coinSound;
 	private Array<Button> pressedButtons;
 	private Sound jumpSound;
@@ -68,14 +68,16 @@ public class GameScreen implements Screen {
 	private Sound lavaSound;
 	private Sound powerupSound;
 	private Sound snowSlideSound;
-	// private Music
+	// Music
 	private Music levelMusic;
 
 	BitmapFont coinsFont;
 
-	// Test x6.8
-	float sclx = 4.3f, scly = 4.3f, px = 6.5f, py = 7.45f;
+//sc = skalierung/größe
+//	float sclx = 4.3f, scly = 4.3f, px = 6.5f, py = 7.45f;
+	float sclx = 4.3f, scly = 4.3f;
 
+	
 	private GameScreen() {
 	}
 
@@ -220,7 +222,7 @@ public class GameScreen implements Screen {
 
 		levelMusic.setLooping(true);
 		if (WoodyGame.getGame().VOLUME > 0.0f) {
-			levelMusic.setVolume(WoodyGame.getGame().VOLUME);
+			levelMusic.setVolume((WoodyGame.getGame().VOLUME)/3);
 			levelMusic.play();
 		}
 
@@ -288,28 +290,6 @@ public class GameScreen implements Screen {
 			e.render(renderer.getBatch());
 		}
 
-		// GlyphLayout scoreLayout = new GlyphLayout(myCoins, "" +
-		// player.getCoinAmount());
-
-		// CharSequence scorelay = "" + score;
-		// myCoins.draw(renderer.getBatch(), scoreLayout,9,12);
-
-		// SpriteBatch batch;
-		// batch = new SpriteBatch();
-
-		// GameScreen.getInstance().getbatch.begin();
-
-		// myCoins.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		// myCoins.setColor(0.5f, 0.5f, 0.7f, 0.7f);
-		// myCoins.draw(batch , yourScoreName, 15, 50);
-
-		// batch = new SpriteBatch();
-		// myCoins = new BitmapFont();
-		// CharSequence str = "Hello World!";
-		// myCoins.setColor(0.9f, 0.9f, 0.2f, 0.2f);
-		// myCoins.draw(renderer.getBatch(), str, 10, 10);
-
-		// render the player
 		player.render();
 
 		renderer.getBatch().end();
@@ -335,46 +315,46 @@ public class GameScreen implements Screen {
 		controller.getStage().act(Gdx.graphics.getDeltaTime());
 
 		// check coin Amount
-		if (player.getCoinAmount() < 10) {
-			sclx = 4.3f;
-			scly = 4.3f;
-			px = 6.8f;
-			py = 7.45f;
-		}
-
-		if ((player.getCoinAmount() < 100) && (player.getCoinAmount() > 9)) {
-			sclx = 4.3f;
-			scly = 4.3f;
-			px = 6.41f;
-			py = 7.45f;
-		}
-
-		if ((player.getCoinAmount() < 1000) && (player.getCoinAmount() > 99)) {
-			sclx = 3.5f;
-			scly = 4f;
-			px = 6.22f;
-			py = 7.45f;
-		}
-
-		if ((player.getCoinAmount() < 10000) && (player.getCoinAmount() > 999)) {
-			sclx = 2.66f;
-			scly = 4.0f;
-			px = 6.22f;
-			py = 7.45f;
-		}
-		if ((player.getCoinAmount() < 100000) && (player.getCoinAmount() > 9999)) {
-			sclx = 2.0f;
-			scly = 4.0f;
-			px = 6.284f;
-			py = 7.45f;
-		}
-
-		if ((player.getCoinAmount() < 1000000) && (player.getCoinAmount() > 99999)) {
-			sclx = 1.5f;
-			scly = 4.0f;
-			px = 6.4f;
-			py = 7.45f;
-		}
+//		if (player.getCoinAmount() < 10) {
+//			sclx = 4.3f;
+//			scly = 4.3f;
+//			px = 6.8f;
+//			py = 7.45f;
+//		}
+//
+//		if ((player.getCoinAmount() < 100) && (player.getCoinAmount() > 9)) {
+//			sclx = 4.3f;
+//			scly = 4.3f;
+//			px = 6.41f;
+//			py = 7.45f;
+//		}
+//
+//		if ((player.getCoinAmount() < 1000) && (player.getCoinAmount() > 99)) {
+//			sclx = 3.5f;
+//			scly = 4f;
+//			px = 6.22f;
+//			py = 7.45f;
+//		}
+//
+//		if ((player.getCoinAmount() < 10000) && (player.getCoinAmount() > 999)) {
+//			sclx = 2.66f;
+//			scly = 4.0f;
+//			px = 6.22f;
+//			py = 7.45f;
+//		}
+//		if ((player.getCoinAmount() < 100000) && (player.getCoinAmount() > 9999)) {
+//			sclx = 2.0f;
+//			scly = 4.0f;
+//			px = 6.284f;
+//			py = 7.45f;
+//		}
+//
+//		if ((player.getCoinAmount() < 1000000) && (player.getCoinAmount() > 99999)) {
+//			sclx = 1.5f;
+//			scly = 4.0f;
+//			px = 6.4f;
+//			py = 7.45f;
+//		}
 
 		// Draw the ui
 		controller.getStage().draw();
@@ -383,8 +363,8 @@ public class GameScreen implements Screen {
 		}
 		controller.getStage().getBatch().begin();
 		coinsFont.draw(controller.getStage().getBatch(), Integer.toString(player.getCoinAmount()),
-				px / WoodyGame.getGame().UNIT_SCALE, py / WoodyGame.getGame().UNIT_SCALE,
-				1.0f / WoodyGame.getGame().UNIT_SCALE, Align.left, true);
+				Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/* - Gdx.graphics.getHeight()/20*/,
+				2.0f / WoodyGame.getGame().UNIT_SCALE, Align.left, true);
 		controller.getStage().getBatch().end();
 
 		// render debug rectangles
@@ -568,10 +548,10 @@ public class GameScreen implements Screen {
 				sclx = Float.parseFloat(r.readLine());
 				System.out.println("scly: ");
 				scly = Float.parseFloat(r.readLine());
-				System.out.println("x: ");
-				px = Float.parseFloat(r.readLine());
-				System.out.println("y: ");
-				py = Float.parseFloat(r.readLine());
+//				System.out.println("x: ");
+//				px = Float.parseFloat(r.readLine());
+//				System.out.println("y: ");
+//				py = Float.parseFloat(r.readLine());
 			} catch (Exception e) {
 			}
 		}

@@ -51,7 +51,7 @@ public class Player {
 	public boolean jumpActivated = false;
 
 	/** current coin score **/
-	private int coinAmount;
+	private int coinAmount = 0;
 
 	/** Cooldown for fightSound **/
 	public long fightCooldown = System.currentTimeMillis();

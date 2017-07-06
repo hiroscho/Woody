@@ -129,6 +129,7 @@ public class LevelSelect implements Screen{
 		int a = Gdx.graphics.getWidth() / 2 - MENU_WIDTH / 2;
 		int b = (Gdx.graphics.getWidth() / 2 - MENU_WIDTH / 2);
 		int c = Gdx.graphics.getHeight() / 100 - MENU_HEIGHT / 8;
+		
 		if (Gdx.input.getX() < a + MENU_WIDTH && Gdx.input.getX() > a && Gdx.graphics.getHeight() - Gdx.input.getY() < c + MENU_HEIGHT && Gdx.graphics.getHeight() - Gdx.input.getY() > c) {
 			batch.draw(menuak, b, c, MENU_WIDTH, MENU_HEIGHT);
 			if (Gdx.input.justTouched()) {

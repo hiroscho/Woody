@@ -11,6 +11,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.IntIntMap.Entry;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -246,7 +249,7 @@ public class Player {
 			}, 0.6F);
 
 			GameScreen.getInstance().getPunchSound().play(WoodyGame.getGame().VOLUME);
-			
+
 			// hit enemies
 			Rectangle area = GameScreen.getInstance().levelData.rectPool.obtain();
 			Rectangle area2 = GameScreen.getInstance().levelData.rectPool.obtain();
@@ -345,7 +348,7 @@ public class Player {
 						addCoin();
 					} else if (Level.getTileName(cell.getTile().getId()).equals("speedBoots")) {
 						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
-						MAX_VELOCITY = MAX_VELOCITY *speedMultiplier;
+						MAX_VELOCITY = MAX_VELOCITY * speedMultiplier;
 						speedActivated = true;
 						Timer.schedule(new Task() {
 							@Override
@@ -355,7 +358,7 @@ public class Player {
 						}, 5F);
 					} else if (Level.getTileName(cell.getTile().getId()).equals("jumpBoots")) {
 						GameScreen.getInstance().getNonCollidableTiles().setCell(x, y, null);
-						JUMP_VELOCITY = JUMP_VELOCITY *jumpMultiplier;
+						JUMP_VELOCITY = JUMP_VELOCITY * jumpMultiplier;
 						jumpActivated = true;
 						Timer.schedule(new Task() {
 							@Override
@@ -589,7 +592,7 @@ public class Player {
 					velocity.y = -0.5F;
 				}
 			}
-			life.damagePlayer(1);
+			life.damagePlayer(3);
 			MAX_VELOCITY = 1f;
 			state = State.Swimming;
 			return;
@@ -686,7 +689,7 @@ public class Player {
 
 	private void vanish(final int y) {
 		final float x2 = position.x;
-
+		final ArrayMap<Integer, Integer> vanished = new ArrayMap<Integer, Integer>();
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
@@ -695,6 +698,7 @@ public class Player {
 					cell = GameScreen.getInstance().levelData.getCollidable().getCell((int) (x2 + WIDTH * i), y - 1);
 					if (cell != null && cell.getTile() != null) {
 						if (Level.getTileName(cell.getTile().getId()).equals("vanishing")) {
+							vanished.put((int) (x2 + WIDTH * i), y - 1);
 							GameScreen.getInstance().levelData.getCollidable().setCell((int) (x2 + WIDTH * i), y - 1,
 									null);
 						}
@@ -707,6 +711,21 @@ public class Player {
 			}
 
 		}, 0.5F);
+		respawn(vanished);
+	}
+
+	private void respawn(final ArrayMap<Integer, Integer> coords) {
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				for (ObjectMap.Entry<Integer, Integer> coord : coords) {
+					System.out.println(coord.key);
+					GameScreen.getInstance().getCollidableTiles().setCell(coord.key, coord.value,
+							new Cell().setTile(GameScreen.getInstance().getMap().getTileSets().getTile(27)));
+				}
+			}
+
+		}, 5.0F);
 	}
 
 	public void render() {

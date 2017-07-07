@@ -719,7 +719,6 @@ public class Player {
 			@Override
 			public void run() {
 				for (ObjectMap.Entry<Integer, Integer> coord : coords) {
-					System.out.println(coord.key);
 					GameScreen.getInstance().getCollidableTiles().setCell(coord.key, coord.value,
 							new Cell().setTile(GameScreen.getInstance().getMap().getTileSets().getTile(27)));
 				}

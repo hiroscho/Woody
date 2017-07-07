@@ -76,7 +76,7 @@ public class MainMenueScreen implements Screen {
 		menueMusic = asMa.get("audio/mainTheme.mp3", Music.class);
 		menueMusic.setLooping(true);
 		if (WoodyGame.getGame().VOLUME > 0.0f) {
-			menueMusic.setVolume(WoodyGame.getGame().VOLUME);
+			menueMusic.setVolume((WoodyGame.getGame().VOLUME));
 			menueMusic.play();
 		}
 	}
@@ -98,6 +98,7 @@ public class MainMenueScreen implements Screen {
 				&& Gdx.graphics.getHeight() - Gdx.input.getY() > y) {
 			batch.draw(playButtonak, x, y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 			if (Gdx.input.justTouched()) {
+				menueMusic.pause();
 				WoodyGame.getGame().setScreen(LevelSelect.getInstance());
 				return;
 			}

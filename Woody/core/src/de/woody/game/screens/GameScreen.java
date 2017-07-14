@@ -58,7 +58,7 @@ public class GameScreen implements Screen {
 	private ShapeRenderer debugRenderer;
 	private TiledMapTileLayer collidableTiles;
 	private TiledMapTileLayer nonCollidableTiles;
-	// Sound 
+	// Sound
 	private Sound coinSound;
 	private Array<Button> pressedButtons;
 	private Sound jumpSound;
@@ -73,11 +73,10 @@ public class GameScreen implements Screen {
 
 	BitmapFont coinsFont;
 
-//sc = skalierung/größe
-//	float sclx = 4.3f, scly = 4.3f, px = 6.5f, py = 7.45f;
+	// sc = skalierung/größe
+	// float sclx = 4.3f, scly = 4.3f, px = 6.5f, py = 7.45f;
 	float sclx = 4.3f, scly = 4.3f;
 
-	
 	private GameScreen() {
 	}
 
@@ -134,7 +133,11 @@ public class GameScreen implements Screen {
 		asMa.load("audio/lava.mp3", Sound.class);
 		asMa.load("audio/snowSlide.mp3", Sound.class);
 		asMa.load("audio/powerup.wav", Sound.class);
-		asMa.load("audio/level" + level + ".mp3", Music.class);
+		try {
+			asMa.load("audio/level" + level + ".mp3", Music.class);
+		} catch (Exception e) {
+			// ignored
+		}
 
 		// Font
 		asMa.load("Fonts/V3.fnt", BitmapFont.class);
@@ -182,14 +185,21 @@ public class GameScreen implements Screen {
 		controller.addLifeImage(controller.livesOne, 1, uiPos.x, uiPos.y, 18, 18, scaleLives);
 		controller.addLifeImage(controller.livesTwo, 2, uiPos.x, uiPos.y, 18, 18, scaleLives);
 
-		// load the corresponding map, set the unit scale
+		// load the corresponding map
 		asMa.load("maps/level" + level + ".tmx", TiledMap.class);
+
 		while (!asMa.isLoaded("maps/level" + level + ".tmx")) {
-			asMa.update();
+			try {
+				asMa.update();
+			} catch (Exception e) {
+				WoodyGame.getGame().setScreen(MainMenueScreen.getInstance());
+				return;
+			}
 		}
 
 		map = asMa.get("maps/level" + level + ".tmx"); // Jeweils richtiges
 														// Level Laden
+
 		renderer = new OrthogonalTiledMapRenderer(map, WoodyGame.getGame().UNIT_SCALE);
 		levelData = new Level();
 		collidableTiles = Level.getTileLayer(map, "Collidable Tiles");
@@ -222,7 +232,7 @@ public class GameScreen implements Screen {
 
 		levelMusic.setLooping(true);
 		if (WoodyGame.getGame().VOLUME > 0.0f) {
-			levelMusic.setVolume((WoodyGame.getGame().VOLUME)/3);
+			levelMusic.setVolume((WoodyGame.getGame().VOLUME) / 3);
 			levelMusic.play();
 		}
 
@@ -315,46 +325,50 @@ public class GameScreen implements Screen {
 		controller.getStage().act(Gdx.graphics.getDeltaTime());
 
 		// check coin Amount
-//		if (player.getCoinAmount() < 10) {
-//			sclx = 4.3f;
-//			scly = 4.3f;
-//			px = 6.8f;
-//			py = 7.45f;
-//		}
-//
-//		if ((player.getCoinAmount() < 100) && (player.getCoinAmount() > 9)) {
-//			sclx = 4.3f;
-//			scly = 4.3f;
-//			px = 6.41f;
-//			py = 7.45f;
-//		}
-//
-//		if ((player.getCoinAmount() < 1000) && (player.getCoinAmount() > 99)) {
-//			sclx = 3.5f;
-//			scly = 4f;
-//			px = 6.22f;
-//			py = 7.45f;
-//		}
-//
-//		if ((player.getCoinAmount() < 10000) && (player.getCoinAmount() > 999)) {
-//			sclx = 2.66f;
-//			scly = 4.0f;
-//			px = 6.22f;
-//			py = 7.45f;
-//		}
-//		if ((player.getCoinAmount() < 100000) && (player.getCoinAmount() > 9999)) {
-//			sclx = 2.0f;
-//			scly = 4.0f;
-//			px = 6.284f;
-//			py = 7.45f;
-//		}
-//
-//		if ((player.getCoinAmount() < 1000000) && (player.getCoinAmount() > 99999)) {
-//			sclx = 1.5f;
-//			scly = 4.0f;
-//			px = 6.4f;
-//			py = 7.45f;
-//		}
+		// if (player.getCoinAmount() < 10) {
+		// sclx = 4.3f;
+		// scly = 4.3f;
+		// px = 6.8f;
+		// py = 7.45f;
+		// }
+		//
+		// if ((player.getCoinAmount() < 100) && (player.getCoinAmount() > 9)) {
+		// sclx = 4.3f;
+		// scly = 4.3f;
+		// px = 6.41f;
+		// py = 7.45f;
+		// }
+		//
+		// if ((player.getCoinAmount() < 1000) && (player.getCoinAmount() > 99))
+		// {
+		// sclx = 3.5f;
+		// scly = 4f;
+		// px = 6.22f;
+		// py = 7.45f;
+		// }
+		//
+		// if ((player.getCoinAmount() < 10000) && (player.getCoinAmount() >
+		// 999)) {
+		// sclx = 2.66f;
+		// scly = 4.0f;
+		// px = 6.22f;
+		// py = 7.45f;
+		// }
+		// if ((player.getCoinAmount() < 100000) && (player.getCoinAmount() >
+		// 9999)) {
+		// sclx = 2.0f;
+		// scly = 4.0f;
+		// px = 6.284f;
+		// py = 7.45f;
+		// }
+		//
+		// if ((player.getCoinAmount() < 1000000) && (player.getCoinAmount() >
+		// 99999)) {
+		// sclx = 1.5f;
+		// scly = 4.0f;
+		// px = 6.4f;
+		// py = 7.45f;
+		// }
 
 		// Draw the ui
 		controller.getStage().draw();
@@ -363,8 +377,9 @@ public class GameScreen implements Screen {
 		}
 		controller.getStage().getBatch().begin();
 		coinsFont.draw(controller.getStage().getBatch(), Integer.toString(player.getCoinAmount()),
-				Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/* - Gdx.graphics.getHeight()/20*/,
-				2.0f / WoodyGame.getGame().UNIT_SCALE, Align.left, true);
+				Gdx.graphics.getWidth() / 2,
+				Gdx.graphics.getHeight()/* - Gdx.graphics.getHeight()/20 */, 2.0f / WoodyGame.getGame().UNIT_SCALE,
+				Align.left, true);
 		controller.getStage().getBatch().end();
 
 		// render debug rectangles
@@ -548,10 +563,10 @@ public class GameScreen implements Screen {
 				sclx = Float.parseFloat(r.readLine());
 				System.out.println("scly: ");
 				scly = Float.parseFloat(r.readLine());
-//				System.out.println("x: ");
-//				px = Float.parseFloat(r.readLine());
-//				System.out.println("y: ");
-//				py = Float.parseFloat(r.readLine());
+				// System.out.println("x: ");
+				// px = Float.parseFloat(r.readLine());
+				// System.out.println("y: ");
+				// py = Float.parseFloat(r.readLine());
 			} catch (Exception e) {
 			}
 		}
